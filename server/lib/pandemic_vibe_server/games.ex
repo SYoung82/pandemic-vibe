@@ -140,7 +140,7 @@ defmodule PandemicVibeServer.Games do
   def get_latest_game_state(game_id) do
     from(gs in GameState,
       where: gs.game_id == ^game_id,
-      order_by: [desc: gs.turn_number],
+      order_by: [desc: gs.turn_number, desc: gs.inserted_at],
       limit: 1
     )
     |> Repo.one()

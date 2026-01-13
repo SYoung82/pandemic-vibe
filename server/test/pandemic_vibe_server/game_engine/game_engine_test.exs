@@ -241,18 +241,21 @@ defmodule PandemicVibeServer.GameEngine.GameEngineTest do
     test "wraps around from last player to first player" do
       game = setup_initialized_game(2)
 
-      sorted_players = Enum.sort_by(game.players, & &1.turn_order)
+      # Reload players to get fresh IDs
+      players = Games.list_game_players(game.id)
+      sorted_players = Enum.sort_by(players, & &1.turn_order)
       first_player = Enum.at(sorted_players, 0)
       last_player = Enum.at(sorted_players, 1)
 
       # Set to last player's turn
       state = Games.get_latest_game_state(game.id)
 
-      Games.save_game_state(game.id, %{
-        turn_number: state.turn_number,
-        current_player_id: last_player.id,
-        state_data: state.state_data
-      })
+      {:ok, _} =
+        Games.save_game_state(game.id, %{
+          turn_number: state.turn_number,
+          current_player_id: last_player.id,
+          state_data: state.state_data
+        })
 
       # Advance turn
       {:ok, _} = GameEngine.next_turn(game.id)

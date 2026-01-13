@@ -10,7 +10,11 @@
       "Bash(node --version:*)",
       "Bash(npm --version:*)",
       "Bash(mix format:*)",
-      "Bash(mix compile:*)"
+      "Bash(mix compile:*)",
+      "Bash(iex -S mix)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)"
     ]
   }
 }
