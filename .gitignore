@@ -1,0 +1,43 @@
+node_modules/
+deps/
+_build/
+assets/node_modules/
+.env
+.DS_Store
+.venv
+dist/
+*.sqlite3
+*.log
+# Elixir / Phoenix
+/backend/_build
+/backend/deps
+*.ez
+*.beam
+/backend/config/*.secret.exs
+.elixir_ls/
+
+# Frontend
+/frontend/node_modules
+/frontend/dist
+/frontend/build
+/frontend/.vite
+
+# Static assets
+/backend/priv/static/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
