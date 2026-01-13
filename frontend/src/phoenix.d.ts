@@ -1,23 +1,23 @@
 declare module 'phoenix' {
   export class Socket {
-    constructor(endPoint: string, opts?: any);
+    constructor(endPoint: string, opts?: Record<string, unknown>);
     connect(): void;
     disconnect(callback?: () => void, code?: number, reason?: string): void;
-    channel(topic: string, params?: any): Channel;
+    channel(topic: string, params?: Record<string, unknown>): Channel;
     onOpen(callback: () => void): void;
     onClose(callback: () => void): void;
-    onError(callback: (error: any) => void): void;
+    onError(callback: (error: unknown) => void): void;
   }
 
   export class Channel {
     join(timeout?: number): Push;
     leave(timeout?: number): Push;
-    on(event: string, callback: (response: any) => void): void;
+    on(event: string, callback: (response: unknown) => void): void;
     off(event: string): void;
-    push(event: string, payload?: any, timeout?: number): Push;
+    push(event: string, payload?: Record<string, unknown>, timeout?: number): Push;
   }
 
   export class Push {
-    receive(status: string, callback: (response: any) => void): Push;
+    receive(status: string, callback: (response: unknown) => void): Push;
   }
 }

@@ -64,16 +64,16 @@ defmodule PandemicVibeServerWeb.GameChannelTest do
                subscribe_and_join(socket, "game:#{game.id}", %{})
     end
 
-    test "prevents joining with invalid token", %{game: game} do
+    test "prevents joining with invalid token", %{game: _game} do
       assert :error = connect(UserSocket, %{"token" => "invalid_token"})
     end
 
-    test "sends initial game state after joining", %{game: game, token1: token1, user1: user1} do
+    test "sends initial game state after joining", %{game: game, token1: token1, user1: _user1} do
       # Start the game first
-      {:ok, started_game} = PandemicVibeServer.GameEngine.GameEngine.initialize_game(game.id)
+      {:ok, _started_game} = PandemicVibeServer.GameEngine.GameEngine.initialize_game(game.id)
 
       {:ok, socket} = connect(UserSocket, %{"token" => token1})
-      {:ok, _reply, socket} = subscribe_and_join(socket, "game:#{game.id}", %{})
+      {:ok, _reply, _socket} = subscribe_and_join(socket, "game:#{game.id}", %{})
 
       assert_push "game_state", state
       assert state.game.id == game.id

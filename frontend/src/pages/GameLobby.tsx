@@ -3,12 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import { gameAPI } from '../lib/api';
 
+interface Player {
+  id: number;
+  user_id: number;
+  [key: string]: unknown;
+}
+
 interface Game {
   id: number;
   status: string;
   difficulty: string;
   created_by_id: number;
-  players: any[];
+  players: Player[];
 }
 
 export default function GameLobby() {
@@ -22,10 +28,6 @@ export default function GameLobby() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadGames();
-  }, []);
-
   const loadGames = async () => {
     try {
       const response = await gameAPI.listGames();
@@ -34,6 +36,11 @@ export default function GameLobby() {
       console.error('Failed to load games:', err);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadGames();
+  }, []);
 
   const handleCreateGame = async () => {
     setIsLoading(true);
@@ -47,8 +54,11 @@ export default function GameLobby() {
       });
       const gameId = response.data.data.id;
       navigate(`/game/${gameId}`);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to create game');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error && 'response' in err
+        ? (err as { response?: { data?: { error?: string } } }).response?.data?.error
+        : undefined;
+      setError(errorMessage || 'Failed to create game');
       setIsLoading(false);
     }
   };

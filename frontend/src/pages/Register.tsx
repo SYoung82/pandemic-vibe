@@ -32,8 +32,9 @@ export default function Register() {
     try {
       await register(username, email, password);
       navigate('/games');
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Registration failed. Please try again.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : undefined;
+      setError(errorMessage || 'Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

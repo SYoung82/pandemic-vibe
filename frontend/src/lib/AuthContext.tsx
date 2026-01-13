@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import { authAPI } from './api';
@@ -32,14 +33,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await authAPI.login(email, password);
       const { token, user } = response.data;
-      
+
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
-      
+
       setToken(token);
       setUser(user);
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Login failed');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error && 'response' in error
+        ? (error as { response?: { data?: { error?: string } } }).response?.data?.error
+        : undefined;
+      throw new Error(errorMessage || 'Login failed');
     }
   };
 
@@ -47,14 +51,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await authAPI.register(name, email, password);
       const { token, user } = response.data;
-      
+
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
-      
+
       setToken(token);
       setUser(user);
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Registration failed');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error && 'response' in error
+        ? (error as { response?: { data?: { error?: string } } }).response?.data?.error
+        : undefined;
+      throw new Error(errorMessage || 'Registration failed');
     }
   };
 

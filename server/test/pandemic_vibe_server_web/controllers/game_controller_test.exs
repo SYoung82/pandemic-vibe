@@ -49,7 +49,7 @@ defmodule PandemicVibeServerWeb.GameControllerTest do
   end
 
   describe "GET /api/games/:id" do
-    setup %{user1: user1, token1: token1} do
+    setup %{user1: user1, token1: _token1} do
       {:ok, game} =
         Games.create_game(%{
           difficulty: "easy",
@@ -75,7 +75,7 @@ defmodule PandemicVibeServerWeb.GameControllerTest do
   end
 
   describe "POST /api/games/:id/join" do
-    setup %{user1: user1, token1: token1} do
+    setup %{user1: user1, token1: _token1} do
       {:ok, game} =
         Games.create_game(%{
           difficulty: "normal",
@@ -184,7 +184,7 @@ defmodule PandemicVibeServerWeb.GameControllerTest do
   end
 
   describe "POST /api/games/:id/start" do
-    setup %{user1: user1, user2: user2, token1: token1} do
+    setup %{user1: user1, user2: user2, token1: _token1} do
       {:ok, game} =
         Games.create_game(%{
           difficulty: "normal",

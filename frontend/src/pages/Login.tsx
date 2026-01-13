@@ -19,8 +19,9 @@ export default function Login() {
     try {
       await login(username, password);
       navigate('/games');
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : undefined;
+      setError(errorMessage || 'Login failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }

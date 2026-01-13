@@ -1,19 +1,41 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import { useGameChannel } from '../lib/useGameChannel';
 import { gameAPI } from '../lib/api';
 
-// Player interface from GameState - see useGameChannel.ts for full definition
+interface Player {
+  id: string;
+  user_id: string;
+  role?: string;
+  turn_order: number;
+  username?: string;
+}
+
+interface GameInfo {
+  id: string;
+  status: string;
+  difficulty: string;
+  players: Player[];
+  created_by_id: string;
+  creator_id?: string;
+  max_players?: number;
+  username?: string;
+  name?: string;
+}
+
+interface ActionParams {
+  [key: string]: unknown;
+}
 
 export default function GameBoard() {
   const { gameId } = useParams<{ gameId: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [gameInfo, setGameInfo] = useState<any>(null);
+  const [gameInfo, setGameInfo] = useState<GameInfo | null>(null);
   const [chatInput, setChatInput] = useState('');
   const [selectedAction, setSelectedAction] = useState<string>('');
-  const [actionParams, setActionParams] = useState<any>({});
+  const [actionParams, setActionParams] = useState<ActionParams>({});
 
   const token = localStorage.getItem('token');
 
@@ -27,28 +49,31 @@ export default function GameBoard() {
     sendMessage
   } = useGameChannel(gameId!, token);
 
-  useEffect(() => {
-    if (gameId) {
-      loadGameInfo();
-    }
-  }, [gameId]);
-
-  const loadGameInfo = async () => {
+  const loadGameInfo = useCallback(async () => {
+    if (!gameId) return;
     try {
-      const response = await gameAPI.getGame(gameId!);
+      const response = await gameAPI.getGame(gameId);
       setGameInfo(response.data.data);
     } catch (err) {
       console.error('Failed to load game:', err);
       navigate('/games');
     }
-  };
+  }, [gameId, navigate]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadGameInfo();
+  }, [loadGameInfo]);
 
   const handleStartGame = async () => {
     try {
       await gameAPI.startGame(gameId!);
       await loadGameInfo();
-    } catch (err: any) {
-      alert(err.response?.data?.error || 'Failed to start game');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error && 'response' in err
+        ? (err as { response?: { data?: { error?: string } } }).response?.data?.error
+        : undefined;
+      alert(errorMessage || 'Failed to start game');
     }
   };
 
@@ -123,10 +148,10 @@ export default function GameBoard() {
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Waiting for Players</h2>
             <div className="space-y-2 mb-6">
-              {gameInfo.players.map((player: any) => (
+              {gameInfo.players.map((player: Player) => (
                 <div key={player.id} className="flex items-center gap-2 text-gray-700">
                   <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                  {player.username}
+                  {String(player.username || player.user_id)}
                 </div>
               ))}
             </div>

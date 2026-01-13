@@ -48,14 +48,24 @@ export interface ChatMessage {
   timestamp: string;
 }
 
+interface JoinResponse {
+  game: GameState;
+}
+
+interface ChannelError {
+  reason?: string;
+}
+
+interface ActionParams {
+  [key: string]: unknown;
+}
+
 export function useGameChannel(gameId: string | null, token: string | null) {
-  const [, setChannel] = useState<Channel | null>(null);
-  const [, setSocket] = useState<Socket | null>(null);
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Use refs to avoid recreating callbacks
   const socketRef = useRef<Socket | null>(null);
   const channelRef = useRef<Channel | null>(null);
@@ -81,7 +91,6 @@ export function useGameChannel(gameId: string | null, token: string | null) {
 
     newSocket.connect();
     socketRef.current = newSocket;
-    setSocket(newSocket);
 
     // Join game channel
     const gameChannel = newSocket.channel(`game:${gameId}`, {});
@@ -96,19 +105,18 @@ export function useGameChannel(gameId: string | null, token: string | null) {
 
     gameChannel
       .join()
-      .receive('ok', (response: any) => {
+      .receive('ok', (response: JoinResponse) => {
         console.log('Joined game channel', response);
         setIsConnected(true);
         setError(null);
       })
-      .receive('error', (err: any) => {
+      .receive('error', (err: ChannelError) => {
         console.error('Failed to join channel:', err);
         setError(err.reason || 'Failed to join game');
         setIsConnected(false);
       });
 
     channelRef.current = gameChannel;
-    setChannel(gameChannel);
 
     // Cleanup on unmount
     return () => {
@@ -122,7 +130,7 @@ export function useGameChannel(gameId: string | null, token: string | null) {
   }, [gameId, token]);
 
   const sendAction = useCallback(
-    (action: string, params: any) => {
+    (action: string, params: ActionParams) => {
       return new Promise((resolve, reject) => {
         if (!channelRef.current) {
           reject(new Error('Channel not connected'));
@@ -131,8 +139,8 @@ export function useGameChannel(gameId: string | null, token: string | null) {
 
         channelRef.current
           .push('player_action', { action, params })
-          .receive('ok', (response: any) => resolve(response))
-          .receive('error', (err: any) => reject(err));
+          .receive('ok', (response: unknown) => resolve(response))
+          .receive('error', (err: ChannelError) => reject(err));
       });
     },
     []
@@ -175,8 +183,8 @@ export function useGameChannel(gameId: string | null, token: string | null) {
 
       channelRef.current
         .push('get_state', {})
-        .receive('ok', (state: any) => resolve(state))
-        .receive('error', (err: any) => reject(err));
+        .receive('ok', (state: unknown) => resolve(state as GameState))
+        .receive('error', (err: unknown) => reject(err as ChannelError));
     });
   }, []);
 
