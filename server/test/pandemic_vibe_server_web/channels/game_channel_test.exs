@@ -100,7 +100,7 @@ defmodule PandemicVibeServerWeb.GameChannelTest do
       {:ok, _reply, socket1} = subscribe_and_join(socket1, "game:#{game.id}", %{})
 
       {:ok, socket2} = connect(UserSocket, %{"token" => token2})
-      {:ok, _reply, socket2} = subscribe_and_join(socket2, "game:#{game.id}", %{})
+      {:ok, _reply, _socket2} = subscribe_and_join(socket2, "game:#{game.id}", %{})
 
       ref = push(socket1, "chat_message", %{"message" => "Hello everyone!"})
       assert_reply ref, :ok, _response
@@ -113,7 +113,7 @@ defmodule PandemicVibeServerWeb.GameChannelTest do
   end
 
   describe "player_action" do
-    setup %{game: game, token1: token1, user1: user1} do
+    setup %{game: game, token1: token1, user1: _user1} do
       # Start the game
       {:ok, _started_game} = PandemicVibeServer.GameEngine.GameEngine.initialize_game(game.id)
 
@@ -124,7 +124,7 @@ defmodule PandemicVibeServerWeb.GameChannelTest do
     end
 
     test "prevents actions when not player's turn", %{
-      socket: socket,
+      socket: _socket,
       game_id: game_id,
       user2: user2,
       token2: token2
@@ -171,8 +171,7 @@ defmodule PandemicVibeServerWeb.GameChannelTest do
     end
 
     test "advances to next player's turn", %{socket: socket, game_id: game_id} do
-      state_before = Games.get_latest_game_state(game_id)
-      current_player_before = state_before.current_player_id
+      _state_before = Games.get_latest_game_state(game_id)
 
       ref = push(socket, "end_turn", %{})
 

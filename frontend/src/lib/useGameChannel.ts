@@ -48,10 +48,6 @@ export interface ChatMessage {
   timestamp: string;
 }
 
-interface JoinResponse {
-  game: GameState;
-}
-
 interface ChannelError {
   reason?: string;
 }
@@ -95,24 +91,25 @@ export function useGameChannel(gameId: string | null, token: string | null) {
     // Join game channel
     const gameChannel = newSocket.channel(`game:${gameId}`, {});
 
-    gameChannel.on('game_state', (state: GameState) => {
-      setGameState(state);
+    gameChannel.on('game_state', (state: unknown) => {
+      setGameState(state as GameState);
     });
 
-    gameChannel.on('chat_message', (message: ChatMessage) => {
-      setMessages((prev) => [...prev, message]);
+    gameChannel.on('chat_message', (message: unknown) => {
+      setMessages((prev) => [...prev, message as ChatMessage]);
     });
 
     gameChannel
       .join()
-      .receive('ok', (response: JoinResponse) => {
+      .receive('ok', (response: unknown) => {
         console.log('Joined game channel', response);
         setIsConnected(true);
         setError(null);
       })
-      .receive('error', (err: ChannelError) => {
-        console.error('Failed to join channel:', err);
-        setError(err.reason || 'Failed to join game');
+      .receive('error', (err: unknown) => {
+        const error = err as ChannelError;
+        console.error('Failed to join channel:', error);
+        setError(error.reason || 'Failed to join game');
         setIsConnected(false);
       });
 
@@ -140,7 +137,7 @@ export function useGameChannel(gameId: string | null, token: string | null) {
         channelRef.current
           .push('player_action', { action, params })
           .receive('ok', (response: unknown) => resolve(response))
-          .receive('error', (err: ChannelError) => reject(err));
+          .receive('error', (err: unknown) => reject(err as ChannelError));
       });
     },
     []

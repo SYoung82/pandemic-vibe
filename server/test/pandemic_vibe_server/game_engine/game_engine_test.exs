@@ -349,14 +349,15 @@ defmodule PandemicVibeServer.GameEngine.GameEngineTest do
     end
 
     test "returns :lose when any disease cube supply depleted" do
-      game = setup_game_in_progress(2, %{
-        "disease_cubes" => %{
-          "blue" => -1,
-          "yellow" => 24,
-          "black" => 24,
-          "red" => 24
-        }
-      })
+      game =
+        setup_game_in_progress(2, %{
+          "disease_cubes" => %{
+            "blue" => -1,
+            "yellow" => 24,
+            "black" => 24,
+            "red" => 24
+          }
+        })
 
       assert {:ok, :lose} = GameEngine.check_lose_condition(game.id)
     end

@@ -1,8 +1,7 @@
 defmodule PandemicVibeServerWeb.GameControllerTest do
   use PandemicVibeServerWeb.ConnCase
 
-  alias PandemicVibeServer.{Accounts, Games, Repo}
-  alias PandemicVibeServer.Accounts.User
+  alias PandemicVibeServer.{Accounts, Games}
 
   setup do
     # Create test users

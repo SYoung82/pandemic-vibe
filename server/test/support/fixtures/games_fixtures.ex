@@ -112,11 +112,13 @@ defmodule PandemicVibeServer.GamesFixtures do
     # Update state with custom attributes if provided
     if map_size(state_attrs) > 0 do
       updated_state_data = Map.merge(state.state_data, state_attrs)
-      {:ok, _} = Games.save_game_state(game.id, %{
-        turn_number: state.turn_number,
-        current_player_id: state.current_player_id,
-        state_data: updated_state_data
-      })
+
+      {:ok, _} =
+        Games.save_game_state(game.id, %{
+          turn_number: state.turn_number,
+          current_player_id: state.current_player_id,
+          state_data: updated_state_data
+        })
     end
 
     Games.get_game_with_players!(game.id)
