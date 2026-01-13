@@ -5,7 +5,45 @@ defmodule PandemicVibeServer.GamesFixtures do
   """
 
   alias PandemicVibeServer.{Repo, Games, Accounts}
+  alias PandemicVibeServer.Games.City
   alias PandemicVibeServer.GameEngine.GameEngine
+
+  @doc """
+  Ensures cities are seeded in the test database.
+  Call this at the beginning of tests that need cities.
+  """
+  def ensure_cities_seeded do
+    cities = [
+      %{name: "Atlanta", color: "blue", population: 500_000},
+      %{name: "Chicago", color: "blue", population: 600_000},
+      %{name: "Montreal", color: "blue", population: 400_000},
+      %{name: "New York", color: "blue", population: 800_000},
+      %{name: "Washington", color: "blue", population: 500_000},
+      %{name: "London", color: "blue", population: 700_000},
+      %{name: "Paris", color: "blue", population: 600_000},
+      %{name: "Essen", color: "blue", population: 500_000},
+      %{name: "Milan", color: "blue", population: 500_000},
+      %{name: "St. Petersburg", color: "blue", population: 500_000},
+      %{name: "Madrid", color: "blue", population: 600_000},
+      %{name: "San Francisco", color: "blue", population: 700_000}
+    ]
+
+    Enum.each(cities, fn city_attrs ->
+      case Repo.get_by(City, name: city_attrs.name) do
+        nil ->
+          Repo.insert!(%City{
+            name: city_attrs.name,
+            color: city_attrs.color,
+            population: city_attrs.population
+          })
+
+        _ ->
+          :ok
+      end
+    end)
+
+    :ok
+  end
 
   @doc """
   Generate a unique user for testing.
@@ -97,6 +135,7 @@ defmodule PandemicVibeServer.GamesFixtures do
   Returns the game with all initial state set up.
   """
   def setup_initialized_game(player_count \\ 2, difficulty \\ "normal") do
+    ensure_cities_seeded()
     game = game_fixture_with_players(player_count, %{difficulty: difficulty})
     {:ok, _initialized_game} = GameEngine.initialize_game(game.id)
     Games.get_game_with_players!(game.id)
