@@ -17,20 +17,13 @@ Multiplayer web-based clone of the Pandemic board game with real-time gameplay.
 
 ## Quickstart (Docker)
 
-Start all services with Docker Compose:
+Start the PostgreSQL database with Docker Compose:
 
 ```bash
-docker-compose up --build
+docker-compose up -d
 ```
 
-- Backend: http://localhost:4000
-- Frontend dev server (separate terminal):
-  ```bash
-  cd frontend
-  npm install
-  npm run dev
-  ```
-- Frontend: http://localhost:5173
+This starts PostgreSQL on port 5433. You still need to run the backend and frontend locally (see Quickstart Local below).
 
 ## Quickstart (Local)
 
@@ -49,6 +42,8 @@ cd server
 mix deps.get
 mix ecto.create
 mix ecto.migrate
+mix run priv/repo/seeds.exs              # Seed cities
+mix run priv/repo/seeds_city_connections.exs  # Seed connections
 mix phx.server
 ```
 
@@ -75,15 +70,31 @@ mix test
 
 **Frontend:**
 
+Frontend tests are not yet implemented. Current checks include:
+
 ```bash
 cd frontend
-npm test
+npm run lint        # ESLint
+npx tsc --noEmit    # Type checking
+npm run build       # Production build
 ```
 
 **Run all CI checks locally:**
 
+The pre-push git hook automatically runs all CI checks. You can also run them manually:
+
 ```bash
-./infra/scripts/test-ci-local.sh
+# Backend checks
+cd server
+mix format --check-formatted
+mix compile --warnings-as-errors
+mix test
+
+# Frontend checks
+cd frontend
+npm run lint
+npx tsc --noEmit
+npm run build
 ```
 
 ## CI/CD Pipeline
@@ -129,7 +140,7 @@ All pull requests must pass:
 **Frontend:**
 - React 19 with TypeScript
 - Vite 7 for build tooling
-- Tailwind CSS v4 for styling
+- Tailwind CSS v3 for styling
 - Phoenix Socket client for real-time updates
 
 ## Deployment
@@ -192,7 +203,7 @@ git push --no-verify
 
 ## Contributing
 
-1. Create a feature branch from `develop`
+1. Create a feature branch from `main`
 2. Install git hooks: `./scripts/install-hooks.sh`
 3. Make your changes with tests
 4. Ensure all CI checks pass locally (hooks will verify)
