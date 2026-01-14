@@ -122,13 +122,20 @@ export default function GameBoard() {
   const handleSendAction = async () => {
     if (!selectedAction) return;
 
+    console.log('Sending action:', selectedAction, 'with params:', actionParams);
+
     try {
-      await sendAction(selectedAction, actionParams);
+      const result = await sendAction(selectedAction, actionParams);
+      console.log('Action result:', result);
       setSelectedAction('');
       setActionParams({});
       setValidMoves([]);
     } catch (err) {
       console.error('Action failed:', err);
+      const errorMessage = err && typeof err === 'object' && 'reason' in err
+        ? String((err as { reason?: string }).reason)
+        : 'Action failed';
+      alert(errorMessage);
     }
   };
 
