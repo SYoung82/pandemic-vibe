@@ -14,6 +14,7 @@ defmodule PandemicVibeServerWeb.GameController do
 
     with {:ok, game} <-
            Games.create_game(%{
+             name: game_params["name"],
              difficulty: game_params["difficulty"] || "normal",
              created_by_id: user.id,
              status: "lobby"

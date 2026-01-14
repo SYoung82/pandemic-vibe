@@ -348,7 +348,7 @@ defmodule PandemicVibeServer.GameEngine.GameEngineTest do
       game_struct = Games.get_game!(game.id)
       {:ok, _updated_game} = Games.update_game(game_struct, %{outbreak_count: 8})
 
-      assert {:ok, :lose} = GameEngine.check_lose_condition(game.id)
+      assert {:ok, {:lose, _reason}} = GameEngine.check_lose_condition(game.id)
 
       # Game status should be updated to "lost"
       final_game = Games.get_game!(game.id)
@@ -367,7 +367,7 @@ defmodule PandemicVibeServer.GameEngine.GameEngineTest do
           }
         })
 
-      assert {:ok, :lose} = GameEngine.check_lose_condition(game.id)
+      assert {:ok, {:lose, _reason}} = GameEngine.check_lose_condition(game.id)
     end
 
     test "returns :continue when outbreak count below 8" do
