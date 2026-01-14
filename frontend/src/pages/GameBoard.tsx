@@ -44,6 +44,7 @@ export default function GameBoard() {
   const {
     gameState,
     messages,
+    lobbyGame,
     isConnected,
     error,
     sendAction,
@@ -67,6 +68,25 @@ export default function GameBoard() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadGameInfo();
   }, [loadGameInfo]);
+
+  // Update gameInfo when lobby updates are received via channel
+  useEffect(() => {
+    if (lobbyGame) {
+      setGameInfo((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          status: lobbyGame.status,
+          players: lobbyGame.players.map((p) => ({
+            id: p.id,
+            user_id: p.user_id,
+            role: p.role || undefined,
+            turn_order: p.turn_order || 0,
+          })),
+        };
+      });
+    }
+  }, [lobbyGame]);
 
   const handleStartGame = async () => {
     try {

@@ -38,6 +38,13 @@ defmodule PandemicVibeServerWeb.GameController do
          {:ok, _player} <- Games.add_player_to_game(game_id, user.id) do
       game = Games.get_game_with_players!(game_id)
 
+      # Broadcast player join to all players in the lobby
+      PandemicVibeServerWeb.Endpoint.broadcast(
+        "game:#{game_id}",
+        "lobby_updated",
+        %{game: format_game_for_broadcast(game)}
+      )
+
       conn
       |> put_status(:ok)
       |> render(:show, game: game)
@@ -70,6 +77,13 @@ defmodule PandemicVibeServerWeb.GameController do
     with :ok <- validate_is_creator(game, user.id),
          :ok <- validate_can_start(game),
          {:ok, initialized_game} <- GameEngine.initialize_game(game.id) do
+      # Broadcast game start to all players in the lobby
+      PandemicVibeServerWeb.Endpoint.broadcast(
+        "game:#{game_id}",
+        "game_started",
+        %{game: format_game_for_broadcast(initialized_game)}
+      )
+
       conn
       |> put_status(:ok)
       |> render(:show, game: initialized_game)
@@ -129,5 +143,23 @@ defmodule PandemicVibeServerWeb.GameController do
       true ->
         :ok
     end
+  end
+
+  defp format_game_for_broadcast(game) do
+    %{
+      id: game.id,
+      status: game.status,
+      difficulty: game.difficulty,
+      created_by_id: game.created_by_id,
+      players:
+        Enum.map(game.players, fn player ->
+          %{
+            id: player.id,
+            user_id: player.user_id,
+            role: player.role,
+            turn_order: player.turn_order
+          }
+        end)
+    }
   end
 end
