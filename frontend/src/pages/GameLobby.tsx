@@ -11,6 +11,7 @@ interface Player {
 
 interface Game {
   id: number;
+  name?: string;
   status: string;
   difficulty: string;
   created_by_id: number;
@@ -63,7 +64,13 @@ export default function GameLobby() {
     }
   };
 
-  const handleJoinGame = async (gameId: number) => {
+  const handleJoinGame = async (gameId: number, isPlayerInGame: boolean) => {
+    // If player is already in the game, just navigate directly
+    if (isPlayerInGame) {
+      navigate(`/game/${gameId}`);
+      return;
+    }
+
     setIsLoading(true);
     setError('');
 
@@ -140,14 +147,16 @@ export default function GameLobby() {
 
             return (
               <div key={game.id} className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Game #{game.id}</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                  {game.name || `Game #${game.id}`}
+                </h3>
                 <div className="space-y-2 text-sm text-gray-600 mb-4">
                   <p>Players: {game.players?.length || 0}/4</p>
                   <p>Difficulty: <span className="capitalize">{game.difficulty}</span></p>
                   <p>Status: <span className="capitalize">{game.status}</span></p>
                 </div>
                 <button
-                  onClick={() => handleJoinGame(game.id)}
+                  onClick={() => handleJoinGame(game.id, isPlayerInGame)}
                   disabled={isLoading || (isFull && !isPlayerInGame) || (isStarted && !isPlayerInGame)}
                   className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                 >
