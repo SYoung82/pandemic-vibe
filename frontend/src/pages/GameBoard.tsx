@@ -145,86 +145,216 @@ export default function GameBoard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {gameInfo.status === 'lobby' ? (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Waiting for Players</h2>
-            <div className="space-y-2 mb-6">
-              {gameInfo.players.map((player: Player) => (
-                <div key={player.id} className="flex items-center gap-2 text-gray-700">
-                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                  {String(player.username || player.user_id)}
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">Game Lobby</h2>
+                <p className="text-gray-600">Waiting for players to join...</p>
+              </div>
+
+              {/* Game Settings */}
+              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Game Settings</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-600">Difficulty:</span>
+                    <span className="ml-2 font-medium text-gray-800 capitalize">{gameInfo.difficulty}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Players:</span>
+                    <span className="ml-2 font-medium text-gray-800">{gameInfo.players.length}/4</span>
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              {/* Player List */}
+              <div className="mb-8">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Players ({gameInfo.players.length})</h3>
+                <div className="space-y-2">
+                  {gameInfo.players.map((player: Player, index: number) => (
+                    <div
+                      key={player.id}
+                      className="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                          {String(player.username || player.user_id).charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <div className="font-medium text-gray-800">
+                            {String(player.username || player.user_id)}
+                          </div>
+                          {index === 0 && (
+                            <span className="text-xs text-blue-600 font-medium">Host</span>
+                          )}
+                        </div>
+                      </div>
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    </div>
+                  ))}
+
+                  {/* Empty slots */}
+                  {Array.from({ length: 4 - gameInfo.players.length }).map((_, i) => (
+                    <div
+                      key={`empty-${i}`}
+                      className="flex items-center gap-3 bg-gray-50 border border-gray-200 border-dashed rounded-lg p-3"
+                    >
+                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
+                        ?
+                      </div>
+                      <span className="text-gray-500 italic">Waiting for player...</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Start Game Button */}
+              {String(gameInfo.created_by_id) === String(user?.id) ? (
+                <div className="space-y-3">
+                  {gameInfo.players.length < 2 ? (
+                    <div className="text-center py-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <p className="text-sm text-yellow-800">
+                        Need at least 2 players to start the game
+                      </p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleStartGame}
+                      className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md"
+                    >
+                      Start Game ({gameInfo.players.length} players ready)
+                    </button>
+                  )}
+                  <p className="text-xs text-center text-gray-500">
+                    You are the host. Click Start Game when everyone is ready.
+                  </p>
+                </div>
+              ) : (
+                <div className="text-center py-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    Waiting for host to start the game...
+                  </p>
+                </div>
+              )}
             </div>
-            <p className="text-gray-600 mb-4">
-              Players: {gameInfo.players.length}/{gameInfo.max_players}
-            </p>
-            {gameInfo.creator_id === user?.id && gameInfo.players.length >= 2 && (
-              <button
-                onClick={handleStartGame}
-                className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
-              >
-                Start Game
-              </button>
-            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Game Board */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-2xl font-bold text-gray-800">Game Board</h2>
-                  <div className="text-sm text-gray-600">
-                    Turn: {gameState?.turn_number || 0}
+              {/* Current Turn Indicator */}
+              {currentPlayer && (
+                <div className={`rounded-lg shadow-lg p-6 ${isCurrentPlayer ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gradient-to-r from-blue-500 to-blue-600'}`}>
+                  <div className="text-white">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-2xl font-bold mb-1">
+                          {isCurrentPlayer ? '🎮 Your Turn!' : `${currentPlayer.role}'s Turn`}
+                        </h3>
+                        <p className="text-blue-100">
+                          Turn #{gameState?.turn_number || 0} • {currentPlayer.actions_remaining} actions remaining
+                        </p>
+                      </div>
+                      {currentPlayer.role && (
+                        <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                          <span className="text-white font-semibold capitalize">{currentPlayer.role}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
+              )}
 
-                {currentPlayer && (
-                  <div className="bg-blue-50 border border-blue-200 px-4 py-3 rounded mb-4">
-                    <p className="text-blue-800">
-                      Current Player: <strong>Player {currentPlayer.turn_order + 1}</strong> ({currentPlayer.role})
-                      {isCurrentPlayer && ' - Your turn!'}
-                    </p>
+              {/* Game Status Cards */}
+              {gameState && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {/* Outbreak Counter */}
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <div className="text-sm text-gray-600 mb-1">Outbreaks</div>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-bold text-red-600">{gameState.game.outbreak_count}</span>
+                      <span className="text-gray-500">/ 8</span>
+                    </div>
+                    <div className="mt-2 bg-red-100 rounded-full h-2 overflow-hidden">
+                      <div
+                        className="bg-red-500 h-full transition-all"
+                        style={{ width: `${(gameState.game.outbreak_count / 8) * 100}%` }}
+                      />
+                    </div>
                   </div>
-                )}
 
-                {gameState && (
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="font-semibold text-gray-700 mb-2">Outbreak Counter</h3>
-                      <div className="bg-red-100 rounded p-2 text-red-800">
-                        {gameState.state.outbreak_count} / 8
-                      </div>
+                  {/* Infection Rate */}
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <div className="text-sm text-gray-600 mb-1">Infection Rate</div>
+                    <div className="text-3xl font-bold text-orange-600">{gameState.game.infection_rate_index + 2}</div>
+                    <div className="text-xs text-gray-500 mt-1">cards per turn</div>
+                  </div>
+
+                  {/* Disease Cubes */}
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <div className="text-sm text-gray-600 mb-1">Disease Cubes</div>
+                    <div className="space-y-1">
+                      {Object.entries(gameState.state.disease_cubes || {}).slice(0, 2).map(([color, count]) => (
+                        <div key={color} className="flex justify-between text-xs">
+                          <span className="capitalize">{color}:</span>
+                          <span className="font-semibold">{String(count)}</span>
+                        </div>
+                      ))}
                     </div>
+                  </div>
 
-                    <div>
-                      <h3 className="font-semibold text-gray-700 mb-2">Infection Rate</h3>
-                      <div className="bg-orange-100 rounded p-2 text-orange-800">
-                        {gameState.state.infection_rate}
-                      </div>
+                  {/* Research Stations */}
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <div className="text-sm text-gray-600 mb-1">Research Stations</div>
+                    <div className="text-3xl font-bold text-purple-600">
+                      {gameState.state.research_stations?.length || 0}
                     </div>
+                    <div className="text-xs text-gray-500 mt-1">built</div>
+                  </div>
+                </div>
+              )}
 
-                    <div>
-                      <h3 className="font-semibold text-gray-700 mb-2">Cures Discovered</h3>
-                      <div className="grid grid-cols-2 gap-2">
-                        {Object.entries(gameState.state.cure_markers || {}).map(([color, status]) => (
-                          <div
-                            key={color}
-                            className={`rounded p-2 text-center ${
-                              status === 'cured' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-                            }`}
-                          >
-                            {color}: {status === 'cured' ? '✓' : '✗'}
+              {/* Cure Status */}
+              {gameState && (
+                <div className="bg-white rounded-lg shadow p-6">
+                  <h3 className="text-lg font-bold text-gray-800 mb-4">Cure Progress</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {Object.entries(gameState.state.cure_markers || {}).map(([color, status]) => {
+                      const colorClasses = {
+                        blue: 'from-blue-500 to-blue-600',
+                        yellow: 'from-yellow-400 to-yellow-500',
+                        black: 'from-gray-700 to-gray-800',
+                        red: 'from-red-500 to-red-600'
+                      };
+                      const isDiscovered = status === 'discovered' || status === 'eradicated';
+
+                      return (
+                        <div
+                          key={color}
+                          className={`rounded-lg p-4 text-center ${
+                            isDiscovered
+                              ? `bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses] || 'from-gray-500 to-gray-600'} text-white`
+                              : 'bg-gray-100 border-2 border-dashed border-gray-300'
+                          }`}
+                        >
+                          <div className="text-sm font-semibold capitalize mb-2">{color}</div>
+                          <div className="text-2xl">
+                            {isDiscovered ? '✓' : '○'}
                           </div>
-                        ))}
-                      </div>
-                    </div>
+                          <div className="text-xs mt-1 capitalize">
+                            {String(status)}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                )}
+                </div>
+              )}
 
-                {isCurrentPlayer && (
-                  <div className="mt-6 border-t pt-4">
-                    <h3 className="font-semibold text-gray-700 mb-3">Your Actions</h3>
+              {/* Player Actions */}
+              {isCurrentPlayer && (
+                <div className="bg-white rounded-lg shadow p-6">
+                  <h3 className="text-lg font-bold text-gray-800 mb-4">Your Actions</h3>
                     <div className="grid grid-cols-2 gap-2 mb-4">
                       <button
                         onClick={() => setSelectedAction('move')}
@@ -270,34 +400,58 @@ export default function GameBoard() {
                       </div>
                     )}
 
-                    <button
-                      onClick={handleEndTurn}
-                      className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
-                    >
-                      End Turn
-                    </button>
-                  </div>
-                )}
-              </div>
+                  <button
+                    onClick={handleEndTurn}
+                    className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-semibold"
+                  >
+                    End Turn
+                  </button>
+                </div>
+              )}
 
               {/* Players */}
               <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Players</h3>
+                <h3 className="text-lg font-bold text-gray-800 mb-4">Players</h3>
                 <div className="space-y-3">
-                  {gameState?.players.map((player) => (
-                    <div key={player.id} className="border rounded p-3">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h4 className="font-semibold text-gray-800">Player {player.turn_order + 1}</h4>
-                          <p className="text-sm text-gray-600">{player.role}</p>
+                  {gameState?.players.map((player) => {
+                    const isActive = player.id === gameState.current_player_id;
+                    return (
+                      <div
+                        key={player.id}
+                        className={`rounded-lg p-4 border-2 ${
+                          isActive
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-gray-200 bg-white'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${
+                              isActive ? 'bg-green-500' : 'bg-blue-500'
+                            }`}>
+                              {player.turn_order + 1}
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-800 capitalize">{player.role || 'Player'}</h4>
+                              <p className="text-xs text-gray-500">
+                                {player.current_city_id || 'Unknown location'}
+                              </p>
+                            </div>
+                          </div>
+                          {isActive && (
+                            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                              Active
+                            </span>
+                          )}
                         </div>
-                        <span className="text-sm text-gray-500">@ {player.current_city_id || 'N/A'}</span>
+                        <div className="flex gap-4 text-sm text-gray-600 mt-2">
+                          <div>
+                            <span className="font-medium">Actions:</span> {player.actions_remaining}/4
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-600">
-                        Actions: {player.actions_remaining}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
