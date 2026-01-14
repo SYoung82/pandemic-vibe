@@ -64,11 +64,17 @@ jobs:
         working-directory: ./server
         run: mix deps.compile
 
+      - name: Setup database
+        working-directory: ./server
+        run: mix ecto.create
+        env:
+          PGPORT: 5432
+
       - name: Run tests
         working-directory: ./server
         run: mix test
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/pandemic_vibe_test
+          PGPORT: 5432
 
   lint:
     name: Code Quality

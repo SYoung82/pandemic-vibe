@@ -2,11 +2,22 @@
 
 # Pre-push hook to run CI checks locally
 # This prevents pushing if CI checks would fail
+#
+# Note: Backend tests require docker-compose postgres to be running
+# Run: docker-compose up -d db
 
 set -e
 
 echo "🔍 Running pre-push CI checks..."
 echo ""
+
+# Check if docker-compose postgres is running
+if ! docker ps --filter "name=pandemic-vibe-db" --format "{{.Names}}" | grep -q "pandemic-vibe-db"; then
+  echo "⚠️  Warning: Docker postgres container not running"
+  echo "   Backend tests will fail without the database"
+  echo "   Run: docker-compose up -d db"
+  echo ""
+fi
 
 # Track if any checks fail
 FAILED=0
@@ -37,9 +48,9 @@ else
   echo "✅ Elixir compilation passed"
 fi
 
-# Run tests
+# Run tests (use docker-compose postgres on port 5433)
 echo "🧪 Running Elixir tests..."
-if ! mix test; then
+if ! PGPORT=5433 mix test; then
   echo "❌ Elixir tests failed!"
   FAILED=1
 else
