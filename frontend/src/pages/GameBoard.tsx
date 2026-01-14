@@ -69,24 +69,19 @@ export default function GameBoard() {
     loadGameInfo();
   }, [loadGameInfo]);
 
-  // Update gameInfo when lobby updates are received via channel
-  useEffect(() => {
-    if (lobbyGame) {
-      setGameInfo((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          status: lobbyGame.status,
-          players: lobbyGame.players.map((p) => ({
-            id: p.id,
-            user_id: p.user_id,
-            role: p.role || undefined,
-            turn_order: p.turn_order || 0,
-          })),
-        };
-      });
-    }
-  }, [lobbyGame]);
+  // Merge gameInfo with lobbyGame updates (prefer lobbyGame for status and players if available)
+  const currentGameInfo = lobbyGame && gameInfo
+    ? {
+        ...gameInfo,
+        status: lobbyGame.status,
+        players: lobbyGame.players.map((p) => ({
+          id: p.id,
+          user_id: p.user_id,
+          role: p.role || undefined,
+          turn_order: p.turn_order || 0,
+        })),
+      }
+    : gameInfo;
 
   const handleStartGame = async () => {
     try {
@@ -155,7 +150,7 @@ export default function GameBoard() {
   console.log('Debug - currentPlayer:', currentPlayer);
   console.log('Debug - isCurrentPlayer:', isCurrentPlayer);
 
-  if (!gameInfo) {
+  if (!currentGameInfo) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-xl text-gray-600">Loading game...</div>
@@ -168,7 +163,7 @@ export default function GameBoard() {
       <nav className="bg-white shadow-sm">
         <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex justify-between h-14 sm:h-16 items-center">
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">{gameInfo.name}</h1>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">{currentGameInfo.name}</h1>
             <div className="flex items-center gap-2 sm:gap-4">
               <span className={`text-xs sm:text-sm ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
                 {isConnected ? '● Connected' : '○ Disconnected'}
@@ -193,7 +188,7 @@ export default function GameBoard() {
       )}
 
       <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
-        {gameInfo.status === 'lobby' ? (
+        {currentGameInfo.status === 'lobby' ? (
           <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="text-center mb-8">
@@ -207,20 +202,20 @@ export default function GameBoard() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-600">Difficulty:</span>
-                    <span className="ml-2 font-medium text-gray-800 capitalize">{gameInfo.difficulty}</span>
+                    <span className="ml-2 font-medium text-gray-800 capitalize">{currentGameInfo.difficulty}</span>
                   </div>
                   <div>
                     <span className="text-gray-600">Players:</span>
-                    <span className="ml-2 font-medium text-gray-800">{gameInfo.players.length}/4</span>
+                    <span className="ml-2 font-medium text-gray-800">{currentGameInfo.players.length}/4</span>
                   </div>
                 </div>
               </div>
 
               {/* Player List */}
               <div className="mb-8">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Players ({gameInfo.players.length})</h3>
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Players ({currentGameInfo.players.length})</h3>
                 <div className="space-y-2">
-                  {gameInfo.players.map((player: Player, index: number) => (
+                  {currentGameInfo.players.map((player: Player, index: number) => (
                     <div
                       key={player.id}
                       className="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-3"
@@ -243,7 +238,7 @@ export default function GameBoard() {
                   ))}
 
                   {/* Empty slots */}
-                  {Array.from({ length: 4 - gameInfo.players.length }).map((_, i) => (
+                  {Array.from({ length: 4 - currentGameInfo.players.length }).map((_, i) => (
                     <div
                       key={`empty-${i}`}
                       className="flex items-center gap-3 bg-gray-50 border border-gray-200 border-dashed rounded-lg p-3"
@@ -258,9 +253,9 @@ export default function GameBoard() {
               </div>
 
               {/* Start Game Button */}
-              {String(gameInfo.created_by_id) === String(user?.id) ? (
+              {String(currentGameInfo.created_by_id) === String(user?.id) ? (
                 <div className="space-y-3">
-                  {gameInfo.players.length < 2 ? (
+                  {currentGameInfo.players.length < 2 ? (
                     <div className="text-center py-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <p className="text-sm text-yellow-800">
                         Need at least 2 players to start the game
@@ -271,7 +266,7 @@ export default function GameBoard() {
                       onClick={handleStartGame}
                       className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md"
                     >
-                      Start Game ({gameInfo.players.length} players ready)
+                      Start Game ({currentGameInfo.players.length} players ready)
                     </button>
                   )}
                   <p className="text-xs text-center text-gray-500">
