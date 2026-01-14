@@ -206,17 +206,32 @@ defmodule PandemicVibeServer.GameEngine.ActionHandler do
   end
 
   defp validate_cure_cards(player_id, card_ids, color, needed_count) do
+    require Logger
     cards = Games.list_player_cards(player_id)
     selected_cards = Enum.filter(cards, &(&1.id in card_ids))
 
+    Logger.info(
+      "Validating cure cards - needed: #{needed_count}, provided IDs: #{length(card_ids)}, found: #{length(selected_cards)}"
+    )
+
+    Logger.info("Player has #{length(cards)} total cards")
+    Logger.info("Selected card IDs: #{inspect(card_ids)}")
+    Logger.info("Found cards: #{inspect(Enum.map(selected_cards, & &1.id))}")
+
     cond do
       length(selected_cards) != needed_count ->
+        Logger.error(
+          "Card count mismatch - needed: #{needed_count}, got: #{length(selected_cards)}"
+        )
+
         {:error, :incorrect_card_count}
 
       Enum.all?(selected_cards, fn card -> card.city.color == color end) ->
+        Logger.info("All cards match color #{color}")
         :ok
 
       true ->
+        Logger.error("Cards have wrong colors")
         {:error, :cards_wrong_color}
     end
   end
