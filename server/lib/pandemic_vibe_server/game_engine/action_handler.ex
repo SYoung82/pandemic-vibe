@@ -125,9 +125,25 @@ defmodule PandemicVibeServer.GameEngine.ActionHandler do
   defp validate_has_actions(%Player{actions_remaining: actions}) when actions > 0, do: :ok
   defp validate_has_actions(_), do: {:error, :no_actions_remaining}
 
-  defp validate_adjacent_or_direct_flight(_player, _destination) do
-    # TODO: Implement proper adjacency checking and flight card validation
-    :ok
+  defp validate_adjacent_or_direct_flight(player, destination) do
+    current_city = player.current_city
+
+    if !current_city do
+      {:error, :no_current_city}
+    else
+      # Check if destination is adjacent to current city
+      connected_cities = Games.get_connected_cities(current_city.id)
+      is_adjacent = Enum.any?(connected_cities, &(&1.id == destination.id))
+
+      if is_adjacent do
+        :ok
+      else
+        # TODO: Check for direct flight (player has destination city card)
+        # TODO: Check for charter flight (player has current city card)
+        # TODO: Check for shuttle flight (both cities have research stations)
+        {:error, :not_adjacent}
+      end
+    end
   end
 
   defp validate_disease_present(game_state, city_name, color) do

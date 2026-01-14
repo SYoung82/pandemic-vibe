@@ -12,6 +12,11 @@ defmodule PandemicVibeServer.Games.City do
     field :longitude, :float
 
     has_many :cards, PandemicVibeServer.Games.Card
+    has_many :city_connections, PandemicVibeServer.Games.CityConnection, foreign_key: :city_id
+
+    many_to_many :connected_cities, PandemicVibeServer.Games.City,
+      join_through: PandemicVibeServer.Games.CityConnection,
+      join_keys: [city_id: :id, connected_city_id: :id]
 
     timestamps(type: :utc_datetime)
   end

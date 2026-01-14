@@ -37,6 +37,7 @@ export default function GameBoard() {
   const [chatInput, setChatInput] = useState('');
   const [selectedAction, setSelectedAction] = useState<string>('');
   const [actionParams, setActionParams] = useState<ActionParams>({});
+  const [validMoves, setValidMoves] = useState<Array<{ name: string; color: string }>>([]);
 
   const token = localStorage.getItem('token');
 
@@ -47,7 +48,8 @@ export default function GameBoard() {
     error,
     sendAction,
     endTurn,
-    sendMessage
+    sendMessage,
+    getValidMoves
   } = useGameChannel(gameId!, token);
 
   const loadGameInfo = useCallback(async () => {
@@ -78,6 +80,22 @@ export default function GameBoard() {
     }
   };
 
+  const handleSelectAction = async (action: string) => {
+    setSelectedAction(action);
+    setActionParams({});
+
+    // Load valid moves when move action is selected
+    if (action === 'move') {
+      try {
+        const response = await getValidMoves();
+        setValidMoves(response.cities);
+      } catch (err) {
+        console.error('Failed to load valid moves:', err);
+        setValidMoves([]);
+      }
+    }
+  };
+
   const handleSendAction = async () => {
     if (!selectedAction) return;
 
@@ -85,6 +103,7 @@ export default function GameBoard() {
       await sendAction(selectedAction, actionParams);
       setSelectedAction('');
       setActionParams({});
+      setValidMoves([]);
     } catch (err) {
       console.error('Action failed:', err);
     }
@@ -418,25 +437,25 @@ export default function GameBoard() {
                   <h3 className="text-lg font-bold text-gray-800 mb-4">Your Actions</h3>
                     <div className="grid grid-cols-2 gap-2 mb-4">
                       <button
-                        onClick={() => setSelectedAction('move')}
+                        onClick={() => handleSelectAction('move')}
                         className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
                       >
                         Move
                       </button>
                       <button
-                        onClick={() => setSelectedAction('treat')}
+                        onClick={() => handleSelectAction('treat')}
                         className="bg-green-600 text-white py-2 rounded hover:bg-green-700"
                       >
                         Treat Disease
                       </button>
                       <button
-                        onClick={() => setSelectedAction('build')}
+                        onClick={() => handleSelectAction('build')}
                         className="bg-purple-600 text-white py-2 rounded hover:bg-purple-700"
                       >
                         Build Station
                       </button>
                       <button
-                        onClick={() => setSelectedAction('cure')}
+                        onClick={() => handleSelectAction('cure')}
                         className="bg-yellow-600 text-white py-2 rounded hover:bg-yellow-700"
                       >
                         Discover Cure
@@ -445,13 +464,32 @@ export default function GameBoard() {
 
                     {selectedAction && (
                       <div className="bg-gray-50 border border-gray-200 rounded p-4 mb-4">
-                        <h4 className="font-semibold mb-2">Action: {selectedAction}</h4>
-                        <input
-                          type="text"
-                          placeholder="Enter parameters (e.g., city name)"
-                          className="w-full px-3 py-2 border rounded mb-2"
-                          onChange={(e) => setActionParams({ target: e.target.value })}
-                        />
+                        <h4 className="font-semibold mb-2 capitalize">Action: {selectedAction}</h4>
+
+                        {selectedAction === 'move' && validMoves.length > 0 ? (
+                          <select
+                            className="w-full px-3 py-2 border rounded mb-2"
+                            onChange={(e) => setActionParams({ target: e.target.value })}
+                            defaultValue=""
+                          >
+                            <option value="" disabled>Select destination city</option>
+                            {validMoves.map((city) => (
+                              <option key={city.name} value={city.name}>
+                                {city.name}
+                              </option>
+                            ))}
+                          </select>
+                        ) : selectedAction === 'move' ? (
+                          <div className="text-sm text-gray-600 mb-2">Loading available destinations...</div>
+                        ) : (
+                          <input
+                            type="text"
+                            placeholder="Enter parameters (e.g., city name)"
+                            className="w-full px-3 py-2 border rounded mb-2"
+                            onChange={(e) => setActionParams({ target: e.target.value })}
+                          />
+                        )}
+
                         <button
                           onClick={handleSendAction}
                           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"

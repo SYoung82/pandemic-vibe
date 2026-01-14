@@ -139,6 +139,20 @@ defmodule PandemicVibeServer.Games do
     |> Repo.insert()
   end
 
+  @doc """
+  Gets all cities connected to a given city (adjacent cities).
+  """
+  def get_connected_cities(city_id) do
+    alias PandemicVibeServer.Games.CityConnection
+
+    from(c in City,
+      join: cc in CityConnection,
+      on: cc.connected_city_id == c.id,
+      where: cc.city_id == ^city_id
+    )
+    |> Repo.all()
+  end
+
   ## Game States
 
   @doc """
