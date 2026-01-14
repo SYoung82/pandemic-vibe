@@ -181,6 +181,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
   defp perform_action("move", %{"target" => city_name}, player_id, _game_id) do
     case ActionHandler.move_player(player_id, city_name) do
       {:ok, _player} -> {:ok, %{message: "Moved to #{city_name}"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
@@ -189,6 +190,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
   defp perform_action("move", %{"city" => city_name}, player_id, _game_id) do
     case ActionHandler.move_player(player_id, city_name) do
       {:ok, _player} -> {:ok, %{message: "Moved to #{city_name}"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
@@ -196,6 +198,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
   defp perform_action("treat_disease", %{"color" => color}, player_id, _game_id) do
     case ActionHandler.treat_disease(player_id, color) do
       {:ok, _} -> {:ok, %{message: "Treated #{color} disease"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
@@ -203,6 +206,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
   defp perform_action("build_station", _params, player_id, _game_id) do
     case ActionHandler.build_research_station(player_id) do
       {:ok, _} -> {:ok, %{message: "Built research station"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
@@ -215,6 +219,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
        ) do
     case ActionHandler.discover_cure(player_id, color, card_ids) do
       {:ok, _} -> {:ok, %{message: "Discovered cure for #{color}"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
@@ -227,6 +232,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
        ) do
     case ActionHandler.share_knowledge(player_id, receiver_id, card_id) do
       {:ok, _} -> {:ok, %{message: "Shared knowledge"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
