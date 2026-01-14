@@ -32,8 +32,18 @@ defmodule PandemicVibeServerWeb.GameChannel do
         Logger.info("Player turn validated successfully")
         result = perform_action(action, params, player.id, game_id)
         Logger.info("Action result: #{inspect(result)}")
-        broadcast_game_state(socket, game_id)
-        {:reply, result, socket}
+
+        # Check win condition after action
+        case GameEngine.check_win_condition(game_id) do
+          {:ok, :win} ->
+            Logger.info("Win condition met after action!")
+            broadcast_game_state(socket, game_id)
+            {:reply, result, socket}
+
+          {:ok, :continue} ->
+            broadcast_game_state(socket, game_id)
+            {:reply, result, socket}
+        end
 
       {:error, reason} ->
         Logger.error("Player turn validation failed: #{inspect(reason)}")
