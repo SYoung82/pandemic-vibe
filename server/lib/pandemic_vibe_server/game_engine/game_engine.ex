@@ -150,9 +150,69 @@ defmodule PandemicVibeServer.GameEngine.GameEngine do
   end
 
   @doc """
-  Advances to the next player's turn.
+  Ends the current turn with full game flow:
+  1. Draw 2 player cards (check for epidemics)
+  2. Draw infection cards (based on infection rate)
+  3. Check win/lose conditions
+  4. Advance to next player
+  """
+  def end_turn(game_id) do
+    current_state = Games.get_latest_game_state(game_id)
+    current_player_id = current_state.current_player_id
+
+    with {:ok, epidemic_occurred} <- draw_player_cards(game_id, current_player_id, 2),
+         :ok <- draw_infection_phase(game_id, epidemic_occurred),
+         {:ok, win_status} <- check_win_condition(game_id),
+         {:ok, lose_status} <- check_lose_condition(game_id),
+         :ok <- check_game_continues(win_status, lose_status),
+         {:ok, _game_state} <- advance_to_next_player(game_id) do
+      {:ok, Games.get_game_with_players!(game_id)}
+    end
+  end
+
+  @doc """
+  Advances to the next player's turn (legacy function, use end_turn/1 instead).
   """
   def next_turn(game_id) do
+    advance_to_next_player(game_id)
+  end
+
+  defp draw_player_cards(game_id, player_id, count) do
+    cards = DeckManager.draw_cards(game_id, "player_deck", count)
+
+    epidemic_occurred =
+      Enum.any?(cards, fn card -> card.card_type == "epidemic" end)
+
+    # Move cards to player's hand and handle epidemics
+    Enum.each(cards, fn card ->
+      if card.card_type == "epidemic" do
+        InfectionEngine.handle_epidemic(game_id)
+        DeckManager.discard_card(card, "player_discard")
+      else
+        card
+        |> Ecto.Changeset.change(location: "player_hand", player_id: player_id)
+        |> PandemicVibeServer.Repo.update!()
+      end
+    end)
+
+    {:ok, epidemic_occurred}
+  end
+
+  defp draw_infection_phase(game_id, _epidemic_occurred) do
+    current_state = Games.get_latest_game_state(game_id)
+    infection_rate = get_in(current_state.state_data, ["infection_rate"]) || 2
+
+    case InfectionEngine.draw_infection_cards(game_id, infection_rate) do
+      {:ok, _count} -> :ok
+      error -> error
+    end
+  end
+
+  defp check_game_continues(:win, _), do: {:ok, :game_won}
+  defp check_game_continues(_, :lose), do: {:ok, :game_lost}
+  defp check_game_continues(:continue, :continue), do: :ok
+
+  defp advance_to_next_player(game_id) do
     current_state = Games.get_latest_game_state(game_id)
     players = Games.list_game_players(game_id)
 
