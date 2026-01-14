@@ -56,6 +56,17 @@ defmodule PandemicVibeServer.Games do
     |> Repo.all()
   end
 
+  @doc """
+  Lists all games (for lobby discovery).
+  """
+  def list_all_games do
+    from(g in Game,
+      order_by: [desc: g.inserted_at]
+    )
+    |> Repo.all()
+    |> Repo.preload([:players, :created_by])
+  end
+
   ## Players
 
   @doc """
@@ -99,6 +110,11 @@ defmodule PandemicVibeServer.Games do
   end
 
   ## Cities
+
+  @doc """
+  Gets a city by ID.
+  """
+  def get_city!(id), do: Repo.get!(City, id)
 
   @doc """
   Gets a city by name.

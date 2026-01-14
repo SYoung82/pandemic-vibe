@@ -53,11 +53,10 @@ defmodule PandemicVibeServerWeb.GameController do
   end
 
   @doc """
-  Lists all games for the current user.
+  Lists all games (for lobby discovery).
   """
   def index(conn, _params) do
-    user = Guardian.Plug.current_resource(conn)
-    games = Games.list_user_games(user.id)
+    games = Games.list_all_games()
     render(conn, :index, games: games)
   end
 

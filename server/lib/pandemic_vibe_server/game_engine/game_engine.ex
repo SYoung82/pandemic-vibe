@@ -114,8 +114,33 @@ defmodule PandemicVibeServer.GameEngine.GameEngine do
 
     {:ok,
      %{
-       game: game,
-       players: game.players,
+       game: %{
+         id: game.id,
+         status: game.status,
+         difficulty: game.difficulty,
+         outbreak_count: get_in(game_state.state_data, [:outbreak_count]) || 0,
+         infection_rate: get_in(game_state.state_data, [:infection_rate]) || 2
+       },
+       players:
+         Enum.map(game.players, fn player ->
+           # Get city name if player has a current_city_id
+           current_city_name =
+             if player.current_city_id do
+               city = Games.get_city!(player.current_city_id)
+               city.name
+             else
+               nil
+             end
+
+           %{
+             id: player.id,
+             user_id: player.user_id,
+             role: player.role,
+             turn_order: player.turn_order,
+             actions_remaining: player.actions_remaining,
+             current_city_id: current_city_name
+           }
+         end),
        state: game_state.state_data,
        current_player_id: game_state.current_player_id,
        turn_number: game_state.turn_number

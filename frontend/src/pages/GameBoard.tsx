@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import { useGameChannel } from '../lib/useGameChannel';
 import { gameAPI } from '../lib/api';
+import WorldMap from '../components/WorldMap';
 
 interface Player {
   id: string;
@@ -103,8 +104,17 @@ export default function GameBoard() {
     setChatInput('');
   };
 
-  const isCurrentPlayer = gameState?.current_player_id === String(user?.id);
+  // Find the current user's player record
+  const myPlayer = gameState?.players.find((p) => String(p.user_id) === String(user?.id));
+  // Find the player whose turn it is
   const currentPlayer = gameState?.players.find((p) => p.id === gameState.current_player_id);
+  // Check if it's the current user's turn
+  const isCurrentPlayer = myPlayer && currentPlayer ? String(currentPlayer.user_id) === String(myPlayer.user_id) : false;
+
+  // Debug logging
+  console.log('Debug - myPlayer:', myPlayer);
+  console.log('Debug - currentPlayer:', currentPlayer);
+  console.log('Debug - isCurrentPlayer:', isCurrentPlayer);
 
   if (!gameInfo) {
     return (
@@ -117,16 +127,16 @@ export default function GameBoard() {
   return (
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <h1 className="text-2xl font-bold text-gray-800">{gameInfo.name}</h1>
-            <div className="flex items-center gap-4">
-              <span className={`text-sm ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
+        <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex justify-between h-14 sm:h-16 items-center">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">{gameInfo.name}</h1>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className={`text-xs sm:text-sm ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
                 {isConnected ? '● Connected' : '○ Disconnected'}
               </span>
               <button
                 onClick={() => navigate('/games')}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                className="px-2 py-1 sm:px-4 sm:py-2 text-sm sm:text-base text-gray-600 hover:text-gray-800"
               >
                 Back to Lobby
               </button>
@@ -136,14 +146,14 @@ export default function GameBoard() {
       </nav>
 
       {error && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6 py-4">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
             {error}
           </div>
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         {gameInfo.status === 'lobby' ? (
           <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-lg shadow-lg p-8">
@@ -239,25 +249,25 @@ export default function GameBoard() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-6">
             {/* Game Board */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="xl:col-span-3 space-y-4">
               {/* Current Turn Indicator */}
               {currentPlayer && (
-                <div className={`rounded-lg shadow-lg p-6 ${isCurrentPlayer ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gradient-to-r from-blue-500 to-blue-600'}`}>
+                <div className={`rounded-lg shadow-lg p-3 sm:p-4 lg:p-6 ${isCurrentPlayer ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gradient-to-r from-blue-500 to-blue-600'}`}>
                   <div className="text-white">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                       <div>
-                        <h3 className="text-2xl font-bold mb-1">
+                        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1">
                           {isCurrentPlayer ? '🎮 Your Turn!' : `${currentPlayer.role}'s Turn`}
                         </h3>
-                        <p className="text-blue-100">
+                        <p className="text-blue-100 text-sm lg:text-base">
                           Turn #{gameState?.turn_number || 0} • {currentPlayer.actions_remaining} actions remaining
                         </p>
                       </div>
                       {currentPlayer.role && (
-                        <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
-                          <span className="text-white font-semibold capitalize">{currentPlayer.role}</span>
+                        <div className="bg-white bg-opacity-20 rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 self-start sm:self-auto">
+                          <span className="text-white text-sm lg:text-base font-semibold capitalize">{currentPlayer.role}</span>
                         </div>
                       )}
                     </div>
@@ -265,17 +275,68 @@ export default function GameBoard() {
                 </div>
               )}
 
+              {/* World Map */}
+              {gameState && (
+                <WorldMap
+                  cities={[
+                    { name: 'Atlanta', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('Atlanta'),
+                      infections: gameState.state.city_infections?.['Atlanta'] },
+                    { name: 'Chicago', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('Chicago'),
+                      infections: gameState.state.city_infections?.['Chicago'] },
+                    { name: 'Montreal', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('Montreal'),
+                      infections: gameState.state.city_infections?.['Montreal'] },
+                    { name: 'New York', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('New York'),
+                      infections: gameState.state.city_infections?.['New York'] },
+                    { name: 'Washington', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('Washington'),
+                      infections: gameState.state.city_infections?.['Washington'] },
+                    { name: 'San Francisco', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('San Francisco'),
+                      infections: gameState.state.city_infections?.['San Francisco'] },
+                    { name: 'London', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('London'),
+                      infections: gameState.state.city_infections?.['London'] },
+                    { name: 'Madrid', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('Madrid'),
+                      infections: gameState.state.city_infections?.['Madrid'] },
+                    { name: 'Paris', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('Paris'),
+                      infections: gameState.state.city_infections?.['Paris'] },
+                    { name: 'Essen', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('Essen'),
+                      infections: gameState.state.city_infections?.['Essen'] },
+                    { name: 'Milan', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('Milan'),
+                      infections: gameState.state.city_infections?.['Milan'] },
+                    { name: 'St. Petersburg', color: 'blue', x: 0, y: 0,
+                      hasResearchStation: gameState.state.research_stations?.includes('St. Petersburg'),
+                      infections: gameState.state.city_infections?.['St. Petersburg'] },
+                  ]}
+                  players={gameState.players}
+                  currentPlayerId={gameState.current_player_id}
+                  onCityClick={(cityName) => {
+                    if (isCurrentPlayer) {
+                      setActionParams({ target: cityName });
+                    }
+                  }}
+                />
+              )}
+
               {/* Game Status Cards */}
               {gameState && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
                   {/* Outbreak Counter */}
-                  <div className="bg-white rounded-lg shadow p-4">
-                    <div className="text-sm text-gray-600 mb-1">Outbreaks</div>
+                  <div className="bg-white rounded-lg shadow p-2 sm:p-3 lg:p-4">
+                    <div className="text-xs sm:text-sm text-gray-600 mb-1">Outbreaks</div>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-bold text-red-600">{gameState.game.outbreak_count}</span>
-                      <span className="text-gray-500">/ 8</span>
+                      <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600">{gameState.game.outbreak_count}</span>
+                      <span className="text-xs sm:text-sm text-gray-500">/ 8</span>
                     </div>
-                    <div className="mt-2 bg-red-100 rounded-full h-2 overflow-hidden">
+                    <div className="mt-1 sm:mt-2 bg-red-100 rounded-full h-1.5 sm:h-2 overflow-hidden">
                       <div
                         className="bg-red-500 h-full transition-all"
                         style={{ width: `${(gameState.game.outbreak_count / 8) * 100}%` }}
@@ -284,15 +345,15 @@ export default function GameBoard() {
                   </div>
 
                   {/* Infection Rate */}
-                  <div className="bg-white rounded-lg shadow p-4">
-                    <div className="text-sm text-gray-600 mb-1">Infection Rate</div>
-                    <div className="text-3xl font-bold text-orange-600">{gameState.game.infection_rate_index + 2}</div>
+                  <div className="bg-white rounded-lg shadow p-2 sm:p-3 lg:p-4">
+                    <div className="text-xs sm:text-sm text-gray-600 mb-1">Infection Rate</div>
+                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600">{gameState.game.infection_rate_index + 2}</div>
                     <div className="text-xs text-gray-500 mt-1">cards per turn</div>
                   </div>
 
                   {/* Disease Cubes */}
-                  <div className="bg-white rounded-lg shadow p-4">
-                    <div className="text-sm text-gray-600 mb-1">Disease Cubes</div>
+                  <div className="bg-white rounded-lg shadow p-2 sm:p-3 lg:p-4">
+                    <div className="text-xs sm:text-sm text-gray-600 mb-1">Disease Cubes</div>
                     <div className="space-y-1">
                       {Object.entries(gameState.state.disease_cubes || {}).slice(0, 2).map(([color, count]) => (
                         <div key={color} className="flex justify-between text-xs">
@@ -457,12 +518,12 @@ export default function GameBoard() {
             </div>
 
             {/* Chat */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow p-6 h-[600px] flex flex-col">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Chat</h3>
-                <div className="flex-1 overflow-y-auto mb-4 space-y-2">
+            <div className="xl:col-span-1">
+              <div className="bg-white rounded-lg shadow p-3 sm:p-4 lg:p-6 h-[400px] sm:h-[500px] lg:h-[600px] flex flex-col">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Chat</h3>
+                <div className="flex-1 overflow-y-auto mb-3 sm:mb-4 space-y-2">
                   {messages.map((msg, idx) => (
-                    <div key={idx} className="text-sm">
+                    <div key={idx} className="text-xs sm:text-sm">
                       <span className="font-semibold text-gray-800">{msg.player_name}:</span>{' '}
                       <span className="text-gray-600">{msg.message}</span>
                     </div>
@@ -475,11 +536,11 @@ export default function GameBoard() {
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     placeholder="Type a message..."
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 px-2 py-1.5 sm:px-3 sm:py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <button
                     onClick={handleSendMessage}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className="bg-blue-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 text-sm rounded hover:bg-blue-700"
                   >
                     Send
                   </button>

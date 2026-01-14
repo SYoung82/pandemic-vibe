@@ -125,6 +125,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
 
     Games.list_game_players(game_id)
     |> Enum.find(&(&1.user_id == user.id))
+    |> PandemicVibeServer.Repo.preload(:user)
   end
 
   defp validate_player_turn(game_id, player_id) do

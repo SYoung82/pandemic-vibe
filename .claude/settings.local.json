@@ -14,7 +14,9 @@
       "Bash(iex -S mix)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(docker compose:*)",
+      "Bash(npm uninstall:*)"
     ]
   }
 }

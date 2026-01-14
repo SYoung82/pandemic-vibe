@@ -63,8 +63,37 @@ export default function GameLobby() {
     }
   };
 
-  const handleJoinGame = (gameId: number) => {
-    navigate(`/game/${gameId}`);
+  const handleJoinGame = async (gameId: number) => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      await gameAPI.joinGame(String(gameId));
+      navigate(`/game/${gameId}`);
+    } catch (err: unknown) {
+      const errorResponse = err instanceof Error && 'response' in err
+        ? (err as { response?: { data?: { error?: string } } }).response?.data?.error
+        : undefined;
+
+      // Map backend error messages to user-friendly messages
+      let errorMessage = 'Failed to join game';
+      if (errorResponse) {
+        if (errorResponse.includes('already_started') || errorResponse.includes('started')) {
+          errorMessage = 'This game has already started';
+        } else if (errorResponse.includes('full')) {
+          errorMessage = 'This game is full (4 players max)';
+        } else if (errorResponse.includes('already_joined')) {
+          errorMessage = 'You have already joined this game';
+        } else {
+          errorMessage = errorResponse;
+        }
+      }
+
+      setError(errorMessage);
+      setIsLoading(false);
+      // Reload games list to get updated state
+      await loadGames();
+    }
   };
 
   return (
@@ -97,24 +126,40 @@ export default function GameLobby() {
           </button>
         </div>
 
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+            {error}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {games.map((game) => (
-            <div key={game.id} className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Game #{game.id}</h3>
-              <div className="space-y-2 text-sm text-gray-600 mb-4">
-                <p>Players: {game.players?.length || 0}/4</p>
-                <p>Difficulty: <span className="capitalize">{game.difficulty}</span></p>
-                <p>Status: <span className="capitalize">{game.status}</span></p>
+          {games.map((game) => {
+            const isPlayerInGame = game.players?.some(p => p.user_id === user?.id);
+            const isFull = (game.players?.length || 0) >= 4;
+            const isStarted = game.status !== 'lobby';
+
+            return (
+              <div key={game.id} className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Game #{game.id}</h3>
+                <div className="space-y-2 text-sm text-gray-600 mb-4">
+                  <p>Players: {game.players?.length || 0}/4</p>
+                  <p>Difficulty: <span className="capitalize">{game.difficulty}</span></p>
+                  <p>Status: <span className="capitalize">{game.status}</span></p>
+                </div>
+                <button
+                  onClick={() => handleJoinGame(game.id)}
+                  disabled={isLoading || (isFull && !isPlayerInGame) || (isStarted && !isPlayerInGame)}
+                  className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isLoading ? 'Joining...' :
+                   isPlayerInGame ? 'View Game' :
+                   isStarted ? 'In Progress' :
+                   isFull ? 'Full' :
+                   'Join Game'}
+                </button>
               </div>
-              <button
-                onClick={() => handleJoinGame(game.id)}
-                disabled={(game.players?.length || 0) >= 4}
-                className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-              >
-                {game.status === 'lobby' ? 'Join Game' : 'View Game'}
-              </button>
-            </div>
-          ))}
+            );
+          })}
 
           {games.length === 0 && (
             <div className="col-span-full text-center py-12 text-gray-500">
