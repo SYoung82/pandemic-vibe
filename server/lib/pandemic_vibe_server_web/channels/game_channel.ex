@@ -65,6 +65,18 @@ defmodule PandemicVibeServerWeb.GameChannel do
     end
   end
 
+  def handle_in("get_valid_moves", _payload, socket) do
+    player = get_current_player(socket) |> PandemicVibeServer.Repo.preload(:current_city)
+
+    case get_valid_move_destinations(player) do
+      {:ok, cities} ->
+        {:reply, {:ok, %{cities: cities}}, socket}
+
+      error ->
+        {:reply, error, socket}
+    end
+  end
+
   def handle_in("chat_message", %{"message" => message}, socket) do
     player = get_current_player(socket)
 
@@ -138,6 +150,14 @@ defmodule PandemicVibeServerWeb.GameChannel do
     end
   end
 
+  defp perform_action("move", %{"target" => city_name}, player_id, _game_id) do
+    case ActionHandler.move_player(player_id, city_name) do
+      {:ok, _player} -> {:ok, %{message: "Moved to #{city_name}"}}
+      error -> error
+    end
+  end
+
+  # Fallback for old city parameter format
   defp perform_action("move", %{"city" => city_name}, player_id, _game_id) do
     case ActionHandler.move_player(player_id, city_name) do
       {:ok, _player} -> {:ok, %{message: "Moved to #{city_name}"}}
@@ -212,5 +232,22 @@ defmodule PandemicVibeServerWeb.GameChannel do
           }
         end)
     }
+  end
+
+  defp get_valid_move_destinations(player) do
+    if !player.current_city do
+      {:error, %{reason: "Player has no current city"}}
+    else
+      # Get adjacent cities
+      connected_cities = Games.get_connected_cities(player.current_city.id)
+
+      # Format city data for frontend
+      cities =
+        Enum.map(connected_cities, fn city ->
+          %{name: city.name, color: city.color}
+        end)
+
+      {:ok, cities}
+    end
   end
 end

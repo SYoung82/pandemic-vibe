@@ -70,6 +70,7 @@ jobs:
           mix ecto.create
           mix ecto.migrate
           mix run priv/repo/seeds.exs
+          mix run priv/repo/seeds_city_connections.exs
         env:
           PGPORT: 5432
 

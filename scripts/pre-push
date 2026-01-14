@@ -56,6 +56,9 @@ if ! PGPORT=5433 mix ecto.migrate --quiet; then
 elif ! PGPORT=5433 mix run priv/repo/seeds.exs; then
   echo "❌ Database seeding failed!"
   FAILED=1
+elif ! PGPORT=5433 mix run priv/repo/seeds_city_connections.exs; then
+  echo "❌ City connections seeding failed!"
+  FAILED=1
 else
   echo "✅ Database setup passed"
 fi

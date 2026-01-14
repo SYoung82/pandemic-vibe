@@ -185,6 +185,20 @@ export function useGameChannel(gameId: string | null, token: string | null) {
     });
   }, []);
 
+  const getValidMoves = useCallback(() => {
+    return new Promise<{ cities: Array<{ name: string; color: string }> }>((resolve, reject) => {
+      if (!channelRef.current) {
+        reject(new Error('Channel not connected'));
+        return;
+      }
+
+      channelRef.current
+        .push('get_valid_moves', {})
+        .receive('ok', (response: unknown) => resolve(response as { cities: Array<{ name: string; color: string }> }))
+        .receive('error', (err: unknown) => reject(err as ChannelError));
+    });
+  }, []);
+
   return {
     gameState,
     messages,
@@ -194,5 +208,6 @@ export function useGameChannel(gameId: string | null, token: string | null) {
     endTurn,
     sendMessage,
     getState,
+    getValidMoves,
   };
 }
