@@ -77,8 +77,31 @@ case scenario do
     |> Ecto.Changeset.change(state_data: updated_state_data)
     |> Repo.update!()
 
+    # Give player1 five red cards for discovering the cure
+    players = Games.list_game_players(game.id)
+    player1 = Enum.find(players, &(&1.user_id == user1.id))
+
+    # Get all red city cards from the player deck
+    red_cards =
+      DeckManager.get_deck(game.id, "player_deck")
+      |> Enum.filter(fn card ->
+        card.city && card.city.color == "red"
+      end)
+      |> Enum.take(5)
+
+    # Move these cards to player1's hand
+    Enum.each(red_cards, fn card ->
+      card
+      |> Ecto.Changeset.change(%{
+        player_id: player1.id,
+        location: "player_hand"
+      })
+      |> Repo.update!()
+    end)
+
     IO.puts("✓ Game created with 3/4 cures discovered")
     IO.puts("  One more cure to win!")
+    IO.puts("  Player1 has 5 red cards to discover the final cure!")
 
   "lose_outbreak" ->
     # 7 outbreaks - one more outbreak loses the game!
