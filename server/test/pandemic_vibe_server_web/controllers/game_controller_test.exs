@@ -1,5 +1,5 @@
 defmodule PandemicVibeServerWeb.GameControllerTest do
-  use PandemicVibeServerWeb.ConnCase
+  use PandemicVibeServerWeb.ConnCase, async: true
 
   alias PandemicVibeServer.{Accounts, Games}
 

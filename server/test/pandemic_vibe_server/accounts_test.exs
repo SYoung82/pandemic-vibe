@@ -1,5 +1,5 @@
 defmodule PandemicVibeServer.AccountsTest do
-  use PandemicVibeServer.DataCase
+  use PandemicVibeServer.DataCase, async: true
 
   alias PandemicVibeServer.Accounts
 

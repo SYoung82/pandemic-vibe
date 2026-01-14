@@ -17,7 +17,8 @@
       "Bash(git push)",
       "Bash(docker compose:*)",
       "Bash(npm uninstall:*)",
-      "Bash(./scripts/install-hooks.sh:*)"
+      "Bash(./scripts/install-hooks.sh:*)",
+      "Bash(PGPORT=5433 mix test:*)"
     ]
   }
 }

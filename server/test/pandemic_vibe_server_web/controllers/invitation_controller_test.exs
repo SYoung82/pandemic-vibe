@@ -1,5 +1,5 @@
 defmodule PandemicVibeServerWeb.InvitationControllerTest do
-  use PandemicVibeServerWeb.ConnCase
+  use PandemicVibeServerWeb.ConnCase, async: true
 
   import PandemicVibeServer.AccountsFixtures
 

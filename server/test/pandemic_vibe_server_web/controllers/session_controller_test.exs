@@ -1,5 +1,5 @@
 defmodule PandemicVibeServerWeb.SessionControllerTest do
-  use PandemicVibeServerWeb.ConnCase
+  use PandemicVibeServerWeb.ConnCase, async: true
 
   import PandemicVibeServer.AccountsFixtures
 

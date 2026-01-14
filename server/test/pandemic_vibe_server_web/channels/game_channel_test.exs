@@ -1,5 +1,5 @@
 defmodule PandemicVibeServerWeb.GameChannelTest do
-  use PandemicVibeServerWeb.ChannelCase
+  use PandemicVibeServerWeb.ChannelCase, async: true
 
   alias PandemicVibeServer.{Accounts, Games}
   alias PandemicVibeServerWeb.UserSocket
