@@ -52,8 +52,13 @@ export default function GameBoard() {
     sendAction,
     endTurn,
     sendMessage,
+    discardCards,
     getValidMoves
   } = useGameChannel(gameId!, token);
+
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
+  const [selectedCardsToDiscard, setSelectedCardsToDiscard] = useState<string[]>([]);
+  const [requiredDiscardCount, setRequiredDiscardCount] = useState(0);
 
   const loadGameInfo = useCallback(async () => {
     if (!gameId) return;
@@ -129,9 +134,41 @@ export default function GameBoard() {
   const handleEndTurn = async () => {
     try {
       await endTurn();
-    } catch (err) {
-      console.error('End turn failed:', err);
+    } catch (err: unknown) {
+      // Check if error is due to hand limit
+      const error = err as { reason?: string; hand_size?: number };
+      if (error?.reason === 'must_discard' && error?.hand_size) {
+        const cardsOverLimit = error.hand_size - 7;
+        setRequiredDiscardCount(cardsOverLimit);
+        setShowDiscardModal(true);
+      } else {
+        console.error('End turn failed:', err);
+      }
     }
+  };
+
+  const handleDiscardCards = async () => {
+    if (selectedCardsToDiscard.length !== requiredDiscardCount) {
+      alert(`Please select exactly ${requiredDiscardCount} card(s) to discard`);
+      return;
+    }
+
+    try {
+      await discardCards(selectedCardsToDiscard);
+      setShowDiscardModal(false);
+      setSelectedCardsToDiscard([]);
+      setRequiredDiscardCount(0);
+    } catch (err) {
+      console.error('Discard failed:', err);
+    }
+  };
+
+  const toggleCardSelection = (cardId: string) => {
+    setSelectedCardsToDiscard(prev =>
+      prev.includes(cardId)
+        ? prev.filter(id => id !== cardId)
+        : [...prev, cardId]
+    );
   };
 
   const handleSendMessage = () => {
@@ -752,6 +789,85 @@ export default function GameBoard() {
           </div>
         )}
       </div>
+
+      {/* Discard Modal */}
+      {showDiscardModal && myPlayer && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              Hand Limit Exceeded
+            </h2>
+            <p className="text-gray-600 mb-6">
+              You have {myPlayer.cards?.length || 0} cards. Please select{' '}
+              <span className="font-bold text-red-600">{requiredDiscardCount}</span> card(s) to discard.
+              (Maximum hand size is 7 cards)
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+              {myPlayer.cards?.map((card) => (
+                <button
+                  key={card.id}
+                  onClick={() => toggleCardSelection(card.id)}
+                  className={`p-4 rounded-lg border-2 text-left transition-all ${
+                    selectedCardsToDiscard.includes(card.id)
+                      ? 'border-red-500 bg-red-50'
+                      : 'border-gray-300 bg-white hover:border-gray-400'
+                  } ${
+                    card.card_type === 'epidemic'
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'cursor-pointer'
+                  }`}
+                  disabled={card.card_type === 'epidemic'}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className={`font-semibold ${
+                        card.city_color === 'blue'
+                          ? 'text-blue-700'
+                          : card.city_color === 'yellow'
+                          ? 'text-yellow-700'
+                          : card.city_color === 'black'
+                          ? 'text-gray-700'
+                          : card.city_color === 'red'
+                          ? 'text-red-700'
+                          : 'text-gray-600'
+                      }`}>
+                        {card.card_type === 'epidemic' ? '⚠️ EPIDEMIC' : card.city_name}
+                      </div>
+                      {card.city_color && card.card_type !== 'epidemic' && (
+                        <div className="text-xs text-gray-500 capitalize mt-1">
+                          {card.city_color}
+                        </div>
+                      )}
+                    </div>
+                    {selectedCardsToDiscard.includes(card.id) && (
+                      <div className="text-red-600 text-xl">✓</div>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleDiscardCards}
+                disabled={selectedCardsToDiscard.length !== requiredDiscardCount}
+                className={`flex-1 py-3 rounded-lg font-semibold ${
+                  selectedCardsToDiscard.length === requiredDiscardCount
+                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                Discard {selectedCardsToDiscard.length}/{requiredDiscardCount} Selected
+              </button>
+            </div>
+
+            <p className="text-xs text-gray-500 mt-4 text-center">
+              Selected: {selectedCardsToDiscard.length} | Required: {requiredDiscardCount}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

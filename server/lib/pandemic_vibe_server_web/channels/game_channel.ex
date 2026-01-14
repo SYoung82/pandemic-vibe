@@ -44,6 +44,34 @@ defmodule PandemicVibeServerWeb.GameChannel do
             broadcast_game_state(socket, game_id)
             {:reply, {:ok, %{message: "Turn ended"}}, socket}
 
+          {:error, {:must_discard, hand_size}} ->
+            broadcast_game_state(socket, game_id)
+            {:reply, {:error, %{reason: :must_discard, hand_size: hand_size}}, socket}
+
+          {:error, reason} ->
+            {:reply, {:error, %{reason: reason}}, socket}
+        end
+
+      {:error, reason} ->
+        {:reply, {:error, %{reason: reason}}, socket}
+    end
+  end
+
+  def handle_in("discard_cards", %{"card_ids" => card_ids}, socket) do
+    player = get_current_player(socket)
+    game_id = socket.assigns.game_id
+
+    case GameEngine.discard_cards(player.id, card_ids) do
+      {:ok, remaining_hand_size} ->
+        # After successful discard, continue with the turn end flow
+        case continue_turn_after_discard(game_id) do
+          {:ok, _game} ->
+            broadcast_game_state(socket, game_id)
+
+            {:reply,
+             {:ok, %{message: "Cards discarded", remaining_hand_size: remaining_hand_size}},
+             socket}
+
           {:error, reason} ->
             {:reply, {:error, %{reason: reason}}, socket}
         end
@@ -205,6 +233,56 @@ defmodule PandemicVibeServerWeb.GameChannel do
 
   defp perform_action(action, _params, _player_id, _game_id) do
     {:error, %{reason: "Unknown action: #{action}"}}
+  end
+
+  defp continue_turn_after_discard(game_id) do
+    # Complete the remaining turn-end steps after cards are discarded
+    alias PandemicVibeServer.GameEngine.InfectionEngine
+
+    current_state = PandemicVibeServer.Games.get_latest_game_state(game_id)
+    infection_rate = get_in(current_state.state_data, ["infection_rate"]) || 2
+
+    with :ok <- draw_infection_phase_helper(game_id, infection_rate),
+         {:ok, win_status} <- GameEngine.check_win_condition(game_id),
+         {:ok, lose_status} <- GameEngine.check_lose_condition(game_id),
+         :ok <- check_game_continues_helper(win_status, lose_status),
+         {:ok, _game_state} <- advance_to_next_player_helper(game_id) do
+      {:ok, PandemicVibeServer.Games.get_game_with_players!(game_id)}
+    end
+  end
+
+  defp draw_infection_phase_helper(game_id, infection_rate) do
+    alias PandemicVibeServer.GameEngine.InfectionEngine
+
+    case InfectionEngine.draw_infection_cards(game_id, infection_rate) do
+      {:ok, _count} -> :ok
+      error -> error
+    end
+  end
+
+  defp check_game_continues_helper(:win, _), do: {:ok, :game_won}
+  defp check_game_continues_helper(_, :lose), do: {:ok, :game_lost}
+  defp check_game_continues_helper(:continue, :continue), do: :ok
+
+  defp advance_to_next_player_helper(game_id) do
+    alias PandemicVibeServer.Games
+
+    current_state = Games.get_latest_game_state(game_id)
+    players = Games.list_game_players(game_id)
+
+    current_player = Enum.find(players, &(&1.id == current_state.current_player_id))
+    next_player_order = rem(current_player.turn_order + 1, length(players))
+    next_player = Enum.find(players, &(&1.turn_order == next_player_order))
+
+    # Reset actions for new turn
+    Games.update_player(next_player, %{actions_remaining: 4})
+
+    # Create new game state for the turn
+    Games.save_game_state(game_id, %{
+      turn_number: current_state.turn_number + 1,
+      current_player_id: next_player.id,
+      state_data: current_state.state_data
+    })
   end
 
   defp broadcast_game_state(socket, game_id) do
