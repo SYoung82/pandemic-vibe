@@ -11,7 +11,7 @@ A real-time multiplayer pandemic board game built with React, TypeScript, and Ph
 - **TanStack React Query** - Server state management
 - **Axios** - HTTP client
 - **Zustand** - Client state management
-- **Tailwind CSS** - Styling
+- **Tailwind CSS v3** - Styling
 - **Phoenix WebSocket Client** - Real-time communication
 
 ## Project Structure
@@ -86,12 +86,30 @@ Real-time game updates via Phoenix Channels:
 const {
   gameState,      // Current game state
   messages,       // Chat messages
+  lobbyGame,      // Lobby state updates
   isConnected,    // Connection status
   error,          // Error message
   sendAction,     // Send player action
   endTurn,        // End current turn
   sendMessage,    // Send chat message
-  getState        // Request latest state
-} = useGameChannel(gameId);
+  getState,       // Request latest state
+  getValidMoves   // Get valid move destinations
+} = useGameChannel(gameId, token);
 ```
+
+## Code Quality
+
+```bash
+# Lint code
+npm run lint
+
+# Type check
+npx tsc --noEmit
+
+# Build for production
+npm run build
 ```
+
+## Testing
+
+Frontend tests are not yet implemented. See root README for current testing approach.

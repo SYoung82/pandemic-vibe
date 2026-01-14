@@ -49,9 +49,6 @@ MIX_ENV=prod mix compile
 ```bash
 cd frontend
 
-# Run tests (when configured)
-npm test
-
 # Lint
 npm run lint
 
@@ -61,6 +58,8 @@ npx tsc --noEmit
 # Build
 npm run build
 ```
+
+**Note:** Frontend tests are not yet implemented.
 
 ## Docker Production Builds
 
