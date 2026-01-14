@@ -48,6 +48,15 @@ else
   echo "✅ Elixir compilation passed"
 fi
 
+# Seed test database
+echo "🌱 Seeding test database..."
+if ! PGPORT=5433 mix run priv/repo/seeds.exs; then
+  echo "❌ Database seeding failed!"
+  FAILED=1
+else
+  echo "✅ Database seeding passed"
+fi
+
 # Run tests (use docker-compose postgres on port 5433)
 echo "🧪 Running Elixir tests..."
 if ! PGPORT=5433 mix test; then
