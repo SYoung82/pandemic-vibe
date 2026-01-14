@@ -18,6 +18,7 @@ defmodule PandemicVibeServerWeb.GameJSON do
   defp data(%Game{} = game) do
     %{
       id: game.id,
+      name: game.name,
       difficulty: game.difficulty,
       status: game.status,
       outbreak_count: game.outbreak_count,
