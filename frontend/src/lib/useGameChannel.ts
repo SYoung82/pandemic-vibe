@@ -56,9 +56,23 @@ interface ActionParams {
   [key: string]: unknown;
 }
 
+export interface LobbyGame {
+  id: string;
+  status: string;
+  difficulty: string;
+  created_by_id: string;
+  players: Array<{
+    id: string;
+    user_id: string;
+    role: string | null;
+    turn_order: number | null;
+  }>;
+}
+
 export function useGameChannel(gameId: string | null, token: string | null) {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [lobbyGame, setLobbyGame] = useState<LobbyGame | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -97,6 +111,20 @@ export function useGameChannel(gameId: string | null, token: string | null) {
 
     gameChannel.on('chat_message', (message: unknown) => {
       setMessages((prev) => [...prev, message as ChatMessage]);
+    });
+
+    // Listen for lobby updates (when players join)
+    gameChannel.on('lobby_updated', (payload: unknown) => {
+      const data = payload as { game: LobbyGame };
+      setLobbyGame(data.game);
+    });
+
+    // Listen for game start event
+    gameChannel.on('game_started', (payload: unknown) => {
+      const data = payload as { game: LobbyGame };
+      setLobbyGame(data.game);
+      // Trigger a reload by setting game state to trigger re-fetch
+      window.location.reload();
     });
 
     gameChannel
@@ -202,6 +230,7 @@ export function useGameChannel(gameId: string | null, token: string | null) {
   return {
     gameState,
     messages,
+    lobbyGame,
     isConnected,
     error,
     sendAction,
