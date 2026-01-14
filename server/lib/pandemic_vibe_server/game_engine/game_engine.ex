@@ -276,7 +276,7 @@ defmodule PandemicVibeServer.GameEngine.GameEngine do
   end
 
   defp check_game_continues(:win, _), do: {:ok, :game_won}
-  defp check_game_continues(_, :lose), do: {:ok, :game_lost}
+  defp check_game_continues(_, {:lose, _reason}), do: {:ok, :game_lost}
   defp check_game_continues(:continue, :continue), do: :ok
 
   defp advance_to_next_player(game_id) do
@@ -320,7 +320,7 @@ defmodule PandemicVibeServer.GameEngine.GameEngine do
   end
 
   @doc """
-  Checks lose conditions.
+  Checks lose conditions and returns the specific reason.
   """
   def check_lose_condition(game_id) do
     game = Games.get_game!(game_id)
@@ -329,15 +329,15 @@ defmodule PandemicVibeServer.GameEngine.GameEngine do
     cond do
       game.outbreak_count >= 8 ->
         Games.update_game(game, %{status: "lost"})
-        {:ok, :lose}
+        {:ok, {:lose, :too_many_outbreaks}}
 
       any_disease_cubes_depleted?(state.state_data["disease_cubes"]) ->
         Games.update_game(game, %{status: "lost"})
-        {:ok, :lose}
+        {:ok, {:lose, :disease_spread}}
 
       player_deck_empty?(game_id) ->
         Games.update_game(game, %{status: "lost"})
-        {:ok, :lose}
+        {:ok, {:lose, :time_ran_out}}
 
       true ->
         {:ok, :continue}

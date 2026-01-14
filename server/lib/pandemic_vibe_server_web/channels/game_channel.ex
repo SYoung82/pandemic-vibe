@@ -261,7 +261,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
   end
 
   defp check_game_continues_helper(:win, _), do: {:ok, :game_won}
-  defp check_game_continues_helper(_, :lose), do: {:ok, :game_lost}
+  defp check_game_continues_helper(_, {:lose, _reason}), do: {:ok, :game_lost}
   defp check_game_continues_helper(:continue, :continue), do: :ok
 
   defp advance_to_next_player_helper(game_id) do

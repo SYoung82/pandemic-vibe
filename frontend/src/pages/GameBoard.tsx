@@ -5,6 +5,7 @@ import { useGameChannel } from '../lib/useGameChannel';
 import type { Card } from '../lib/useGameChannel';
 import { gameAPI } from '../lib/api';
 import WorldMap from '../components/WorldMap';
+import GameOverModal from '../components/GameOverModal';
 
 interface Player {
   id: string;
@@ -188,6 +189,9 @@ export default function GameBoard() {
   console.log('Debug - myPlayer:', myPlayer);
   console.log('Debug - currentPlayer:', currentPlayer);
   console.log('Debug - isCurrentPlayer:', isCurrentPlayer);
+
+  // Derive game status for modal display
+  const gameStatus = gameState?.game?.status;
 
   if (!currentGameInfo) {
     return (
@@ -867,6 +871,23 @@ export default function GameBoard() {
             </p>
           </div>
         </div>
+      )}
+
+      {/* Game Over Modal */}
+      {(gameStatus === 'won' || gameStatus === 'lost') && gameState?.game && (
+        <GameOverModal
+          status={gameState.game.status as 'won' | 'lost'}
+          loseReason={undefined} // TODO: Backend needs to send lose reason
+          gameStats={{
+            turnNumber: gameState.turn_number || 0,
+            outbreakCount: gameState.game.outbreak_count || 0,
+            curesDiscovered: Object.values(gameState.state?.cure_markers || {}).filter(
+              (status) => status === 'discovered' || status === 'eradicated'
+            ).length,
+            difficulty: gameState.game.difficulty || 'normal'
+          }}
+          onClose={() => {/* Modal stays open until user navigates away */}}
+        />
       )}
     </div>
   );
