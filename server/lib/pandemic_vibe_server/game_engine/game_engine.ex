@@ -169,21 +169,29 @@ defmodule PandemicVibeServer.GameEngine.GameEngine do
   @doc """
   Ends the current turn with full game flow:
   1. Draw 2 player cards (check for epidemics)
-  2. Draw infection cards (based on infection rate)
-  3. Check win/lose conditions
-  4. Advance to next player
+  2. Check hand limit (7 cards max)
+  3. Draw infection cards (based on infection rate)
+  4. Check win/lose conditions
+  5. Advance to next player
   """
   def end_turn(game_id) do
     current_state = Games.get_latest_game_state(game_id)
     current_player_id = current_state.current_player_id
 
     with {:ok, epidemic_occurred} <- draw_player_cards(game_id, current_player_id, 2),
+         {:ok, _hand_size} <- check_hand_limit(game_id, current_player_id),
          :ok <- draw_infection_phase(game_id, epidemic_occurred),
          {:ok, win_status} <- check_win_condition(game_id),
          {:ok, lose_status} <- check_lose_condition(game_id),
          :ok <- check_game_continues(win_status, lose_status),
          {:ok, _game_state} <- advance_to_next_player(game_id) do
       {:ok, Games.get_game_with_players!(game_id)}
+    else
+      {:must_discard, hand_size} ->
+        {:error, {:must_discard, hand_size}}
+
+      error ->
+        error
     end
   end
 
@@ -222,6 +230,48 @@ defmodule PandemicVibeServer.GameEngine.GameEngine do
     case InfectionEngine.draw_infection_cards(game_id, infection_rate) do
       {:ok, _count} -> :ok
       error -> error
+    end
+  end
+
+  defp check_hand_limit(_game_id, player_id) do
+    hand_size =
+      Games.list_player_cards(player_id)
+      |> length()
+
+    if hand_size > 7 do
+      {:must_discard, hand_size}
+    else
+      {:ok, hand_size}
+    end
+  end
+
+  @doc """
+  Handles player discarding cards when over the 7-card limit.
+  """
+  def discard_cards(player_id, card_ids) do
+    # Verify cards belong to player
+    player_cards = Games.list_player_cards(player_id)
+    player_card_ids = Enum.map(player_cards, & &1.id)
+
+    invalid_cards = Enum.reject(card_ids, &(&1 in player_card_ids))
+
+    if length(invalid_cards) > 0 do
+      {:error, :invalid_cards}
+    else
+      # Discard the specified cards
+      Enum.each(card_ids, fn card_id ->
+        card = Enum.find(player_cards, &(&1.id == card_id))
+        DeckManager.discard_card(card, "player_discard")
+      end)
+
+      # Check if hand is now valid (7 or fewer)
+      remaining_hand_size = length(player_cards) - length(card_ids)
+
+      if remaining_hand_size <= 7 do
+        {:ok, remaining_hand_size}
+      else
+        {:error, {:still_over_limit, remaining_hand_size}}
+      end
     end
   end
 

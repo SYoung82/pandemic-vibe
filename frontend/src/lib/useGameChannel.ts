@@ -207,6 +207,20 @@ export function useGameChannel(gameId: string | null, token: string | null) {
     });
   }, []);
 
+  const discardCards = useCallback((card_ids: string[]) => {
+    return new Promise((resolve, reject) => {
+      if (!channelRef.current) {
+        reject(new Error('Channel not connected'));
+        return;
+      }
+
+      channelRef.current
+        .push('discard_cards', { card_ids })
+        .receive('ok', (response) => resolve(response))
+        .receive('error', (err) => reject(err));
+    });
+  }, []);
+
   const getState = useCallback(() => {
     return new Promise<GameState>((resolve, reject) => {
       if (!channelRef.current) {
@@ -244,6 +258,7 @@ export function useGameChannel(gameId: string | null, token: string | null) {
     sendAction,
     endTurn,
     sendMessage,
+    discardCards,
     getState,
     getValidMoves,
   };
