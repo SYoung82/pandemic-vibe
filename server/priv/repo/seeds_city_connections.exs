@@ -4,32 +4,33 @@ alias PandemicVibeServer.Repo
 alias PandemicVibeServer.Games.{City, CityConnection}
 
 # Define city connections based on the official Pandemic board game
-# Each city is bidirectionally connected to its neighbors
+# Only including connections between cities that exist in the database
+# Note: All current cities are blue (North America/Europe)
 city_connections = [
-  # Atlanta connections
-  {"Atlanta", ["Chicago", "Washington", "Miami"]},
-  # Chicago connections
-  {"Chicago", ["Atlanta", "San Francisco", "Los Angeles", "Mexico City", "Montreal"]},
-  # Montreal connections
+  # Atlanta connections (Southeast US hub)
+  {"Atlanta", ["Chicago", "Washington"]},
+  # Chicago connections (Central US hub)
+  {"Chicago", ["Atlanta", "San Francisco", "Montreal"]},
+  # Montreal connections (Canada)
   {"Montreal", ["Chicago", "Washington", "New York"]},
-  # New York connections
+  # New York connections (Northeast US, Atlantic crossing)
   {"New York", ["Montreal", "Washington", "London", "Madrid"]},
-  # Washington connections
-  {"Washington", ["Atlanta", "Montreal", "New York", "Miami"]},
-  # San Francisco connections
-  {"San Francisco", ["Chicago", "Los Angeles", "Tokyo", "Manila"]},
-  # London connections
+  # Washington connections (East coast)
+  {"Washington", ["Atlanta", "Montreal", "New York"]},
+  # San Francisco connections (West coast, Pacific crossing)
+  {"San Francisco", ["Chicago"]},
+  # London connections (UK, Europe hub)
   {"London", ["New York", "Madrid", "Paris", "Essen"]},
-  # Madrid connections
-  {"Madrid", ["New York", "London", "Paris", "Sao Paulo", "Algiers"]},
-  # Paris connections
-  {"Paris", ["London", "Madrid", "Essen", "Milan", "Algiers"]},
-  # Essen connections
+  # Madrid connections (Spain, Atlantic crossing)
+  {"Madrid", ["New York", "London", "Paris"]},
+  # Paris connections (France, Europe hub)
+  {"Paris", ["London", "Madrid", "Essen", "Milan"]},
+  # Essen connections (Germany)
   {"Essen", ["London", "Paris", "Milan", "St. Petersburg"]},
-  # Milan connections
-  {"Milan", ["Paris", "Essen", "Istanbul"]},
-  # St. Petersburg connections
-  {"St. Petersburg", ["Essen", "Istanbul", "Moscow"]}
+  # Milan connections (Italy)
+  {"Milan", ["Paris", "Essen"]},
+  # St. Petersburg connections (Russia)
+  {"St. Petersburg", ["Essen"]}
 ]
 
 IO.puts("Seeding city connections...")

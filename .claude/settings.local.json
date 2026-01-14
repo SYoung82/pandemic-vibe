@@ -26,7 +26,11 @@
       "Bash(mix ecto.gen.migration:*)",
       "Bash(PGPORT=5433 mix ecto.migrate:*)",
       "Bash(PGPORT=5433 mix run:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(PGPORT=5433 psql:*)",
+      "Bash(PGPORT=5433 mix ecto.rollback:*)"
     ]
   }
 }
