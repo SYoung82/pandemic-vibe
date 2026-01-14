@@ -132,13 +132,17 @@ defmodule PandemicVibeServer.GameEngine.GameEngine do
                nil
              end
 
+           # Get player's cards
+           cards = get_player_cards(player.id)
+
            %{
              id: player.id,
              user_id: player.user_id,
              role: player.role,
              turn_order: player.turn_order,
              actions_remaining: player.actions_remaining,
-             current_city_id: current_city_name
+             current_city_id: current_city_name,
+             cards: cards
            }
          end),
        state: game_state.state_data,
@@ -147,6 +151,19 @@ defmodule PandemicVibeServer.GameEngine.GameEngine do
      }}
   rescue
     Ecto.NoResultsError -> {:error, :not_found}
+  end
+
+  defp get_player_cards(player_id) do
+    Games.list_player_cards(player_id)
+    |> PandemicVibeServer.Repo.preload(:city)
+    |> Enum.map(fn card ->
+      %{
+        id: card.id,
+        card_type: card.card_type,
+        city_name: if(card.city, do: card.city.name, else: nil),
+        city_color: if(card.city, do: card.city.color, else: nil)
+      }
+    end)
   end
 
   @doc """

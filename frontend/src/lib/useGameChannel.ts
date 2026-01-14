@@ -3,6 +3,13 @@ import { Socket, Channel } from 'phoenix';
 
 const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:4000/socket';
 
+export interface Card {
+  id: string;
+  card_type: string;
+  city_name: string | null;
+  city_color: string | null;
+}
+
 export interface GameState {
   game: {
     id: string;
@@ -18,6 +25,7 @@ export interface GameState {
     turn_order: number;
     actions_remaining: number;
     current_city_id: string | null;
+    cards: Card[];
   }>;
   state: {
     infection_rate: number;
