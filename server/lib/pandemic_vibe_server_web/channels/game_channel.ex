@@ -39,7 +39,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
 
     case validate_player_turn(game_id, player.id) do
       :ok ->
-        case GameEngine.next_turn(game_id) do
+        case GameEngine.end_turn(game_id) do
           {:ok, _game} ->
             broadcast_game_state(socket, game_id)
             {:reply, {:ok, %{message: "Turn ended"}}, socket}

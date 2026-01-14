@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import { useGameChannel } from '../lib/useGameChannel';
+import type { Card } from '../lib/useGameChannel';
 import { gameAPI } from '../lib/api';
 import WorldMap from '../components/WorldMap';
 
@@ -11,6 +12,7 @@ interface Player {
   role?: string;
   turn_order: number;
   username?: string;
+  cards?: Card[];
 }
 
 interface GameInfo {
@@ -677,7 +679,39 @@ export default function GameBoard() {
                           <div>
                             <span className="font-medium">Actions:</span> {player.actions_remaining}/4
                           </div>
+                          <div>
+                            <span className="font-medium">Cards:</span> {player.cards?.length || 0}
+                          </div>
                         </div>
+
+                        {/* Player's hand - only show for the current user */}
+                        {String(player.user_id) === String(user?.id) && player.cards && player.cards.length > 0 && (
+                          <div className="mt-3 pt-3 border-t border-gray-200">
+                            <p className="text-xs font-semibold text-gray-600 mb-2">Your Hand:</p>
+                            <div className="flex flex-wrap gap-2">
+                              {player.cards.map((card) => (
+                                <div
+                                  key={card.id}
+                                  className={`px-3 py-2 rounded-lg text-xs font-medium shadow-sm border-2 ${
+                                    card.card_type === 'epidemic'
+                                      ? 'bg-red-100 border-red-300 text-red-800'
+                                      : card.city_color === 'blue'
+                                      ? 'bg-blue-100 border-blue-300 text-blue-800'
+                                      : card.city_color === 'yellow'
+                                      ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
+                                      : card.city_color === 'black'
+                                      ? 'bg-gray-100 border-gray-300 text-gray-800'
+                                      : card.city_color === 'red'
+                                      ? 'bg-red-100 border-red-300 text-red-800'
+                                      : 'bg-gray-100 border-gray-300 text-gray-600'
+                                  }`}
+                                >
+                                  {card.card_type === 'epidemic' ? '⚠️ EPIDEMIC' : card.city_name || 'Unknown'}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
