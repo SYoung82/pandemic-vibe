@@ -66,7 +66,7 @@ case scenario do
   "win" ->
     # 3 out of 4 cures discovered - one more to win!
     updated_state_data =
-      put_in(state.state_data, ["cure_markers"], %{
+      Map.put(state.state_data, "cure_markers", %{
         "blue" => "discovered",
         "yellow" => "discovered",
         "black" => "discovered",
@@ -89,16 +89,14 @@ case scenario do
   "lose_cubes" ->
     # Very low disease cubes - almost depleted
     updated_state_data =
-      put_in(state.state_data, ["disease_cubes"], %{
+      state.state_data
+      |> Map.put("disease_cubes", %{
         "blue" => 2,
         "yellow" => 2,
         "black" => 2,
         "red" => 2
       })
-
-    # Also add heavy infections to cities to make it dangerous
-    updated_state_data =
-      put_in(updated_state_data, ["city_infections"], %{
+      |> Map.put("city_infections", %{
         "Atlanta" => %{"blue" => 3},
         "Chicago" => %{"blue" => 3},
         "San Francisco" => %{"blue" => 3},
