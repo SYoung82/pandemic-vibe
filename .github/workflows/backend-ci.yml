@@ -68,6 +68,7 @@ jobs:
         working-directory: ./server
         run: |
           mix ecto.create
+          mix ecto.migrate
           mix run priv/repo/seeds.exs
         env:
           PGPORT: 5432
