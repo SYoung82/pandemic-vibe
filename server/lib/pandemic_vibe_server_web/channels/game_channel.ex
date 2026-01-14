@@ -19,16 +19,24 @@ defmodule PandemicVibeServerWeb.GameChannel do
   end
 
   def handle_in("player_action", %{"action" => action, "params" => params}, socket) do
+    require Logger
+    Logger.info("Received player_action: #{action} with params: #{inspect(params)}")
+
     game_id = socket.assigns.game_id
     player = get_current_player(socket)
 
+    Logger.info("Player: #{inspect(player.id)}, Game: #{game_id}")
+
     case validate_player_turn(game_id, player.id) do
       :ok ->
+        Logger.info("Player turn validated successfully")
         result = perform_action(action, params, player.id, game_id)
+        Logger.info("Action result: #{inspect(result)}")
         broadcast_game_state(socket, game_id)
         {:reply, result, socket}
 
       {:error, reason} ->
+        Logger.error("Player turn validation failed: #{inspect(reason)}")
         {:reply, {:error, %{reason: reason}}, socket}
     end
   end
@@ -217,10 +225,24 @@ defmodule PandemicVibeServerWeb.GameChannel do
          player_id,
          _game_id
        ) do
+    require Logger
+
+    Logger.info(
+      "Calling discover_cure for player #{player_id}, color: #{color}, cards: #{inspect(card_ids)}"
+    )
+
     case ActionHandler.discover_cure(player_id, color, card_ids) do
-      {:ok, _} -> {:ok, %{message: "Discovered cure for #{color}"}}
-      {:error, reason} -> {:error, %{reason: reason}}
-      error -> error
+      {:ok, _} ->
+        Logger.info("Discover cure succeeded")
+        {:ok, %{message: "Discovered cure for #{color}"}}
+
+      {:error, reason} ->
+        Logger.error("Discover cure failed with reason: #{inspect(reason)}")
+        {:error, %{reason: reason}}
+
+      error ->
+        Logger.error("Discover cure returned unexpected error: #{inspect(error)}")
+        error
     end
   end
 

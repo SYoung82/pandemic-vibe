@@ -207,6 +207,7 @@ defmodule PandemicVibeServer.Games do
       order_by: c.position
     )
     |> Repo.all()
+    |> Repo.preload(:city)
   end
 
   @doc """

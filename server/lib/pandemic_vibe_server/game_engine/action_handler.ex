@@ -72,8 +72,16 @@ defmodule PandemicVibeServer.GameEngine.ActionHandler do
   Discovers a cure (requires 5 cards of same color at research station).
   """
   def discover_cure(player_id, color, card_ids) do
+    require Logger
+
+    Logger.info(
+      "ActionHandler.discover_cure called - player: #{player_id}, color: #{color}, cards: #{inspect(card_ids)}"
+    )
+
     player = Games.get_player!(player_id) |> Repo.preload(:current_city)
     game_state = Games.get_latest_game_state(player.game_id)
+
+    Logger.info("Player city: #{inspect(player.current_city.name)}, Role: #{player.role}")
 
     cards_needed = if player.role == "scientist", do: 4, else: 5
 
@@ -81,6 +89,8 @@ defmodule PandemicVibeServer.GameEngine.ActionHandler do
          :ok <- validate_at_research_station(game_state, player.current_city.name),
          :ok <- validate_cure_not_discovered(game_state, color),
          :ok <- validate_cure_cards(player_id, card_ids, color, cards_needed) do
+      Logger.info("All validations passed, discarding cards and marking cure as discovered")
+
       # Discard the cards
       Enum.each(card_ids, fn card_id ->
         card = Repo.get!(PandemicVibeServer.Games.Card, card_id)
