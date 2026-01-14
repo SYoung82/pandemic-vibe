@@ -73,11 +73,9 @@ case scenario do
         "red" => "not_discovered"  # Just need this one!
       })
 
-    Games.save_game_state(game.id, %{
-      turn_number: state.turn_number,
-      current_player_id: state.current_player_id,
-      state_data: updated_state_data
-    })
+    state
+    |> Ecto.Changeset.change(state_data: updated_state_data)
+    |> Repo.update!()
 
     IO.puts("✓ Game created with 3/4 cures discovered")
     IO.puts("  One more cure to win!")
@@ -107,11 +105,9 @@ case scenario do
         "Montreal" => %{"blue" => 3}
       })
 
-    Games.save_game_state(game.id, %{
-      turn_number: state.turn_number,
-      current_player_id: state.current_player_id,
-      state_data: updated_state_data
-    })
+    state
+    |> Ecto.Changeset.change(state_data: updated_state_data)
+    |> Repo.update!()
 
     IO.puts("✓ Game created with low disease cubes")
     IO.puts("  A few more infections could deplete cubes!")
