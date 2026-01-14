@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# Pre-push hook to run CI checks locally
+# This prevents pushing if CI checks would fail
+
+set -e
+
+echo "🔍 Running pre-push CI checks..."
+echo ""
+
+# Track if any checks fail
+FAILED=0
+
+# Backend checks
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🔧 Backend Checks"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+cd server
+
+# Check formatting
+echo "📝 Checking Elixir formatting..."
+if ! mix format --check-formatted; then
+  echo "❌ Elixir formatting check failed!"
+  echo "   Run: cd server && mix format"
+  FAILED=1
+else
+  echo "✅ Elixir formatting passed"
+fi
+
+# Compile with warnings as errors
+echo "🔨 Compiling Elixir with warnings as errors..."
+if ! mix compile --warnings-as-errors; then
+  echo "❌ Elixir compilation failed!"
+  FAILED=1
+else
+  echo "✅ Elixir compilation passed"
+fi
+
+# Run tests
+echo "🧪 Running Elixir tests..."
+if ! mix test; then
+  echo "❌ Elixir tests failed!"
+  FAILED=1
+else
+  echo "✅ Elixir tests passed"
+fi
+
+cd ..
+
+# Frontend checks
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "⚛️  Frontend Checks"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+cd frontend
+
+# Run linter
+echo "🔍 Running ESLint..."
+if ! npm run lint; then
+  echo "❌ ESLint failed!"
+  FAILED=1
+else
+  echo "✅ ESLint passed"
+fi
+
+# Type check
+echo "📘 Running TypeScript type check..."
+if ! npx tsc --noEmit; then
+  echo "❌ TypeScript type check failed!"
+  FAILED=1
+else
+  echo "✅ TypeScript type check passed"
+fi
+
+# Build
+echo "🏗️  Building frontend..."
+if ! npm run build; then
+  echo "❌ Frontend build failed!"
+  FAILED=1
+else
+  echo "✅ Frontend build passed"
+fi
+
+cd ..
+
+# Summary
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+if [ $FAILED -eq 0 ]; then
+  echo "✅ All pre-push checks passed!"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  exit 0
+else
+  echo "❌ Pre-push checks failed!"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+  echo "Fix the errors above before pushing."
+  echo "To skip this check (not recommended), use: git push --no-verify"
+  exit 1
+fi

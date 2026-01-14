@@ -34,6 +34,14 @@ docker-compose up --build
 
 ## Quickstart (Local)
 
+**Install git hooks:**
+
+```bash
+./scripts/install-hooks.sh
+```
+
+This installs a pre-push hook that runs CI checks before pushing.
+
 **Backend:**
 
 ```bash
@@ -164,12 +172,31 @@ npx tsc --noEmit
 npm run build
 ```
 
+## Git Hooks
+
+The repository includes a pre-push hook that runs CI checks locally before pushing:
+
+**Install the hooks:**
+```bash
+./scripts/install-hooks.sh
+```
+
+**What it checks:**
+- Backend: formatting, compilation, tests
+- Frontend: linting, type checking, build
+
+**Bypass the hook (not recommended):**
+```bash
+git push --no-verify
+```
+
 ## Contributing
 
 1. Create a feature branch from `develop`
-2. Make your changes with tests
-3. Ensure all CI checks pass locally
-4. Submit a pull request
+2. Install git hooks: `./scripts/install-hooks.sh`
+3. Make your changes with tests
+4. Ensure all CI checks pass locally (hooks will verify)
+5. Submit a pull request
 
 All pull requests require:
 - Passing CI checks
