@@ -127,15 +127,24 @@ export default function GameBoard() {
     try {
       const result = await sendAction(selectedAction, actionParams);
       console.log('Action result:', result);
+      alert('Action successful!');
       setSelectedAction('');
       setActionParams({});
       setValidMoves([]);
     } catch (err) {
-      console.error('Action failed:', err);
-      const errorMessage = err && typeof err === 'object' && 'reason' in err
-        ? String((err as { reason?: string }).reason)
-        : 'Action failed';
-      alert(errorMessage);
+      console.error('Action failed - full error:', err);
+      console.error('Action failed - error type:', typeof err);
+      console.error('Action failed - error keys:', err && typeof err === 'object' ? Object.keys(err) : 'not an object');
+
+      let errorMessage = 'Action failed';
+      if (err && typeof err === 'object') {
+        if ('reason' in err) {
+          errorMessage = String(err.reason);
+        } else {
+          errorMessage = JSON.stringify(err);
+        }
+      }
+      alert(`Action failed: ${errorMessage}`);
     }
   };
 
