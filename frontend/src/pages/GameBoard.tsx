@@ -5,6 +5,7 @@ import { useGameChannel } from '../lib/useGameChannel';
 import type { Card } from '../lib/useGameChannel';
 import { gameAPI } from '../lib/api';
 import WorldMap from '../components/WorldMap';
+import GameOverModal from '../components/GameOverModal';
 
 interface Player {
   id: string;
@@ -121,13 +122,29 @@ export default function GameBoard() {
   const handleSendAction = async () => {
     if (!selectedAction) return;
 
+    console.log('Sending action:', selectedAction, 'with params:', actionParams);
+
     try {
-      await sendAction(selectedAction, actionParams);
+      const result = await sendAction(selectedAction, actionParams);
+      console.log('Action result:', result);
+      alert('Action successful!');
       setSelectedAction('');
       setActionParams({});
       setValidMoves([]);
     } catch (err) {
-      console.error('Action failed:', err);
+      console.error('Action failed - full error:', err);
+      console.error('Action failed - error type:', typeof err);
+      console.error('Action failed - error keys:', err && typeof err === 'object' ? Object.keys(err) : 'not an object');
+
+      let errorMessage = 'Action failed';
+      if (err && typeof err === 'object') {
+        if ('reason' in err) {
+          errorMessage = String(err.reason);
+        } else {
+          errorMessage = JSON.stringify(err);
+        }
+      }
+      alert(`Action failed: ${errorMessage}`);
     }
   };
 
@@ -188,6 +205,9 @@ export default function GameBoard() {
   console.log('Debug - myPlayer:', myPlayer);
   console.log('Debug - currentPlayer:', currentPlayer);
   console.log('Debug - isCurrentPlayer:', isCurrentPlayer);
+
+  // Derive game status for modal display
+  const gameStatus = gameState?.game?.status;
 
   if (!currentGameInfo) {
     return (
@@ -535,7 +555,7 @@ export default function GameBoard() {
                   {/* Infection Rate */}
                   <div className="bg-white rounded-lg shadow p-2 sm:p-3 lg:p-4">
                     <div className="text-xs sm:text-sm text-gray-600 mb-1">Infection Rate</div>
-                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600">{gameState.game.infection_rate_index + 2}</div>
+                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600">{gameState.state?.infection_rate || 2}</div>
                     <div className="text-xs text-gray-500 mt-1">cards per turn</div>
                   </div>
 
@@ -590,8 +610,10 @@ export default function GameBoard() {
                           <div className="text-2xl">
                             {isDiscovered ? '✓' : '○'}
                           </div>
-                          <div className="text-xs mt-1 capitalize">
-                            {String(status)}
+                          <div className="text-xs mt-1">
+                            {String(status).replace(/_/g, ' ').split(' ').map(word =>
+                              word.charAt(0).toUpperCase() + word.slice(1)
+                            ).join(' ')}
                           </div>
                         </div>
                       );
@@ -612,19 +634,19 @@ export default function GameBoard() {
                         Move
                       </button>
                       <button
-                        onClick={() => handleSelectAction('treat')}
+                        onClick={() => handleSelectAction('treat_disease')}
                         className="bg-green-600 text-white py-2 rounded hover:bg-green-700"
                       >
                         Treat Disease
                       </button>
                       <button
-                        onClick={() => handleSelectAction('build')}
+                        onClick={() => handleSelectAction('build_station')}
                         className="bg-purple-600 text-white py-2 rounded hover:bg-purple-700"
                       >
                         Build Station
                       </button>
                       <button
-                        onClick={() => handleSelectAction('cure')}
+                        onClick={() => handleSelectAction('discover_cure')}
                         className="bg-yellow-600 text-white py-2 rounded hover:bg-yellow-700"
                       >
                         Discover Cure
@@ -650,6 +672,71 @@ export default function GameBoard() {
                           </select>
                         ) : selectedAction === 'move' ? (
                           <div className="text-sm text-gray-600 mb-2">Loading available destinations...</div>
+                        ) : selectedAction === 'treat_disease' ? (
+                          <div className="space-y-2 mb-2">
+                            <label className="block text-sm text-gray-600">Select disease color to treat:</label>
+                            <select
+                              className="w-full px-3 py-2 border rounded"
+                              onChange={(e) => setActionParams({ color: e.target.value })}
+                              defaultValue=""
+                            >
+                              <option value="" disabled>Select disease color</option>
+                              <option value="blue">Blue</option>
+                              <option value="yellow">Yellow</option>
+                              <option value="black">Black</option>
+                              <option value="red">Red</option>
+                            </select>
+                          </div>
+                        ) : selectedAction === 'discover_cure' && gameState ? (
+                          <div className="space-y-2 mb-2">
+                            <label className="block text-sm text-gray-600">Select disease to cure:</label>
+                            <select
+                              className="w-full px-3 py-2 border rounded mb-2"
+                              onChange={(e) => setActionParams({ color: e.target.value })}
+                              defaultValue=""
+                            >
+                              <option value="" disabled>Select disease color</option>
+                              {Object.entries(gameState.state?.cure_markers || {})
+                                .filter(([, status]) => status === 'not_discovered')
+                                .map(([color]) => (
+                                  <option key={color} value={color} className="capitalize">
+                                    {color.charAt(0).toUpperCase() + color.slice(1)}
+                                  </option>
+                                ))}
+                            </select>
+                            <p className="text-xs text-gray-500">
+                              You need 5 cards of the selected color. Select the cards from your hand below:
+                            </p>
+                            <div className="space-y-1 max-h-40 overflow-y-auto">
+                              {myPlayer?.cards
+                                ?.filter((card) => card.city_color === actionParams.color)
+                                .map((card) => (
+                                  <label key={card.id} className="flex items-center gap-2 p-2 hover:bg-white rounded cursor-pointer">
+                                    <input
+                                      type="checkbox"
+                                      onChange={(e) => {
+                                        const cardIds = actionParams.card_ids as string[] || [];
+                                        if (e.target.checked) {
+                                          setActionParams({ ...actionParams, card_ids: [...cardIds, card.id] });
+                                        } else {
+                                          setActionParams({ ...actionParams, card_ids: cardIds.filter(id => id !== card.id) });
+                                        }
+                                      }}
+                                      className="rounded"
+                                    />
+                                    <span className="text-sm">{card.city_name}</span>
+                                  </label>
+                                ))}
+                            </div>
+                            {actionParams.color && myPlayer?.cards?.filter((card) => card.city_color === actionParams.color).length === 0 ? (
+                              <p className="text-xs text-red-600">You don&apos;t have any {String(actionParams.color)} cards in your hand.</p>
+                            ) : null}
+                          </div>
+                        ) : selectedAction === 'build_station' ? (
+                          <p className="text-sm text-gray-600 mb-2">
+                            Build a research station at your current location.
+                            {myPlayer?.current_city_id && ` (${myPlayer.current_city_id})`}
+                          </p>
                         ) : (
                           <input
                             type="text"
@@ -867,6 +954,23 @@ export default function GameBoard() {
             </p>
           </div>
         </div>
+      )}
+
+      {/* Game Over Modal */}
+      {(gameStatus === 'won' || gameStatus === 'lost') && gameState?.game && (
+        <GameOverModal
+          status={gameState.game.status as 'won' | 'lost'}
+          loseReason={undefined} // TODO: Backend needs to send lose reason
+          gameStats={{
+            turnNumber: gameState.turn_number || 0,
+            outbreakCount: gameState.game.outbreak_count || 0,
+            curesDiscovered: Object.values(gameState.state?.cure_markers || {}).filter(
+              (status) => status === 'discovered' || status === 'eradicated'
+            ).length,
+            difficulty: gameState.game.difficulty || 'normal'
+          }}
+          onClose={() => {/* Modal stays open until user navigates away */}}
+        />
       )}
     </div>
   );

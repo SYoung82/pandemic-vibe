@@ -171,9 +171,19 @@ export function useGameChannel(gameId: string | null, token: string | null) {
         }
 
         channelRef.current
-          .push('player_action', { action, params })
-          .receive('ok', (response: unknown) => resolve(response))
-          .receive('error', (err: unknown) => reject(err as ChannelError));
+          .push('player_action', { action, params }, 10000)
+          .receive('ok', (response: unknown) => {
+            console.log('Received ok response:', response);
+            resolve(response);
+          })
+          .receive('error', (err: unknown) => {
+            console.log('Received error response:', err);
+            reject(err as ChannelError);
+          })
+          .receive('timeout', () => {
+            console.log('Request timed out');
+            reject(new Error('Request timed out'));
+          });
       });
     },
     []

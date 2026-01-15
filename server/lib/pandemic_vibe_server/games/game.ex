@@ -5,6 +5,7 @@ defmodule PandemicVibeServer.Games.Game do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "games" do
+    field :name, :string
     field :status, :string, default: "lobby"
     field :difficulty, :string, default: "normal"
     field :outbreak_count, :integer, default: 0
@@ -23,6 +24,7 @@ defmodule PandemicVibeServer.Games.Game do
   def changeset(game, attrs) do
     game
     |> cast(attrs, [
+      :name,
       :status,
       :difficulty,
       :outbreak_count,

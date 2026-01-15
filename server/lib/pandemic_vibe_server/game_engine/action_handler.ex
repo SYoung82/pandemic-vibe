@@ -72,8 +72,16 @@ defmodule PandemicVibeServer.GameEngine.ActionHandler do
   Discovers a cure (requires 5 cards of same color at research station).
   """
   def discover_cure(player_id, color, card_ids) do
+    require Logger
+
+    Logger.info(
+      "ActionHandler.discover_cure called - player: #{player_id}, color: #{color}, cards: #{inspect(card_ids)}"
+    )
+
     player = Games.get_player!(player_id) |> Repo.preload(:current_city)
     game_state = Games.get_latest_game_state(player.game_id)
+
+    Logger.info("Player city: #{inspect(player.current_city.name)}, Role: #{player.role}")
 
     cards_needed = if player.role == "scientist", do: 4, else: 5
 
@@ -81,6 +89,8 @@ defmodule PandemicVibeServer.GameEngine.ActionHandler do
          :ok <- validate_at_research_station(game_state, player.current_city.name),
          :ok <- validate_cure_not_discovered(game_state, color),
          :ok <- validate_cure_cards(player_id, card_ids, color, cards_needed) do
+      Logger.info("All validations passed, discarding cards and marking cure as discovered")
+
       # Discard the cards
       Enum.each(card_ids, fn card_id ->
         card = Repo.get!(PandemicVibeServer.Games.Card, card_id)
@@ -196,17 +206,32 @@ defmodule PandemicVibeServer.GameEngine.ActionHandler do
   end
 
   defp validate_cure_cards(player_id, card_ids, color, needed_count) do
+    require Logger
     cards = Games.list_player_cards(player_id)
     selected_cards = Enum.filter(cards, &(&1.id in card_ids))
 
+    Logger.info(
+      "Validating cure cards - needed: #{needed_count}, provided IDs: #{length(card_ids)}, found: #{length(selected_cards)}"
+    )
+
+    Logger.info("Player has #{length(cards)} total cards")
+    Logger.info("Selected card IDs: #{inspect(card_ids)}")
+    Logger.info("Found cards: #{inspect(Enum.map(selected_cards, & &1.id))}")
+
     cond do
       length(selected_cards) != needed_count ->
+        Logger.error(
+          "Card count mismatch - needed: #{needed_count}, got: #{length(selected_cards)}"
+        )
+
         {:error, :incorrect_card_count}
 
       Enum.all?(selected_cards, fn card -> card.city.color == color end) ->
+        Logger.info("All cards match color #{color}")
         :ok
 
       true ->
+        Logger.error("Cards have wrong colors")
         {:error, :cards_wrong_color}
     end
   end

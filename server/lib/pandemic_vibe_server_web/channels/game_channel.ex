@@ -19,16 +19,34 @@ defmodule PandemicVibeServerWeb.GameChannel do
   end
 
   def handle_in("player_action", %{"action" => action, "params" => params}, socket) do
+    require Logger
+    Logger.info("Received player_action: #{action} with params: #{inspect(params)}")
+
     game_id = socket.assigns.game_id
     player = get_current_player(socket)
 
+    Logger.info("Player: #{inspect(player.id)}, Game: #{game_id}")
+
     case validate_player_turn(game_id, player.id) do
       :ok ->
+        Logger.info("Player turn validated successfully")
         result = perform_action(action, params, player.id, game_id)
-        broadcast_game_state(socket, game_id)
-        {:reply, result, socket}
+        Logger.info("Action result: #{inspect(result)}")
+
+        # Check win condition after action
+        case GameEngine.check_win_condition(game_id) do
+          {:ok, :win} ->
+            Logger.info("Win condition met after action!")
+            broadcast_game_state(socket, game_id)
+            {:reply, result, socket}
+
+          {:ok, :continue} ->
+            broadcast_game_state(socket, game_id)
+            {:reply, result, socket}
+        end
 
       {:error, reason} ->
+        Logger.error("Player turn validation failed: #{inspect(reason)}")
         {:reply, {:error, %{reason: reason}}, socket}
     end
   end
@@ -181,6 +199,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
   defp perform_action("move", %{"target" => city_name}, player_id, _game_id) do
     case ActionHandler.move_player(player_id, city_name) do
       {:ok, _player} -> {:ok, %{message: "Moved to #{city_name}"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
@@ -189,6 +208,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
   defp perform_action("move", %{"city" => city_name}, player_id, _game_id) do
     case ActionHandler.move_player(player_id, city_name) do
       {:ok, _player} -> {:ok, %{message: "Moved to #{city_name}"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
@@ -196,6 +216,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
   defp perform_action("treat_disease", %{"color" => color}, player_id, _game_id) do
     case ActionHandler.treat_disease(player_id, color) do
       {:ok, _} -> {:ok, %{message: "Treated #{color} disease"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
@@ -203,6 +224,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
   defp perform_action("build_station", _params, player_id, _game_id) do
     case ActionHandler.build_research_station(player_id) do
       {:ok, _} -> {:ok, %{message: "Built research station"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
@@ -213,9 +235,24 @@ defmodule PandemicVibeServerWeb.GameChannel do
          player_id,
          _game_id
        ) do
+    require Logger
+
+    Logger.info(
+      "Calling discover_cure for player #{player_id}, color: #{color}, cards: #{inspect(card_ids)}"
+    )
+
     case ActionHandler.discover_cure(player_id, color, card_ids) do
-      {:ok, _} -> {:ok, %{message: "Discovered cure for #{color}"}}
-      error -> error
+      {:ok, _} ->
+        Logger.info("Discover cure succeeded")
+        {:ok, %{message: "Discovered cure for #{color}"}}
+
+      {:error, reason} ->
+        Logger.error("Discover cure failed with reason: #{inspect(reason)}")
+        {:error, %{reason: reason}}
+
+      error ->
+        Logger.error("Discover cure returned unexpected error: #{inspect(error)}")
+        error
     end
   end
 
@@ -227,6 +264,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
        ) do
     case ActionHandler.share_knowledge(player_id, receiver_id, card_id) do
       {:ok, _} -> {:ok, %{message: "Shared knowledge"}}
+      {:error, reason} -> {:error, %{reason: reason}}
       error -> error
     end
   end
@@ -261,7 +299,7 @@ defmodule PandemicVibeServerWeb.GameChannel do
   end
 
   defp check_game_continues_helper(:win, _), do: {:ok, :game_won}
-  defp check_game_continues_helper(_, :lose), do: {:ok, :game_lost}
+  defp check_game_continues_helper(_, {:lose, _reason}), do: {:ok, :game_lost}
   defp check_game_continues_helper(:continue, :continue), do: :ok
 
   defp advance_to_next_player_helper(game_id) do
