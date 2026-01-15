@@ -1,12 +1,12 @@
 import Config
 
 # Configure your database
-config :pandemic_vibe_server, PandemicVibeServer.Repo,
+config :infestation_server, InfestationServer.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
   port: 5433,
-  database: "pandemic_vibe_server_dev",
+  database: "infestation_server_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -17,7 +17,7 @@ config :pandemic_vibe_server, PandemicVibeServer.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :pandemic_vibe_server, PandemicVibeServerWeb.Endpoint,
+config :infestation_server, InfestationServerWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}],
@@ -51,7 +51,7 @@ config :pandemic_vibe_server, PandemicVibeServerWeb.Endpoint,
 # different ports.
 
 # Enable dev routes for dashboard and mailbox
-config :pandemic_vibe_server, dev_routes: true
+config :infestation_server, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :default_formatter, format: "[$level] $message\n"

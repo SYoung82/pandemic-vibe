@@ -1,2 +1,2 @@
 ExUnit.start(max_cases: System.schedulers_online() * 2)
-Ecto.Adapters.SQL.Sandbox.mode(PandemicVibeServer.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(InfestationServer.Repo, :manual)

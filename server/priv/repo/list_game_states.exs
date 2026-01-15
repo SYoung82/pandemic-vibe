@@ -1,5 +1,5 @@
 # List all game states for the WIN game
-alias PandemicVibeServer.{Repo, Games}
+alias InfestationServer.{Repo, Games}
 import Ecto.Query
 
 # Find the WIN game

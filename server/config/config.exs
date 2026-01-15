@@ -7,19 +7,19 @@
 # General application configuration
 import Config
 
-config :pandemic_vibe_server,
-  ecto_repos: [PandemicVibeServer.Repo],
+config :infestation_server,
+  ecto_repos: [InfestationServer.Repo],
   generators: [timestamp_type: :utc_datetime, binary_id: true]
 
 # Configure the endpoint
-config :pandemic_vibe_server, PandemicVibeServerWeb.Endpoint,
+config :infestation_server, InfestationServerWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [json: PandemicVibeServerWeb.ErrorJSON],
+    formats: [json: InfestationServerWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: PandemicVibeServer.PubSub,
+  pubsub_server: InfestationServer.PubSub,
   live_view: [signing_salt: "3VXz/0Vy"]
 
 # Configure the mailer
@@ -29,7 +29,7 @@ config :pandemic_vibe_server, PandemicVibeServerWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :pandemic_vibe_server, PandemicVibeServer.Mailer, adapter: Swoosh.Adapters.Local
+config :infestation_server, InfestationServer.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure Elixir's Logger
 config :logger, :default_formatter,
@@ -40,8 +40,8 @@ config :logger, :default_formatter,
 config :phoenix, :json_library, Jason
 
 # Guardian (JWT) configuration - replace `secret_key` for production
-config :pandemic_vibe_server, PandemicVibeServer.Guardian,
-  issuer: "pandemic_vibe_server",
+config :infestation_server, InfestationServer.Guardian,
+  issuer: "infestation_server",
   secret_key: "change_me_replace_in_prod"
 
 # Import environment specific config. This must remain at the bottom

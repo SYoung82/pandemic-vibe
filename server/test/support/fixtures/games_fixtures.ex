@@ -1,19 +1,19 @@
-defmodule PandemicVibeServer.GamesFixtures do
+defmodule InfestationServer.GamesFixtures do
   @moduledoc """
   This module defines test helpers for creating
   entities related to the Games context.
   """
 
-  alias PandemicVibeServer.{Repo, Games, Accounts}
-  alias PandemicVibeServer.Games.City
-  alias PandemicVibeServer.GameEngine.GameEngine
+  alias InfestationServer.{Repo, Games, Accounts}
+  alias InfestationServer.Games.Planet
+  alias InfestationServer.GameEngine.GameEngine
 
   @doc """
-  Ensures cities are seeded in the test database.
-  Call this at the beginning of tests that need cities.
+  Ensures planets are seeded in the test database.
+  Call this at the beginning of tests that need planets.
   """
   def ensure_cities_seeded do
-    cities = [
+    planets = [
       %{name: "Atlanta", color: "blue", population: 500_000},
       %{name: "Chicago", color: "blue", population: 600_000},
       %{name: "Montreal", color: "blue", population: 400_000},
@@ -28,13 +28,13 @@ defmodule PandemicVibeServer.GamesFixtures do
       %{name: "San Francisco", color: "blue", population: 700_000}
     ]
 
-    Enum.each(cities, fn city_attrs ->
-      case Repo.get_by(City, name: city_attrs.name) do
+    Enum.each(planets, fn planet_attrs ->
+      case Repo.get_by(Planet, name: planet_attrs.name) do
         nil ->
-          Repo.insert!(%City{
-            name: city_attrs.name,
-            color: city_attrs.color,
-            population: city_attrs.population
+          Repo.insert!(%Planet{
+            name: planet_attrs.name,
+            color: planet_attrs.color,
+            population: planet_attrs.population
           })
 
         _ ->
@@ -111,12 +111,12 @@ defmodule PandemicVibeServer.GamesFixtures do
   end
 
   @doc """
-  Generate a city.
+  Generate a planet.
   """
   def city_fixture(attrs \\ %{}) do
-    name = "City#{System.unique_integer([:positive])}"
+    name = "Planet#{System.unique_integer([:positive])}"
 
-    {:ok, city} =
+    {:ok, planet} =
       attrs
       |> Enum.into(%{
         name: name,
@@ -125,9 +125,9 @@ defmodule PandemicVibeServer.GamesFixtures do
         x_coord: 0,
         y_coord: 0
       })
-      |> Games.create_city()
+      |> Games.create_planet()
 
-    city
+    planet
   end
 
   @doc """

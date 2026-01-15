@@ -5,9 +5,9 @@
 #   mix run priv/repo/test_game_setup.exs lose_outbreak  # 7 outbreaks
 #   mix run priv/repo/test_game_setup.exs lose_cubes     # Low disease cubes
 
-alias PandemicVibeServer.{Repo, Games, Accounts}
-alias PandemicVibeServer.Games.{Game, Player}
-alias PandemicVibeServer.GameEngine.{GameEngine, DeckManager}
+alias InfestationServer.{Repo, Games, Accounts}
+alias InfestationServer.Games.{Game, Player}
+alias InfestationServer.GameEngine.{GameEngine, DeckManager}
 
 # Get scenario from command line args
 scenario = System.argv() |> List.first() || "win"

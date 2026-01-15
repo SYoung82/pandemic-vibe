@@ -1,7 +1,7 @@
-defmodule PandemicVibeServer.AccountsFixtures do
+defmodule InfestationServer.AccountsFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `PandemicVibeServer.Accounts` context.
+  entities via the `InfestationServer.Accounts` context.
   """
 
   @doc """
@@ -15,7 +15,7 @@ defmodule PandemicVibeServer.AccountsFixtures do
         name: "Test User",
         password: "password123"
       })
-      |> PandemicVibeServer.Accounts.register_user()
+      |> InfestationServer.Accounts.register_user()
 
     user
   end

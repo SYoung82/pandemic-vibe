@@ -1,4 +1,4 @@
-defmodule PandemicVibeServer.Repo.Migrations.AddUniqueIndexToUsersEmail do
+defmodule InfestationServer.Repo.Migrations.AddUniqueIndexToUsersEmail do
   use Ecto.Migration
 
   def change do

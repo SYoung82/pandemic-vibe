@@ -1,6 +1,6 @@
 # Verify what get_current_state returns for the WIN game
-alias PandemicVibeServer.{Repo, Games}
-alias PandemicVibeServer.GameEngine.GameEngine
+alias InfestationServer.{Repo, Games}
+alias InfestationServer.GameEngine.GameEngine
 import Ecto.Query
 
 # Find the WIN game

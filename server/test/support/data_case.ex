@@ -1,4 +1,4 @@
-defmodule PandemicVibeServer.DataCase do
+defmodule InfestationServer.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -10,7 +10,7 @@ defmodule PandemicVibeServer.DataCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use PandemicVibeServer.DataCase, async: true`, although
+  by setting `use InfestationServer.DataCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -18,17 +18,17 @@ defmodule PandemicVibeServer.DataCase do
 
   using do
     quote do
-      alias PandemicVibeServer.Repo
+      alias InfestationServer.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import PandemicVibeServer.DataCase
+      import InfestationServer.DataCase
     end
   end
 
   setup tags do
-    PandemicVibeServer.DataCase.setup_sandbox(tags)
+    InfestationServer.DataCase.setup_sandbox(tags)
     :ok
   end
 
@@ -37,7 +37,7 @@ defmodule PandemicVibeServer.DataCase do
   """
   def setup_sandbox(tags) do
     pid =
-      Ecto.Adapters.SQL.Sandbox.start_owner!(PandemicVibeServer.Repo, shared: not tags[:async])
+      Ecto.Adapters.SQL.Sandbox.start_owner!(InfestationServer.Repo, shared: not tags[:async])
 
     on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
   end

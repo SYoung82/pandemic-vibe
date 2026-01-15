@@ -1,4 +1,4 @@
-alias PandemicVibeServer.{Repo, Games}
+alias InfestationServer.{Repo, Games}
 import Ecto.Query
 
 games = Repo.all(from g in Games.Game, select: {g.name, g.status}, order_by: g.name)

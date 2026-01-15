@@ -1,12 +1,12 @@
-defmodule PandemicVibeServerWeb do
+defmodule InfestationServerWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
 
   This can be used in your application as:
 
-      use PandemicVibeServerWeb, :controller
-      use PandemicVibeServerWeb, :html
+      use InfestationServerWeb, :controller
+      use InfestationServerWeb, :html
 
   The definitions below will be executed for every controller,
   component, etc, so keep them short and clean, focused
@@ -39,7 +39,7 @@ defmodule PandemicVibeServerWeb do
     quote do
       use Phoenix.Controller, formats: [:html, :json]
 
-      use Gettext, backend: PandemicVibeServerWeb.Gettext
+      use Gettext, backend: InfestationServerWeb.Gettext
 
       import Plug.Conn
 
@@ -50,9 +50,9 @@ defmodule PandemicVibeServerWeb do
   def verified_routes do
     quote do
       use Phoenix.VerifiedRoutes,
-        endpoint: PandemicVibeServerWeb.Endpoint,
-        router: PandemicVibeServerWeb.Router,
-        statics: PandemicVibeServerWeb.static_paths()
+        endpoint: InfestationServerWeb.Endpoint,
+        router: InfestationServerWeb.Router,
+        statics: InfestationServerWeb.static_paths()
     end
   end
 
