@@ -22,7 +22,7 @@ defmodule InfestationServerWeb.GameJSON do
       difficulty: game.difficulty,
       status: game.status,
       outbreak_count: game.outbreak_count,
-      infection_rate_index: game.infection_rate_index,
+      infection_rate_index: game.infestation_rate_index,
       research_stations_remaining: game.research_stations_remaining,
       created_by_id: game.created_by_id,
       players: render_players(game),

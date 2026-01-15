@@ -16,7 +16,8 @@ defmodule InfestationServer.Games.Player do
     timestamps(type: :utc_datetime)
   end
 
-  @roles ~w(medic scientist researcher operations_expert dispatcher contingency_planner quarantine_specialist)
+  # Space-themed role names for Infestation
+  @roles ~w(combat_medic xenobiologist field_researcher operations_commander fleet_commander tactical_officer containment_specialist)
 
   @doc false
   def changeset(player, attrs) do

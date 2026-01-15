@@ -35,7 +35,7 @@ defmodule InfestationServer.GameEngine.GameEngineTest do
       assert state.current_player_id != nil
       assert state.state_data["outbreak_count"] == 0
       assert state.state_data["infection_rate_index"] == 0
-      assert state.state_data["infection_rate"] == 2
+      assert state.state_data["infestation_rate"] == 2
     end
 
     test "successfully initializes game with 3 players" do
@@ -78,25 +78,25 @@ defmodule InfestationServer.GameEngine.GameEngineTest do
       state = Games.get_latest_game_state(game.id)
 
       # Check cure markers
-      assert state.state_data["cure_markers"]["blue"] == "not_discovered"
-      assert state.state_data["cure_markers"]["yellow"] == "not_discovered"
-      assert state.state_data["cure_markers"]["black"] == "not_discovered"
-      assert state.state_data["cure_markers"]["red"] == "not_discovered"
+      assert state.state_data["containment_markers"]["blue"] == "not_discovered"
+      assert state.state_data["containment_markers"]["yellow"] == "not_discovered"
+      assert state.state_data["containment_markers"]["black"] == "not_discovered"
+      assert state.state_data["containment_markers"]["red"] == "not_discovered"
 
-      # Check disease cubes (18 cubes used in initial infection, so total should be 96 - 18 = 78)
+      # Check infestation markers (18 cubes used in initial infection, so total should be 96 - 18 = 78)
       total_cubes =
-        state.state_data["disease_cubes"]["blue"] +
-          state.state_data["disease_cubes"]["yellow"] +
-          state.state_data["disease_cubes"]["black"] +
-          state.state_data["disease_cubes"]["red"]
+        state.state_data["infestation_markers"]["blue"] +
+          state.state_data["infestation_markers"]["yellow"] +
+          state.state_data["infestation_markers"]["black"] +
+          state.state_data["infestation_markers"]["red"]
 
       assert total_cubes == 78
 
-      # Check research stations
-      assert state.state_data["research_stations"] == ["Atlanta"]
+      # Check command bases
+      assert state.state_data["command_bases"] == ["Atlanta"]
 
       # Check infection rate
-      assert state.state_data["infection_rate"] == 2
+      assert state.state_data["infestation_rate"] == 2
       assert state.state_data["infection_rate_index"] == 0
     end
 
@@ -146,7 +146,7 @@ defmodule InfestationServer.GameEngine.GameEngineTest do
       {:ok, _initialized_game} = GameEngine.initialize_game(game.id)
       state = Games.get_latest_game_state(game.id)
 
-      city_infections = state.state_data["city_infections"]
+      city_infections = state.state_data["planet_infestations"]
 
       # Should have 9 planets infected
       assert map_size(city_infections) == 9
@@ -295,7 +295,7 @@ defmodule InfestationServer.GameEngine.GameEngineTest do
 
       # Set all cures to discovered
       updated_state_data =
-        put_in(state.state_data, ["cure_markers"], %{
+        put_in(state.state_data, ["containment_markers"], %{
           "blue" => "discovered",
           "yellow" => "discovered",
           "black" => "discovered",
@@ -321,7 +321,7 @@ defmodule InfestationServer.GameEngine.GameEngineTest do
 
       # Set only 3 cures to discovered
       updated_state_data =
-        put_in(state.state_data, ["cure_markers"], %{
+        put_in(state.state_data, ["containment_markers"], %{
           "blue" => "discovered",
           "yellow" => "discovered",
           "black" => "discovered",
@@ -356,10 +356,10 @@ defmodule InfestationServer.GameEngine.GameEngineTest do
     end
 
     @tag :skip
-    test "returns :lose when any disease cube supply depleted" do
+    test "returns :lose when any infestation marker supply depleted" do
       game =
         setup_game_in_progress(2, %{
-          "disease_cubes" => %{
+          "infestation_markers" => %{
             "blue" => -1,
             "yellow" => 24,
             "black" => 24,
@@ -382,7 +382,7 @@ defmodule InfestationServer.GameEngine.GameEngineTest do
       assert final_game.status == "in_progress"
     end
 
-    test "returns :continue when all disease cubes available" do
+    test "returns :continue when all infestation markers available" do
       game = setup_initialized_game(2)
 
       assert {:ok, :continue} = GameEngine.check_lose_condition(game.id)

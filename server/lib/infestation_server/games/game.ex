@@ -9,7 +9,7 @@ defmodule InfestationServer.Games.Game do
     field :status, :string, default: "lobby"
     field :difficulty, :string, default: "normal"
     field :outbreak_count, :integer, default: 0
-    field :infection_rate_index, :integer, default: 0
+    field :infestation_rate_index, :integer, default: 0
     field :research_stations_remaining, :integer, default: 6
 
     belongs_to :created_by, InfestationServer.Accounts.User
@@ -28,7 +28,7 @@ defmodule InfestationServer.Games.Game do
       :status,
       :difficulty,
       :outbreak_count,
-      :infection_rate_index,
+      :infestation_rate_index,
       :research_stations_remaining,
       :created_by_id
     ])
@@ -36,6 +36,6 @@ defmodule InfestationServer.Games.Game do
     |> validate_inclusion(:status, ["lobby", "in_progress", "won", "lost"])
     |> validate_inclusion(:difficulty, ["easy", "normal", "hard"])
     |> validate_number(:outbreak_count, greater_than_or_equal_to: 0)
-    |> validate_number(:infection_rate_index, greater_than_or_equal_to: 0)
+    |> validate_number(:infestation_rate_index, greater_than_or_equal_to: 0)
   end
 end

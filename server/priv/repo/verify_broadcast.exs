@@ -16,8 +16,8 @@ if game do
   # Get what would be broadcast to clients
   {:ok, state} = GameEngine.get_current_state(game.id)
 
-  IO.puts("\nBroadcast data - cure_markers:")
-  IO.inspect(state.state["cure_markers"], pretty: true)
+  IO.puts("\nBroadcast data - containment_markers:")
+  IO.inspect(state.state["containment_markers"], pretty: true)
 
   IO.puts("\nFull broadcast state structure:")
   IO.inspect(state, pretty: true, limit: :infinity)

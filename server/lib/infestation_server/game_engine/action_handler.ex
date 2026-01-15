@@ -32,8 +32,8 @@ defmodule InfestationServer.GameEngine.ActionHandler do
 
     with :ok <- validate_has_actions(player),
          :ok <- validate_disease_present(game_state, player.current_planet.name, color) do
-      cubes_to_remove = if player.role == "medic", do: :all, else: 1
-      remove_disease_cubes(player.game_id, player.current_planet, color, cubes_to_remove)
+      cubes_to_remove = if player.role == "combat_medic", do: :all, else: 1
+      remove_infestation_markers(player.game_id, player.current_planet, color, cubes_to_remove)
 
       Games.update_player(player, %{actions_remaining: player.actions_remaining - 1})
     end
@@ -83,7 +83,7 @@ defmodule InfestationServer.GameEngine.ActionHandler do
 
     Logger.info("Player planet: #{inspect(player.current_planet.name)}, Role: #{player.role}")
 
-    cards_needed = if player.role == "scientist", do: 4, else: 5
+    cards_needed = if player.role == "xenobiologist", do: 4, else: 5
 
     with :ok <- validate_has_actions(player),
          :ok <- validate_at_research_station(game_state, player.current_planet.name),
@@ -256,7 +256,7 @@ defmodule InfestationServer.GameEngine.ActionHandler do
     end
   end
 
-  defp remove_disease_cubes(game_id, planet, color, count) do
+  defp remove_infestation_markers(game_id, planet, color, count) do
     state = Games.get_latest_game_state(game_id)
     city_infections = state.state_data["city_infections"] || %{}
     disease_cubes = state.state_data["disease_cubes"]

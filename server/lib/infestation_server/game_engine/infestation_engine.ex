@@ -35,7 +35,7 @@ defmodule InfestationServer.GameEngine.InfectionEngine do
   end
 
   @doc """
-  Infects a planet with disease cubes.
+  Infects a planet with infestation markers.
   """
   def infect_planet(game_id, planet, cube_count \\ 1) do
     state = Games.get_latest_game_state(game_id)
@@ -44,10 +44,10 @@ defmodule InfestationServer.GameEngine.InfectionEngine do
       {:error, :no_game_state}
     else
       state_data = state.state_data || %{}
-      city_infections = state_data["city_infections"] || %{}
+      city_infections = state_data["planet_infestations"] || %{}
 
-      disease_cubes =
-        state_data["disease_cubes"] || %{"blue" => 24, "yellow" => 24, "black" => 24, "red" => 24}
+      infestation_markers =
+        state_data["infestation_markers"] || %{"blue" => 24, "yellow" => 24, "black" => 24, "red" => 24}
 
       current_count = Map.get(city_infections, planet.name, %{}) |> Map.get(planet.color, 0)
       new_count = current_count + cube_count
@@ -66,12 +66,12 @@ defmodule InfestationServer.GameEngine.InfectionEngine do
               new_count
             )
 
-          updated_disease_cubes = Map.update!(disease_cubes, planet.color, &(&1 - cube_count))
+          updated_infestation_markers = Map.update!(infestation_markers, planet.color, &(&1 - cube_count))
 
           updated_state_data =
             state_data
-            |> Map.put("city_infections", updated_city_infections)
-            |> Map.put("disease_cubes", updated_disease_cubes)
+            |> Map.put("planet_infestations", updated_city_infections)
+            |> Map.put("infestation_markers", updated_infestation_markers)
 
           Games.save_game_state(game_id, %{
             turn_number: state.turn_number,
@@ -124,7 +124,7 @@ defmodule InfestationServer.GameEngine.InfectionEngine do
     updated_state_data =
       state.state_data
       |> Map.put("infection_rate_index", new_infection_rate_index)
-      |> Map.put("infection_rate", new_infection_rate)
+      |> Map.put("infestation_rate", new_infection_rate)
 
     Games.save_game_state(game_id, %{
       turn_number: state.turn_number,

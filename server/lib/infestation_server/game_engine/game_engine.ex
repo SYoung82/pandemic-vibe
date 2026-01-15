@@ -41,13 +41,13 @@ defmodule InfestationServer.GameEngine.GameEngine do
 
   defp assign_roles(%Game{players: players} = game) do
     available_roles = [
-      "medic",
-      "scientist",
-      "researcher",
-      "operations_expert",
-      "dispatcher",
-      "contingency_planner",
-      "quarantine_specialist"
+      "combat_medic",
+      "xenobiologist",
+      "field_researcher",
+      "operations_commander",
+      "fleet_commander",
+      "tactical_officer",
+      "containment_specialist"
     ]
 
     roles = Enum.take_random(available_roles, length(players))
@@ -80,13 +80,13 @@ defmodule InfestationServer.GameEngine.GameEngine do
       infection_rate: Enum.at(@infection_rates, 0),
       outbreak_count: 0,
       research_stations: [@starting_planet],
-      cure_markers: %{
+      containment_markers: %{
         "blue" => "not_discovered",
         "yellow" => "not_discovered",
         "black" => "not_discovered",
         "red" => "not_discovered"
       },
-      disease_cubes: %{
+      infestation_markers: %{
         "blue" => 24,
         "yellow" => 24,
         "black" => 24,
@@ -119,7 +119,7 @@ defmodule InfestationServer.GameEngine.GameEngine do
          status: game.status,
          difficulty: game.difficulty,
          outbreak_count: get_in(game_state.state_data, [:outbreak_count]) || 0,
-         infection_rate: get_in(game_state.state_data, [:infection_rate]) || 2
+         infection_rate: get_in(game_state.state_data, [:infestation_rate]) || 2
        },
        players:
          Enum.map(game.players, fn player ->
@@ -225,7 +225,7 @@ defmodule InfestationServer.GameEngine.GameEngine do
 
   defp draw_infection_phase(game_id, _epidemic_occurred) do
     current_state = Games.get_latest_game_state(game_id)
-    infection_rate = get_in(current_state.state_data, ["infection_rate"]) || 2
+    infection_rate = get_in(current_state.state_data, ["infestation_rate"]) || 2
 
     case InfectionEngine.draw_infection_cards(game_id, infection_rate) do
       {:ok, _count} -> :ok
@@ -303,10 +303,10 @@ defmodule InfestationServer.GameEngine.GameEngine do
   """
   def check_win_condition(game_id) do
     state = Games.get_latest_game_state(game_id)
-    cure_markers = state.state_data["cure_markers"]
+    containment_markers = state.state_data["containment_markers"]
 
     all_cured =
-      Enum.all?(cure_markers, fn {_color, status} ->
+      Enum.all?(containment_markers, fn {_color, status} ->
         status == "discovered" or status == "eradicated"
       end)
 
@@ -331,7 +331,7 @@ defmodule InfestationServer.GameEngine.GameEngine do
         Games.update_game(game, %{status: "lost"})
         {:ok, {:lose, :too_many_outbreaks}}
 
-      any_disease_cubes_depleted?(state.state_data["disease_cubes"]) ->
+      any_infestation_markers_depleted?(state.state_data["infestation_markers"]) ->
         Games.update_game(game, %{status: "lost"})
         {:ok, {:lose, :disease_spread}}
 
@@ -344,8 +344,8 @@ defmodule InfestationServer.GameEngine.GameEngine do
     end
   end
 
-  defp any_disease_cubes_depleted?(disease_cubes) do
-    Enum.any?(disease_cubes, fn {_color, count} -> count < 0 end)
+  defp any_infestation_markers_depleted?(infestation_markers) do
+    Enum.any?(infestation_markers, fn {_color, count} -> count < 0 end)
   end
 
   defp player_deck_empty?(game_id) do
