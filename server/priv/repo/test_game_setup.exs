@@ -66,13 +66,15 @@ case scenario do
   "win" ->
     # 3 out of 4 cures discovered - one more to win!
     updated_state_data =
-      Map.put(state.state_data, "cure_markers", %{
+      state.state_data
+      |> Map.put("cure_markers", %{
         "blue" => "discovered",
         "yellow" => "discovered",
         "black" => "discovered",
         "red" => "not_discovered"  # Just need this one!
       })
 
+    # Update the existing state record directly
     state
     |> Ecto.Changeset.change(state_data: updated_state_data)
     |> Repo.update!()

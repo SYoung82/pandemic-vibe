@@ -705,7 +705,7 @@ export default function GameBoard() {
                                 ))}
                             </select>
                             <p className="text-xs text-gray-500">
-                              You need 5 cards of the selected color. Select the cards from your hand below:
+                              You need {myPlayer?.role === 'scientist' ? '4' : '5'} cards of the selected color{myPlayer?.role === 'scientist' ? ' (Scientist bonus!)' : ''}. Select the cards from your hand below:
                             </p>
                             <div className="space-y-1 max-h-40 overflow-y-auto">
                               {myPlayer?.cards
