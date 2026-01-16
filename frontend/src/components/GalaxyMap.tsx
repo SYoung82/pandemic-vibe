@@ -24,63 +24,63 @@ interface GalaxyMapProps {
   currentPlayerId?: string;
 }
 
-// Planet positions (percentage-based)
+// Planet positions (percentage-based) - arranged in four galactic quadrants
 const PLANET_POSITIONS: Record<string, { x: number; y: number }> = {
-  // Orion Sector (Blue) - 12 planets
-  'Kepler Prime': { x: 10, y: 35 },
-  'Zenith Station': { x: 15, y: 30 },
-  'Cryos': { x: 20, y: 28 },
-  'Titan City': { x: 24, y: 33 },
-  'Command Central': { x: 22, y: 38 },
-  'Nova Haven': { x: 18, y: 40 },
-  'Avalon': { x: 42, y: 28 },
-  'Solara': { x: 45, y: 32 },
-  'Lumina': { x: 48, y: 30 },
-  'Forge World': { x: 50, y: 27 },
-  'Crystallis': { x: 52, y: 33 },
-  'Polaris': { x: 55, y: 26 },
+  // Orion Sector (Blue) - Top Left Quadrant
+  'Kepler Prime': { x: 8, y: 12 },
+  'Zenith Station': { x: 18, y: 8 },
+  'Cryos': { x: 28, y: 6 },
+  'Titan City': { x: 38, y: 10 },
+  'Command Central': { x: 14, y: 22 },
+  'Nova Haven': { x: 24, y: 18 },
+  'Avalon': { x: 34, y: 16 },
+  'Solara': { x: 44, y: 20 },
+  'Lumina': { x: 10, y: 32 },
+  'Forge World': { x: 20, y: 28 },
+  'Crystallis': { x: 30, y: 26 },
+  'Polaris': { x: 40, y: 30 },
 
-  // Hydra Sector (Yellow) - 12 planets
-  'Star Harbor': { x: 12, y: 45 },
-  'Azteca Prime': { x: 16, y: 50 },
-  'Coral Station': { x: 20, y: 48 },
-  'Emerald Ridge': { x: 22, y: 55 },
-  'Condor Peak': { x: 18, y: 58 },
-  'Sierra Nova': { x: 22, y: 62 },
-  'Pampas Prime': { x: 26, y: 65 },
-  'Amazon Station': { x: 28, y: 60 },
-  'Savanna Prime': { x: 45, y: 50 },
-  'Oasis Station': { x: 50, y: 48 },
-  'Congo Nexus': { x: 48, y: 56 },
-  'Diamond World': { x: 52, y: 60 },
+  // Phoenix Sector (Red) - Top Right Quadrant
+  "Dragon's Reach": { x: 58, y: 8 },
+  'Techno Prime': { x: 68, y: 6 },
+  'Pearl Harbor': { x: 78, y: 10 },
+  'Sakura Station': { x: 88, y: 14 },
+  'Neon City': { x: 54, y: 18 },
+  'Jade World': { x: 64, y: 16 },
+  'Harbor Prime': { x: 74, y: 20 },
+  'Archipelago Prime': { x: 84, y: 24 },
+  'Temple Station': { x: 60, y: 28 },
+  'Mekong Nexus': { x: 70, y: 26 },
+  'Equator Station': { x: 80, y: 30 },
+  'Southern Cross': { x: 92, y: 34 },
 
-  // Nebula Sector (Black) - 12 planets
-  'Atlas Base': { x: 47, y: 40 },
-  'Pyramid Station': { x: 52, y: 42 },
-  'Crossroads Prime': { x: 55, y: 38 },
-  'Crimson Reach': { x: 58, y: 40 },
-  'Persia Nova': { x: 60, y: 42 },
-  'Babylon Station': { x: 58, y: 45 },
-  'Dune World': { x: 62, y: 48 },
-  'Indus Prime': { x: 64, y: 44 },
-  'Monsoon Station': { x: 66, y: 46 },
-  'Ganges Nexus': { x: 68, y: 48 },
-  'Spice World': { x: 70, y: 50 },
-  'Bengal Station': { x: 67, y: 52 },
+  // Hydra Sector (Yellow) - Bottom Left Quadrant
+  'Star Harbor': { x: 6, y: 42 },
+  'Azteca Prime': { x: 16, y: 40 },
+  'Coral Station': { x: 26, y: 44 },
+  'Emerald Ridge': { x: 36, y: 42 },
+  'Condor Peak': { x: 12, y: 52 },
+  'Sierra Nova': { x: 22, y: 50 },
+  'Pampas Prime': { x: 32, y: 54 },
+  'Amazon Station': { x: 42, y: 52 },
+  'Savanna Prime': { x: 8, y: 62 },
+  'Oasis Station': { x: 18, y: 60 },
+  'Congo Nexus': { x: 28, y: 64 },
+  'Diamond World': { x: 38, y: 62 },
 
-  // Phoenix Sector (Red) - 12 planets
-  "Dragon's Reach": { x: 72, y: 36 },
-  'Techno Prime': { x: 76, y: 38 },
-  'Pearl Harbor': { x: 74, y: 42 },
-  'Sakura Station': { x: 78, y: 40 },
-  'Neon City': { x: 80, y: 38 },
-  'Jade World': { x: 75, y: 45 },
-  'Harbor Prime': { x: 73, y: 48 },
-  'Temple Station': { x: 71, y: 52 },
-  'Mekong Nexus': { x: 74, y: 54 },
-  'Archipelago Prime': { x: 77, y: 50 },
-  'Equator Station': { x: 79, y: 56 },
-  'Southern Cross': { x: 82, y: 65 },
+  // Nebula Sector (Gray) - Bottom Right Quadrant
+  'Atlas Base': { x: 56, y: 42 },
+  'Pyramid Station': { x: 66, y: 40 },
+  'Crossroads Prime': { x: 76, y: 44 },
+  'Crimson Reach': { x: 86, y: 42 },
+  'Persia Nova': { x: 52, y: 52 },
+  'Babylon Station': { x: 62, y: 50 },
+  'Dune World': { x: 72, y: 54 },
+  'Indus Prime': { x: 82, y: 52 },
+  'Monsoon Station': { x: 58, y: 62 },
+  'Ganges Nexus': { x: 68, y: 60 },
+  'Spice World': { x: 78, y: 64 },
+  'Bengal Station': { x: 90, y: 62 },
 };
 
 // Color mapping for planets
@@ -218,22 +218,26 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
             </feMerge>
           </filter>
 
-          {/* Nebula gradients for sector regions */}
-          <radialGradient id="nebula-blue" cx="20%" cy="35%">
-            <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.15" />
+          {/* Nebula gradients for sector regions - four quadrants */}
+          <radialGradient id="nebula-blue" cx="50%" cy="50%">
+            <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.2" />
+            <stop offset="70%" stopColor="#3B82F6" stopOpacity="0.05" />
             <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
           </radialGradient>
-          <radialGradient id="nebula-yellow" cx="20%" cy="55%">
-            <stop offset="0%" stopColor="#EAB308" stopOpacity="0.12" />
+          <radialGradient id="nebula-red" cx="50%" cy="50%">
+            <stop offset="0%" stopColor="#EF4444" stopOpacity="0.18" />
+            <stop offset="70%" stopColor="#EF4444" stopOpacity="0.05" />
+            <stop offset="100%" stopColor="#EF4444" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="nebula-yellow" cx="50%" cy="50%">
+            <stop offset="0%" stopColor="#EAB308" stopOpacity="0.18" />
+            <stop offset="70%" stopColor="#EAB308" stopOpacity="0.05" />
             <stop offset="100%" stopColor="#EAB308" stopOpacity="0" />
           </radialGradient>
-          <radialGradient id="nebula-black" cx="60%" cy="45%">
-            <stop offset="0%" stopColor="#9CA3AF" stopOpacity="0.1" />
+          <radialGradient id="nebula-black" cx="50%" cy="50%">
+            <stop offset="0%" stopColor="#9CA3AF" stopOpacity="0.15" />
+            <stop offset="70%" stopColor="#6B7280" stopOpacity="0.04" />
             <stop offset="100%" stopColor="#6B7280" stopOpacity="0" />
-          </radialGradient>
-          <radialGradient id="nebula-red" cx="80%" cy="45%">
-            <stop offset="0%" stopColor="#EF4444" stopOpacity="0.12" />
-            <stop offset="100%" stopColor="#EF4444" stopOpacity="0" />
           </radialGradient>
 
           {/* Station gradient */}
@@ -261,16 +265,16 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
           ))}
         </g>
 
-        {/* Nebula regions */}
+        {/* Nebula regions - Four quadrants */}
         <g className="nebulae">
-          {/* Orion Sector (Blue) - left side */}
-          <ellipse cx="25" cy="35" rx="25" ry="18" fill="url(#nebula-blue)" />
-          {/* Hydra Sector (Yellow) - bottom left */}
-          <ellipse cx="25" cy="55" rx="20" ry="15" fill="url(#nebula-yellow)" />
-          {/* Nebula Sector (Black/Gray) - center */}
-          <ellipse cx="58" cy="45" rx="18" ry="12" fill="url(#nebula-black)" />
-          {/* Phoenix Sector (Red) - right side */}
-          <ellipse cx="76" cy="48" rx="18" ry="18" fill="url(#nebula-red)" />
+          {/* Orion Sector (Blue) - Top Left */}
+          <ellipse cx="25" cy="20" rx="28" ry="22" fill="url(#nebula-blue)" />
+          {/* Phoenix Sector (Red) - Top Right */}
+          <ellipse cx="75" cy="20" rx="28" ry="22" fill="url(#nebula-red)" />
+          {/* Hydra Sector (Yellow) - Bottom Left */}
+          <ellipse cx="25" cy="52" rx="28" ry="22" fill="url(#nebula-yellow)" />
+          {/* Nebula Sector (Gray) - Bottom Right */}
+          <ellipse cx="75" cy="52" rx="28" ry="22" fill="url(#nebula-black)" />
         </g>
 
         {/* Hyperspace routes (connection lines) */}
@@ -508,23 +512,23 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
           );
         })}
 
-        {/* Sector labels */}
-        <g className="sector-labels" opacity={0.6}>
-          <text x="15" y="22" fontSize="2" fill="#60A5FA" textAnchor="middle" fontWeight="bold"
-                style={{ textShadow: '0 0 4px rgba(59, 130, 246, 0.5)' }}>
+        {/* Sector labels - positioned in quadrant corners */}
+        <g className="sector-labels" opacity={0.5}>
+          <text x="5" y="5" fontSize="2.5" fill="#60A5FA" textAnchor="start" fontWeight="bold"
+                style={{ textShadow: '0 0 6px rgba(59, 130, 246, 0.6)' }}>
             ORION SECTOR
           </text>
-          <text x="20" y="68" fontSize="2" fill="#FCD34D" textAnchor="middle" fontWeight="bold"
-                style={{ textShadow: '0 0 4px rgba(234, 179, 8, 0.5)' }}>
+          <text x="95" y="5" fontSize="2.5" fill="#F87171" textAnchor="end" fontWeight="bold"
+                style={{ textShadow: '0 0 6px rgba(239, 68, 68, 0.6)' }}>
+            PHOENIX SECTOR
+          </text>
+          <text x="5" y="68" fontSize="2.5" fill="#FCD34D" textAnchor="start" fontWeight="bold"
+                style={{ textShadow: '0 0 6px rgba(234, 179, 8, 0.6)' }}>
             HYDRA SECTOR
           </text>
-          <text x="58" y="35" fontSize="2" fill="#9CA3AF" textAnchor="middle" fontWeight="bold"
-                style={{ textShadow: '0 0 4px rgba(107, 114, 128, 0.5)' }}>
+          <text x="95" y="68" fontSize="2.5" fill="#9CA3AF" textAnchor="end" fontWeight="bold"
+                style={{ textShadow: '0 0 6px rgba(107, 114, 128, 0.6)' }}>
             NEBULA SECTOR
-          </text>
-          <text x="78" y="32" fontSize="2" fill="#F87171" textAnchor="middle" fontWeight="bold"
-                style={{ textShadow: '0 0 4px rgba(239, 68, 68, 0.5)' }}>
-            PHOENIX SECTOR
           </text>
         </g>
       </svg>
