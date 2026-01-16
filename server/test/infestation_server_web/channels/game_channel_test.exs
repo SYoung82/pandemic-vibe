@@ -3,8 +3,10 @@ defmodule InfestationServerWeb.GameChannelTest do
 
   alias InfestationServer.{Accounts, Games}
   alias InfestationServerWeb.UserSocket
+  import InfestationServer.GamesFixtures, only: [ensure_planets_seeded: 0]
 
   setup do
+    ensure_planets_seeded()
     # Create test users
     {:ok, user1} =
       Accounts.register_user(%{

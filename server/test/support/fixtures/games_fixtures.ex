@@ -12,7 +12,7 @@ defmodule InfestationServer.GamesFixtures do
   Ensures planets are seeded in the test database.
   Call this at the beginning of tests that need planets.
   """
-  def ensure_cities_seeded do
+  def ensure_planets_seeded do
     # Seed a subset of planets needed for testing (including Nova Haven which is the starting planet)
     planets = [
       %{name: "Kepler Prime", color: "blue", population: 5_864_000},
@@ -69,6 +69,7 @@ defmodule InfestationServer.GamesFixtures do
   Generate a game.
   """
   def game_fixture(attrs \\ %{}) do
+    ensure_planets_seeded()
     user = attrs[:created_by] || user_fixture()
 
     {:ok, game} =
@@ -87,6 +88,7 @@ defmodule InfestationServer.GamesFixtures do
   Generate a game with a specified number of players.
   """
   def game_fixture_with_players(count, attrs \\ %{}) when count in 1..4 do
+    ensure_planets_seeded()
     game = game_fixture(attrs)
 
     # Add players to the game
@@ -115,7 +117,7 @@ defmodule InfestationServer.GamesFixtures do
   @doc """
   Generate a planet.
   """
-  def city_fixture(attrs \\ %{}) do
+  def planet_fixture(attrs \\ %{}) do
     name = "Planet#{System.unique_integer([:positive])}"
 
     {:ok, planet} =
@@ -137,7 +139,7 @@ defmodule InfestationServer.GamesFixtures do
   Returns the game with all initial state set up.
   """
   def setup_initialized_game(player_count \\ 2, difficulty \\ "normal") do
-    ensure_cities_seeded()
+    ensure_planets_seeded()
     game = game_fixture_with_players(player_count, %{difficulty: difficulty})
     {:ok, _initialized_game} = GameEngine.initialize_game(game.id)
     Games.get_game_with_players!(game.id)

@@ -1,2 +1,3 @@
+System.put_env("PGPORT", "5433")
 ExUnit.start(max_cases: System.schedulers_online() * 2)
 Ecto.Adapters.SQL.Sandbox.mode(InfestationServer.Repo, :manual)

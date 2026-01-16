@@ -8,9 +8,9 @@ import Config
 config :infestation_server, InfestationServer.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
-  port: String.to_integer(System.get_env("PGPORT") || "5432"),
-  database: "infestation_server_test#{System.get_env("MIX_TEST_PARTITION")}",
+  hostname: "127.0.0.1",
+  port: "5433",
+  database: "infestation_server_test",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
 

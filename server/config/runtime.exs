@@ -23,6 +23,18 @@ end
 config :infestation_server, InfestationServerWeb.Endpoint,
   http: [port: String.to_integer(System.get_env("PORT", "4000"))]
 
+# ADD THIS BLOCK FOR TEST ENVIRONMENT
+if config_env() == :test do
+  config :infestation_server, InfestationServer.Repo,
+    username: System.get_env("PGUSER") || "postgres",
+    password: System.get_env("PGPASSWORD") || "postgres",
+    hostname: System.get_env("PGHOST") || "127.0.0.1",
+    port: String.to_integer(System.get_env("PGPORT") || "5432"),
+    database: System.get_env("PGDATABASE") || "infestation_server_test",
+    pool: Ecto.Adapters.SQL.Sandbox,
+    pool_size: System.schedulers_online() * 2
+end
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

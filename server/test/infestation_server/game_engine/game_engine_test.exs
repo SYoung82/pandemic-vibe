@@ -21,7 +21,7 @@ defmodule InfestationServer.GameEngine.GameEngineTest do
       assert length(roles) == length(Enum.uniq(roles))
 
       # All players should start in Atlanta
-      atlanta = Games.get_planet_by_name("Atlanta")
+      atlanta = Games.get_planet_by_name("Nova Haven")
       players_with_planet = Repo.preload(initialized_game.players, :current_planet)
 
       assert Enum.all?(players_with_planet, fn p ->
@@ -34,7 +34,7 @@ defmodule InfestationServer.GameEngine.GameEngineTest do
       assert state.turn_number == 0
       assert state.current_player_id != nil
       assert state.state_data["outbreak_count"] == 0
-      assert state.state_data["infection_rate_index"] == 0
+      assert state.state_data["infestation_rate_index"] == 0
       assert state.state_data["infestation_rate"] == 2
     end
 
@@ -209,7 +209,6 @@ defmodule InfestationServer.GameEngine.GameEngineTest do
       game = setup_initialized_game(2)
 
       assert {:ok, state} = GameEngine.get_current_state(game.id)
-      assert state != nil
       assert is_map(state)
     end
 

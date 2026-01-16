@@ -2,8 +2,10 @@ defmodule InfestationServerWeb.GameControllerTest do
   use InfestationServerWeb.ConnCase, async: true
 
   alias InfestationServer.{Accounts, Games}
+  import InfestationServer.GamesFixtures, only: [ensure_planets_seeded: 0]
 
   setup do
+    ensure_planets_seeded()
     # Create test users
     {:ok, user1} =
       Accounts.register_user(%{

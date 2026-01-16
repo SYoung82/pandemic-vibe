@@ -294,7 +294,6 @@ defmodule InfestationServerWeb.GameChannel do
 
     case InfectionEngine.draw_infection_cards(game_id, infection_rate) do
       {:ok, _count} -> :ok
-      error -> error
     end
   end
 

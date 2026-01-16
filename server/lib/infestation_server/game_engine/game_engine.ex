@@ -62,11 +62,11 @@ defmodule InfestationServer.GameEngine.GameEngine do
   end
 
   defp set_starting_positions(%Game{players: players, id: game_id}) do
-    atlanta = Games.get_planet_by_name(@starting_planet)
+    nova_haven = Games.get_planet_by_name(@starting_planet)
 
     players
     |> Enum.each(fn player ->
-      Games.update_player(player, %{current_planet_id: atlanta.id})
+      Games.update_player(player, %{current_planet_id: nova_haven.id})
     end)
 
     {:ok, game_id}
@@ -229,7 +229,6 @@ defmodule InfestationServer.GameEngine.GameEngine do
 
     case InfectionEngine.draw_infection_cards(game_id, infestation_rate) do
       {:ok, _count} -> :ok
-      error -> error
     end
   end
 
