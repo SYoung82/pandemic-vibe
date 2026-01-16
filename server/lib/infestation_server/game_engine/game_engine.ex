@@ -141,7 +141,7 @@ defmodule InfestationServer.GameEngine.GameEngine do
              role: player.role,
              turn_order: player.turn_order,
              actions_remaining: player.actions_remaining,
-             current_city_id: current_planet_name,
+             current_planet_id: current_planet_name,
              cards: cards
            }
          end),
@@ -160,8 +160,8 @@ defmodule InfestationServer.GameEngine.GameEngine do
       %{
         id: card.id,
         card_type: card.card_type,
-        city_name: if(card.planet, do: card.planet.name, else: nil),
-        city_color: if(card.planet, do: card.planet.color, else: nil)
+        planet_name: if(card.planet, do: card.planet.name, else: nil),
+        planet_color: if(card.planet, do: card.planet.color, else: nil)
       }
     end)
   end
