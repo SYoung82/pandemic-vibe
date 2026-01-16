@@ -46,7 +46,7 @@ defmodule InfestationServerWeb.GameChannel do
         end
 
       {:error, reason} ->
-        Logger.error("Player turn validation failed: #{inspect(reason)}")
+        Logger.debug("Player turn validation failed: #{inspect(reason)}")
         {:reply, {:error, %{reason: reason}}, socket}
     end
   end
