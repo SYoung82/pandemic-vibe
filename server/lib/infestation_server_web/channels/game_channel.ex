@@ -116,7 +116,7 @@ defmodule InfestationServerWeb.GameChannel do
 
     case get_valid_move_destinations(player) do
       {:ok, planets} ->
-        {:reply, {:ok, %{cities: planets}}, socket}
+        {:reply, {:ok, %{planets: planets}}, socket}
 
       error ->
         {:reply, error, socket}

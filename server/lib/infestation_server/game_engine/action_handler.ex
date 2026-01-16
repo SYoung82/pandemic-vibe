@@ -98,8 +98,8 @@ defmodule InfestationServer.GameEngine.ActionHandler do
       end)
 
       # Mark cure as discovered
-      cure_markers = Map.put(game_state.state_data["cure_markers"], color, "discovered")
-      updated_state_data = Map.put(game_state.state_data, "cure_markers", cure_markers)
+      containment_markers = Map.put(game_state.state_data["containment_markers"], color, "discovered")
+      updated_state_data = Map.put(game_state.state_data, "containment_markers", containment_markers)
 
       Games.save_game_state(player.game_id, %{
         turn_number: game_state.turn_number,
@@ -196,7 +196,7 @@ defmodule InfestationServer.GameEngine.ActionHandler do
   end
 
   defp validate_cure_not_discovered(game_state, color) do
-    cure_status = game_state.state_data["cure_markers"][color]
+    cure_status = game_state.state_data["containment_markers"][color]
 
     if cure_status == "not_discovered" do
       :ok

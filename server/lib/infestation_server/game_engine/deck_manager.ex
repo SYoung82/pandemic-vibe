@@ -36,7 +36,7 @@ defmodule InfestationServer.GameEngine.DeckManager do
     |> Enum.map(fn {planet, index} ->
       %{
         game_id: game_id,
-        card_type: "city",
+        card_type: "planet",
         planet_id: planet.id,
         location: "player_deck",
         position: index,
@@ -93,7 +93,7 @@ defmodule InfestationServer.GameEngine.DeckManager do
     |> Enum.map(fn {planet, index} ->
       %{
         game_id: game_id,
-        card_type: "city",
+        card_type: "planet",
         planet_id: planet.id,
         location: "infection_deck",
         position: index,

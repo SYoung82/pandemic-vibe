@@ -104,9 +104,9 @@ defmodule InfestationServer.GameEngine.InfectionEngine do
     _game = Games.get_game!(game_id)
 
     # 1. Increase infection rate
-    new_infection_rate_index = min(state.state_data["infection_rate_index"] + 1, 6)
-    infection_rates = [2, 2, 2, 3, 3, 4, 4]
-    new_infection_rate = Enum.at(infection_rates, new_infection_rate_index)
+    new_infestation_rate_index = min(state.state_data["infestation_rate_index"] + 1, 6)
+    infestation_rates = [2, 2, 2, 3, 3, 4, 4]
+    new_infestation_rate = Enum.at(infestation_rates, new_infestation_rate_index)
 
     # 2. Infect: draw bottom card from infection deck
     infection_deck = DeckManager.get_deck(game_id, "infection_deck")
@@ -123,8 +123,8 @@ defmodule InfestationServer.GameEngine.InfectionEngine do
     # Update state with new infection rate
     updated_state_data =
       state.state_data
-      |> Map.put("infection_rate_index", new_infection_rate_index)
-      |> Map.put("infestation_rate", new_infection_rate)
+      |> Map.put("infestation_rate_index", new_infestation_rate_index)
+      |> Map.put("infestation_rate", new_infestation_rate)
 
     Games.save_game_state(game_id, %{
       turn_number: state.turn_number,

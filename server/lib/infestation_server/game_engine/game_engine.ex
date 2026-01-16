@@ -8,7 +8,7 @@ defmodule InfestationServer.GameEngine.GameEngine do
   alias InfestationServer.GameEngine.{DeckManager, InfectionEngine}
 
   @starting_planet "Nova Haven"
-  @infection_rates [2, 2, 2, 3, 3, 4, 4]
+  @infestation_rates [2, 2, 2, 3, 3, 4, 4]
 
   @doc """
   Initializes a new game with all starting conditions.
@@ -76,8 +76,8 @@ defmodule InfestationServer.GameEngine.GameEngine do
     first_player = Enum.min_by(players, & &1.turn_order)
 
     state_data = %{
-      infection_rate_index: 0,
-      infection_rate: Enum.at(@infection_rates, 0),
+      infestation_rate_index: 0,
+      infestation_rate: Enum.at(@infestation_rates, 0),
       outbreak_count: 0,
       research_stations: [@starting_planet],
       containment_markers: %{
@@ -92,7 +92,7 @@ defmodule InfestationServer.GameEngine.GameEngine do
         "black" => 24,
         "red" => 24
       },
-      city_infections: %{}
+      planet_infestations: %{}
     }
 
     case Games.save_game_state(game_id, %{
@@ -119,7 +119,7 @@ defmodule InfestationServer.GameEngine.GameEngine do
          status: game.status,
          difficulty: game.difficulty,
          outbreak_count: get_in(game_state.state_data, [:outbreak_count]) || 0,
-         infection_rate: get_in(game_state.state_data, [:infestation_rate]) || 2
+         infestation_rate: get_in(game_state.state_data, [:infestation_rate]) || 2
        },
        players:
          Enum.map(game.players, fn player ->
@@ -225,9 +225,9 @@ defmodule InfestationServer.GameEngine.GameEngine do
 
   defp draw_infection_phase(game_id, _epidemic_occurred) do
     current_state = Games.get_latest_game_state(game_id)
-    infection_rate = get_in(current_state.state_data, ["infestation_rate"]) || 2
+    infestation_rate = get_in(current_state.state_data, ["infestation_rate"]) || 2
 
-    case InfectionEngine.draw_infection_cards(game_id, infection_rate) do
+    case InfectionEngine.draw_infection_cards(game_id, infestation_rate) do
       {:ok, _count} -> :ok
       error -> error
     end
@@ -306,9 +306,13 @@ defmodule InfestationServer.GameEngine.GameEngine do
     containment_markers = state.state_data["containment_markers"]
 
     all_cured =
-      Enum.all?(containment_markers, fn {_color, status} ->
-        status == "discovered" or status == "eradicated"
-      end)
+      if containment_markers && map_size(containment_markers) == 4 do
+        Enum.all?(containment_markers, fn {_color, status} ->
+          status == "discovered" or status == "eradicated"
+        end)
+      else
+        false
+      end
 
     if all_cured do
       game = Games.get_game!(game_id)
