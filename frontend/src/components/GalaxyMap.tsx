@@ -52,7 +52,7 @@ const PLANET_POSITIONS: Record<string, { x: number; y: number }> = {
   'Temple Station': { x: 60, y: 28 },
   'Mekong Nexus': { x: 70, y: 26 },
   'Equator Station': { x: 80, y: 30 },
-  'Southern Cross': { x: 92, y: 34 },
+  'Southern Cross': { x: 85, y: 38 },
 
   // Hydra Sector (Yellow) - Bottom Left Quadrant
   'Star Harbor': { x: 6, y: 42 },
@@ -79,8 +79,8 @@ const PLANET_POSITIONS: Record<string, { x: number; y: number }> = {
   'Indus Prime': { x: 82, y: 52 },
   'Monsoon Station': { x: 58, y: 62 },
   'Ganges Nexus': { x: 68, y: 60 },
-  'Spice World': { x: 78, y: 64 },
-  'Bengal Station': { x: 90, y: 62 },
+  'Spice World': { x: 78, y: 58 },
+  'Bengal Station': { x: 88, y: 56 },
 };
 
 // Color mapping for planets
@@ -463,8 +463,10 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
               {playersAtPlanets[planet.name]?.map((player, idx) => {
                 const isCurrentPlayer = player.id === currentPlayerId;
                 const playerColor = isCurrentPlayer ? PLAYER_COLORS.active : PLAYER_COLORS.inactive;
-                const xOffset = planet.x + (idx - playersAtPlanets[planet.name].length / 2 + 0.5) * 2.2;
-                const yOffset = planet.y + 5;
+                // Position players overlapping the bottom of the planet
+                const playerCount = playersAtPlanets[planet.name].length;
+                const xOffset = planet.x + (idx - (playerCount - 1) / 2) * 1.8;
+                const yOffset = planet.y + planetRadius - 0.3; // Overlap bottom of planet
                 const roleName = player.role ? player.role.replace(/_/g, ' ') : 'Unknown Role';
 
                 return (
@@ -474,13 +476,13 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
                       <circle
                         cx={xOffset}
                         cy={yOffset}
-                        r={1.4}
+                        r={1.2}
                         fill={playerColor}
                         opacity={0.3}
                       >
                         <animate
                           attributeName="r"
-                          values="1.2;1.6;1.2"
+                          values="1.0;1.4;1.0"
                           dur="1.5s"
                           repeatCount="indefinite"
                         />
@@ -497,8 +499,8 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
                     <g transform={`translate(${xOffset}, ${yOffset})`}>
                       {/* Ship body */}
                       <ellipse
-                        rx={0.9}
-                        ry={0.6}
+                        rx={0.8}
+                        ry={0.55}
                         fill={playerColor}
                         stroke={isCurrentPlayer ? '#FBBF24' : '#E5E7EB'}
                         strokeWidth={isCurrentPlayer ? 0.2 : 0.12}
@@ -506,16 +508,16 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
                       />
                       {/* Ship cockpit */}
                       <ellipse
-                        rx={0.4}
-                        ry={0.25}
+                        rx={0.35}
+                        ry={0.2}
                         fill="#1F2937"
                         opacity={0.5}
                         className="pointer-events-none"
                       />
                       {/* Player number */}
                       <text
-                        y={0.25}
-                        fontSize="0.7"
+                        y={0.22}
+                        fontSize="0.6"
                         fill="white"
                         textAnchor="middle"
                         className="font-bold pointer-events-none"
@@ -558,29 +560,8 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
       <div className="absolute bottom-2 right-2 bg-gray-900 bg-opacity-90 rounded-lg p-3 shadow-lg text-xs max-w-xs border border-gray-700">
         <div className="font-bold mb-2 text-gray-100 border-b border-gray-700 pb-1">Galaxy Map</div>
         <div className="space-y-1.5">
-          {/* Sectors */}
-          <div className="text-xs font-semibold text-gray-400 mt-1">Galactic Sectors</div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_4px_rgba(59,130,246,0.5)]"></div>
-              <span className="text-gray-300 text-xs">Orion</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-[0_0_4px_rgba(234,179,8,0.5)]"></div>
-              <span className="text-gray-300 text-xs">Hydra</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-gray-500 shadow-[0_0_4px_rgba(107,114,128,0.5)]"></div>
-              <span className="text-gray-300 text-xs">Nebula</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_4px_rgba(239,68,68,0.5)]"></div>
-              <span className="text-gray-300 text-xs">Phoenix</span>
-            </div>
-          </div>
-
           {/* Elements */}
-          <div className="text-xs font-semibold text-gray-400 mt-2 pt-1 border-t border-gray-700">Elements</div>
+          <div className="text-xs font-semibold text-gray-400 mt-1">Elements</div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-gradient-to-br from-gray-300 to-gray-600 clip-hexagon flex items-center justify-center">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>

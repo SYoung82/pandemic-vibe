@@ -347,20 +347,20 @@ export default function GameBoard() {
             <div className="xl:col-span-3 space-y-4">
               {/* Current Turn Indicator */}
               {currentPlayer && (
-                <div className={`rounded-lg shadow-lg p-3 sm:p-4 lg:p-6 ${isCurrentPlayer ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gradient-to-r from-blue-500 to-blue-600'}`}>
+                <div className={`rounded-lg shadow-lg p-3 sm:p-4 lg:p-6 border ${isCurrentPlayer ? 'bg-gradient-to-r from-emerald-900 to-teal-900 border-emerald-500/50' : 'bg-gradient-to-r from-slate-800 to-slate-900 border-slate-600/50'}`}>
                   <div className="text-white">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                       <div>
                         <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1">
-                          {isCurrentPlayer ? '🎮 Your Turn!' : `${currentPlayer.role}'s Turn`}
+                          {isCurrentPlayer ? '🚀 Your Turn!' : `${currentPlayer.role}'s Turn`}
                         </h3>
-                        <p className="text-blue-100 text-sm lg:text-base">
+                        <p className="text-slate-300 text-sm lg:text-base">
                           Turn #{gameState?.turn_number || 0} • {currentPlayer.actions_remaining} actions remaining
                         </p>
                       </div>
                       {currentPlayer.role && (
-                        <div className="bg-white bg-opacity-20 rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 self-start sm:self-auto">
-                          <span className="text-white text-sm lg:text-base font-semibold capitalize">{currentPlayer.role}</span>
+                        <div className="bg-slate-700/50 border border-slate-500/30 rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 self-start sm:self-auto">
+                          <span className="text-slate-200 text-sm lg:text-base font-semibold capitalize">{currentPlayer.role}</span>
                         </div>
                       )}
                     </div>
@@ -536,42 +536,42 @@ export default function GameBoard() {
 
               {/* Player Actions */}
               {isCurrentPlayer && (
-                <div className="bg-white rounded-lg shadow p-6">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">Your Actions</h3>
+                <div className="bg-slate-900 rounded-lg shadow-lg border border-slate-700 p-6">
+                  <h3 className="text-lg font-bold text-slate-100 mb-4">Your Actions</h3>
                     <div className="grid grid-cols-2 gap-2 mb-4">
                       <button
                         onClick={() => handleSelectAction('move')}
-                        className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                        className="bg-cyan-800 hover:bg-cyan-700 text-cyan-100 py-2 rounded border border-cyan-600/50 transition-colors"
                       >
                         Move
                       </button>
                       <button
                         onClick={() => handleSelectAction('treat_disease')}
-                        className="bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                        className="bg-emerald-800 hover:bg-emerald-700 text-emerald-100 py-2 rounded border border-emerald-600/50 transition-colors"
                       >
                         Treat Infestation
                       </button>
                       <button
                         onClick={() => handleSelectAction('build_station')}
-                        className="bg-purple-600 text-white py-2 rounded hover:bg-purple-700"
+                        className="bg-violet-800 hover:bg-violet-700 text-violet-100 py-2 rounded border border-violet-600/50 transition-colors"
                       >
                         Build Command Base
                       </button>
                       <button
                         onClick={() => handleSelectAction('discover_cure')}
-                        className="bg-yellow-600 text-white py-2 rounded hover:bg-yellow-700"
+                        className="bg-amber-800 hover:bg-amber-700 text-amber-100 py-2 rounded border border-amber-600/50 transition-colors"
                       >
                         Achieve Containment
                       </button>
                     </div>
 
                     {selectedAction && (
-                      <div className="bg-gray-50 border border-gray-200 rounded p-4 mb-4">
-                        <h4 className="font-semibold mb-2 capitalize">Action: {selectedAction}</h4>
+                      <div className="bg-slate-800 border border-slate-600 rounded p-4 mb-4">
+                        <h4 className="font-semibold mb-2 capitalize text-slate-100">Action: {selectedAction}</h4>
 
                         {selectedAction === 'move' && validMoves && validMoves.length > 0 ? (
                           <select
-                            className="w-full px-3 py-2 border rounded mb-2"
+                            className="w-full px-3 py-2 bg-slate-700 border border-slate-500 rounded mb-2 text-slate-100"
                             onChange={(e) => setActionParams({ target: e.target.value })}
                             defaultValue=""
                           >
@@ -583,12 +583,12 @@ export default function GameBoard() {
                             ))}
                           </select>
                         ) : selectedAction === 'move' ? (
-                          <div className="text-sm text-gray-600 mb-2">Loading available destinations...</div>
+                          <div className="text-sm text-slate-400 mb-2">Loading available destinations...</div>
                         ) : selectedAction === 'treat_disease' ? (
                           <div className="space-y-2 mb-2">
-                            <label className="block text-sm text-gray-600">Select infestation color to treat:</label>
+                            <label className="block text-sm text-slate-300">Select infestation color to treat:</label>
                             <select
-                              className="w-full px-3 py-2 border rounded"
+                              className="w-full px-3 py-2 bg-slate-700 border border-slate-500 rounded text-slate-100"
                               onChange={(e) => setActionParams({ color: e.target.value })}
                               defaultValue=""
                             >
@@ -601,9 +601,9 @@ export default function GameBoard() {
                           </div>
                         ) : selectedAction === 'discover_cure' && gameState ? (
                           <div className="space-y-2 mb-2">
-                            <label className="block text-sm text-gray-600">Select infestation to contain:</label>
+                            <label className="block text-sm text-slate-300">Select infestation to contain:</label>
                             <select
-                              className="w-full px-3 py-2 border rounded mb-2"
+                              className="w-full px-3 py-2 bg-slate-700 border border-slate-500 rounded mb-2 text-slate-100"
                               onChange={(e) => setActionParams({ color: e.target.value })}
                               defaultValue=""
                             >
@@ -616,14 +616,14 @@ export default function GameBoard() {
                                   </option>
                                 ))}
                             </select>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-slate-400">
                               You need {myPlayer?.role === 'xenobiologist' ? '4' : '5'} cards of the selected color{myPlayer?.role === 'xenobiologist' ? ' (Xenobiologist bonus!)' : ''}. Select the cards from your hand below:
                             </p>
                             <div className="space-y-1 max-h-40 overflow-y-auto">
                               {myPlayer?.cards
                                 ?.filter((card) => card.planet_color === actionParams.color)
                                 .map((card) => (
-                                  <label key={card.id} className="flex items-center gap-2 p-2 hover:bg-white rounded cursor-pointer">
+                                  <label key={card.id} className="flex items-center gap-2 p-2 hover:bg-slate-700 rounded cursor-pointer text-slate-200">
                                     <input
                                       type="checkbox"
                                       onChange={(e) => {
@@ -634,18 +634,18 @@ export default function GameBoard() {
                                           setActionParams({ ...actionParams, card_ids: cardIds.filter(id => id !== card.id) });
                                         }
                                       }}
-                                      className="rounded"
+                                      className="rounded bg-slate-600 border-slate-500"
                                     />
                                     <span className="text-sm">{card.planet_name}</span>
                                   </label>
                                 ))}
                             </div>
                             {actionParams.color && myPlayer?.cards?.filter((card) => card.planet_color === actionParams.color).length === 0 ? (
-                              <p className="text-xs text-red-600">You don&apos;t have any {String(actionParams.color)} cards in your hand.</p>
+                              <p className="text-xs text-red-400">You don&apos;t have any {String(actionParams.color)} cards in your hand.</p>
                             ) : null}
                           </div>
                         ) : selectedAction === 'build_station' ? (
-                          <p className="text-sm text-gray-600 mb-2">
+                          <p className="text-sm text-slate-300 mb-2">
                             Build a command base at your current location.
                             {myPlayer?.current_planet_id && ` (${myPlayer.current_planet_id})`}
                           </p>
@@ -653,14 +653,14 @@ export default function GameBoard() {
                           <input
                             type="text"
                             placeholder="Enter parameters (e.g., planet name)"
-                            className="w-full px-3 py-2 border rounded mb-2"
+                            className="w-full px-3 py-2 bg-slate-700 border border-slate-500 rounded mb-2 text-slate-100 placeholder-slate-400"
                             onChange={(e) => setActionParams({ target: e.target.value })}
                           />
                         )}
 
                         <button
                           onClick={handleSendAction}
-                          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                          className="bg-cyan-700 hover:bg-cyan-600 text-cyan-100 px-4 py-2 rounded border border-cyan-500/50 transition-colors"
                         >
                           Execute Action
                         </button>
@@ -669,7 +669,7 @@ export default function GameBoard() {
 
                   <button
                     onClick={handleEndTurn}
-                    className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-semibold"
+                    className="w-full bg-rose-900 hover:bg-rose-800 text-rose-100 py-2 rounded-lg border border-rose-700/50 font-semibold transition-colors"
                   >
                     End Turn
                   </button>
@@ -768,18 +768,22 @@ export default function GameBoard() {
                       const colorClasses = {
                         blue: 'from-blue-500 to-blue-600',
                         yellow: 'from-yellow-400 to-yellow-500',
-                        black: 'from-gray-700 to-gray-800',
+                        black: 'from-gray-600 to-gray-700',
                         red: 'from-red-500 to-red-600'
+                      };
+                      const textColors = {
+                        blue: 'text-blue-100',
+                        yellow: 'text-yellow-900',
+                        black: 'text-gray-100',
+                        red: 'text-red-100'
                       };
                       const isDiscovered = status === 'discovered' || status === 'eradicated';
 
                       return (
                         <div
                           key={color}
-                          className={`flex-1 rounded-lg p-2 text-center ${
-                            isDiscovered
-                              ? `bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses] || 'from-gray-500 to-gray-600'} text-white`
-                              : 'bg-gray-100 border border-dashed border-gray-300'
+                          className={`flex-1 rounded-lg p-2 text-center bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses] || 'from-gray-500 to-gray-600'} ${textColors[color as keyof typeof textColors] || 'text-white'} ${
+                            !isDiscovered ? 'opacity-50' : ''
                           }`}
                         >
                           <div className="text-xs font-semibold capitalize mb-1">{color}</div>
