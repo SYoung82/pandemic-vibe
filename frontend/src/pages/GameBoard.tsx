@@ -675,84 +675,6 @@ export default function GameBoard() {
                   </button>
                 </div>
               )}
-
-              {/* Players */}
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">Players</h3>
-                <div className="space-y-3">
-                  {gameState?.players.map((player) => {
-                    const isActive = player.id === gameState.current_player_id;
-                    return (
-                      <div
-                        key={player.id}
-                        className={`rounded-lg p-4 border-2 ${
-                          isActive
-                            ? 'border-green-500 bg-green-50'
-                            : 'border-gray-200 bg-white'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${
-                              isActive ? 'bg-green-500' : 'bg-blue-500'
-                            }`}>
-                              {player.turn_order + 1}
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-gray-800 capitalize">{player.role || 'Player'}</h4>
-                              <p className="text-xs text-gray-500">
-                                {player.current_planet_id || 'Unknown location'}
-                              </p>
-                            </div>
-                          </div>
-                          {isActive && (
-                            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                              Active
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex gap-4 text-sm text-gray-600 mt-2">
-                          <div>
-                            <span className="font-medium">Actions:</span> {player.actions_remaining}/4
-                          </div>
-                          <div>
-                            <span className="font-medium">Cards:</span> {player.cards?.length || 0}
-                          </div>
-                        </div>
-
-                        {/* Player's hand - only show for the current user */}
-                        {String(player.user_id) === String(user?.id) && player.cards && player.cards.length > 0 && (
-                          <div className="mt-3 pt-3 border-t border-gray-200">
-                            <p className="text-xs font-semibold text-gray-600 mb-2">Your Hand:</p>
-                            <div className="flex flex-wrap gap-2">
-                              {player.cards.map((card) => (
-                                <div
-                                  key={card.id}
-                                  className={`px-3 py-2 rounded-lg text-xs font-medium shadow-sm border-2 ${
-                                    card.card_type === 'epidemic'
-                                      ? 'bg-red-100 border-red-300 text-red-800'
-                                      : card.planet_color === 'blue'
-                                      ? 'bg-blue-100 border-blue-300 text-blue-800'
-                                      : card.planet_color === 'yellow'
-                                      ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
-                                      : card.planet_color === 'black'
-                                      ? 'bg-gray-100 border-gray-300 text-gray-800'
-                                      : card.planet_color === 'red'
-                                      ? 'bg-red-100 border-red-300 text-red-800'
-                                      : 'bg-gray-100 border-gray-300 text-gray-600'
-                                  }`}
-                                >
-                                  {card.card_type === 'epidemic' ? '⚠️ INFESTATION SPREAD' : card.planet_name || 'Unknown'}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
             </div>
 
             {/* Right Sidebar - Chat and Game Stats */}
@@ -864,6 +786,86 @@ export default function GameBoard() {
                           <div className="text-xl">
                             {isDiscovered ? '✓' : '○'}
                           </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Players */}
+              {gameState && (
+                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
+                  <h3 className="text-sm font-bold text-gray-800 mb-3">Players</h3>
+                  <div className="space-y-2">
+                    {gameState.players.map((player) => {
+                      const isActive = player.id === gameState.current_player_id;
+                      return (
+                        <div
+                          key={player.id}
+                          className={`rounded-lg p-3 border-2 ${
+                            isActive
+                              ? 'border-green-500 bg-green-50'
+                              : 'border-gray-200 bg-white'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                                isActive ? 'bg-green-500' : 'bg-blue-500'
+                              }`}>
+                                {player.turn_order + 1}
+                              </div>
+                              <div>
+                                <h4 className="text-sm font-semibold text-gray-800 capitalize">{player.role || 'Player'}</h4>
+                                <p className="text-xs text-gray-500">
+                                  {player.current_planet_id || 'Unknown location'}
+                                </p>
+                              </div>
+                            </div>
+                            {isActive && (
+                              <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                                Active
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex gap-3 text-xs text-gray-600">
+                            <div>
+                              <span className="font-medium">Actions:</span> {player.actions_remaining}/4
+                            </div>
+                            <div>
+                              <span className="font-medium">Cards:</span> {player.cards?.length || 0}
+                            </div>
+                          </div>
+
+                          {/* Player's hand - only show for the current user */}
+                          {String(player.user_id) === String(user?.id) && player.cards && player.cards.length > 0 && (
+                            <div className="mt-2 pt-2 border-t border-gray-200">
+                              <p className="text-xs font-semibold text-gray-600 mb-1">Your Hand:</p>
+                              <div className="flex flex-wrap gap-1">
+                                {player.cards.map((card) => (
+                                  <div
+                                    key={card.id}
+                                    className={`px-2 py-1 rounded text-xs font-medium shadow-sm border ${
+                                      card.card_type === 'epidemic'
+                                        ? 'bg-red-100 border-red-300 text-red-800'
+                                        : card.planet_color === 'blue'
+                                        ? 'bg-blue-100 border-blue-300 text-blue-800'
+                                        : card.planet_color === 'yellow'
+                                        ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
+                                        : card.planet_color === 'black'
+                                        ? 'bg-gray-100 border-gray-300 text-gray-800'
+                                        : card.planet_color === 'red'
+                                        ? 'bg-red-100 border-red-300 text-red-800'
+                                        : 'bg-gray-100 border-gray-300 text-gray-600'
+                                    }`}
+                                  >
+                                    {card.card_type === 'epidemic' ? '⚠️ SPREAD' : card.planet_name || 'Unknown'}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       );
                     })}
