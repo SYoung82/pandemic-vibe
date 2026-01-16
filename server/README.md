@@ -28,9 +28,9 @@ mix ecto.create
 # Run migrations
 mix ecto.migrate
 
-# Seed cities and connections
+# Seed planets and connections
 mix run priv/repo/seeds.exs
-mix run priv/repo/seeds_city_connections.exs
+mix run priv/repo/seeds_planet_connections.exs
 ```
 
 ### Start the Server
@@ -109,8 +109,8 @@ server/
 ├── priv/
 │   └── repo/
 │       ├── migrations/         # Database migrations
-│       ├── seeds.exs          # City data seeding
-│       └── seeds_city_connections.exs  # City connections
+│       ├── seeds.exs          # Planet data seeding
+│       └── seeds_planet_connections.exs  # Planet connections
 └── test/                      # Test suite
 ```
 

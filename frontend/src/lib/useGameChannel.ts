@@ -6,8 +6,8 @@ const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:4000/socket';
 export interface Card {
   id: string;
   card_type: string;
-  city_name: string | null;
-  city_color: string | null;
+  planet_name: string | null;
+  planet_color: string | null;
 }
 
 export interface GameState {
@@ -24,26 +24,26 @@ export interface GameState {
     role: string;
     turn_order: number;
     actions_remaining: number;
-    current_city_id: string | null;
+    current_planet_id: string | null;
     cards: Card[];
   }>;
   state: {
-    infection_rate: number;
+    infestation_rate: number;
     outbreak_count: number;
-    research_stations: string[];
-    cure_markers: {
+    command_bases: string[];
+    containment_markers: {
       blue: string;
       yellow: string;
       black: string;
       red: string;
     };
-    disease_cubes: {
+    infestation_markers: {
       blue: number;
       yellow: number;
       black: number;
       red: number;
     };
-    city_infections: Record<string, Record<string, number>>;
+    planet_infestations: Record<string, Record<string, number>>;
   };
   current_player_id: string;
   turn_number: number;
@@ -246,7 +246,7 @@ export function useGameChannel(gameId: string | null, token: string | null) {
   }, []);
 
   const getValidMoves = useCallback(() => {
-    return new Promise<{ cities: Array<{ name: string; color: string }> }>((resolve, reject) => {
+    return new Promise<{ planets: Array<{ name: string; color: string }> }>((resolve, reject) => {
       if (!channelRef.current) {
         reject(new Error('Channel not connected'));
         return;
@@ -254,7 +254,7 @@ export function useGameChannel(gameId: string | null, token: string | null) {
 
       channelRef.current
         .push('get_valid_moves', {})
-        .receive('ok', (response: unknown) => resolve(response as { cities: Array<{ name: string; color: string }> }))
+        .receive('ok', (response: unknown) => resolve(response as { planets: Array<{ name: string; color: string }> }))
         .receive('error', (err: unknown) => reject(err as ChannelError));
     });
   }, []);

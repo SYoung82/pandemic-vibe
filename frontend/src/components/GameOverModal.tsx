@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 interface GameOverModalProps {
   status: 'won' | 'lost';
-  loseReason?: 'too_many_outbreaks' | 'disease_spread' | 'time_ran_out';
+  loseReason?: 'too_many_outbreaks' | 'infestation_spread' | 'time_ran_out';
   gameStats: {
     turnNumber: number;
     outbreakCount: number;
-    curesDiscovered: number;
+    containmentsAchieved: number;
     difficulty: string;
   };
   onClose: () => void;
@@ -41,13 +41,13 @@ export default function GameOverModal({ status, loseReason, gameStats, onClose }
       case 'too_many_outbreaks':
         return {
           title: 'Too Many Outbreaks!',
-          description: 'The diseases have spread too rapidly. 8 outbreaks have occurred and the world has fallen into chaos.',
+          description: 'The infestations have spread too rapidly. 8 outbreaks have occurred and the galaxy has fallen into chaos.',
           icon: '💥'
         };
-      case 'disease_spread':
+      case 'infestation_spread':
         return {
-          title: 'Disease Spread Too Fast!',
-          description: 'A disease has spread beyond control. There are no more disease cubes available.',
+          title: 'Infestation Spread Too Fast!',
+          description: 'An infestation has spread beyond control. There are no more infestation markers available.',
           icon: '🦠'
         };
       case 'time_ran_out':
@@ -59,7 +59,7 @@ export default function GameOverModal({ status, loseReason, gameStats, onClose }
       default:
         return {
           title: 'Game Over',
-          description: 'The team was unable to save humanity.',
+          description: 'The team was unable to save the galaxy.',
           icon: '❌'
         };
     }
@@ -106,7 +106,7 @@ export default function GameOverModal({ status, loseReason, gameStats, onClose }
               <>
                 <div className="text-7xl mb-4 animate-bounce">🎉</div>
                 <h1 className="text-4xl font-bold mb-2">Victory!</h1>
-                <p className="text-xl opacity-90">Humanity has been saved!</p>
+                <p className="text-xl opacity-90">The galaxy has been saved!</p>
               </>
             ) : (
               <>
@@ -133,8 +133,8 @@ export default function GameOverModal({ status, loseReason, gameStats, onClose }
               </div>
 
               <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-gray-800">{gameStats.curesDiscovered}</div>
-                <div className="text-sm text-gray-600 mt-1">Cures Discovered</div>
+                <div className="text-3xl font-bold text-gray-800">{gameStats.containmentsAchieved}</div>
+                <div className="text-sm text-gray-600 mt-1">Containments Achieved</div>
               </div>
 
               <div className="bg-gray-50 p-4 rounded-lg">
@@ -146,7 +146,7 @@ export default function GameOverModal({ status, loseReason, gameStats, onClose }
             {status === 'won' && (
               <div className="mt-6 p-4 bg-green-50 border-2 border-green-200 rounded-lg">
                 <p className="text-green-800 font-semibold text-center">
-                  🏆 All four diseases have been cured!
+                  🏆 All four infestations have been contained!
                 </p>
               </div>
             )}

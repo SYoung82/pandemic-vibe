@@ -1,5 +1,5 @@
 # Check the state of the WIN game
-alias PandemicVibeServer.{Repo, Games}
+alias InfestationServer.{Repo, Games}
 import Ecto.Query
 
 # Find the WIN game
@@ -21,7 +21,7 @@ if game do
   IO.inspect(state.state_data, pretty: true)
 
   IO.puts("\nCure markers:")
-  IO.inspect(state.state_data["cure_markers"], pretty: true)
+  IO.inspect(state.state_data["containment_markers"], pretty: true)
 
   IO.puts("\nPlayers:")
   Enum.each(game.players, fn player ->

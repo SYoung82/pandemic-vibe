@@ -3,11 +3,11 @@
 # Usage:
 #   mix run priv/repo/test_game_setup.exs win    # 3/4 cures discovered
 #   mix run priv/repo/test_game_setup.exs lose_outbreak  # 7 outbreaks
-#   mix run priv/repo/test_game_setup.exs lose_cubes     # Low disease cubes
+#   mix run priv/repo/test_game_setup.exs lose_cubes     # Low infestation markers
 
-alias PandemicVibeServer.{Repo, Games, Accounts}
-alias PandemicVibeServer.Games.{Game, Player}
-alias PandemicVibeServer.GameEngine.{GameEngine, DeckManager}
+alias InfestationServer.{Repo, Games, Accounts}
+alias InfestationServer.Games.{Game, Player}
+alias InfestationServer.GameEngine.{GameEngine, DeckManager}
 
 # Get scenario from command line args
 scenario = System.argv() |> List.first() || "win"
@@ -67,7 +67,7 @@ case scenario do
     # 3 out of 4 cures discovered - one more to win!
     updated_state_data =
       state.state_data
-      |> Map.put("cure_markers", %{
+      |> Map.put("containment_markers", %{
         "blue" => "discovered",
         "yellow" => "discovered",
         "black" => "discovered",
@@ -79,7 +79,7 @@ case scenario do
     |> Ecto.Changeset.change(state_data: updated_state_data)
     |> Repo.update!()
 
-    # Give player1 five red cards for discovering the cure
+    # Give player1 five red cards for achieve containment
     players = Games.list_game_players(game.id)
     player1 = Enum.find(players, &(&1.user_id == user1.id))
 
@@ -103,7 +103,7 @@ case scenario do
 
     IO.puts("✓ Game created with 3/4 cures discovered")
     IO.puts("  One more cure to win!")
-    IO.puts("  Player1 has 5 red cards to discover the final cure!")
+    IO.puts("  Player1 has 5 red cards to achieve containment!")
 
   "lose_outbreak" ->
     # 7 outbreaks - one more outbreak loses the game!
@@ -112,16 +112,16 @@ case scenario do
     IO.puts("  One more outbreak loses the game!")
 
   "lose_cubes" ->
-    # Very low disease cubes - almost depleted
+    # Very low infestation markers - almost depleted
     updated_state_data =
       state.state_data
-      |> Map.put("disease_cubes", %{
+      |> Map.put("infestation_markers", %{
         "blue" => 2,
         "yellow" => 2,
         "black" => 2,
         "red" => 2
       })
-      |> Map.put("city_infections", %{
+      |> Map.put("planet_infestations", %{
         "Atlanta" => %{"blue" => 3},
         "Chicago" => %{"blue" => 3},
         "San Francisco" => %{"blue" => 3},
@@ -132,7 +132,7 @@ case scenario do
     |> Ecto.Changeset.change(state_data: updated_state_data)
     |> Repo.update!()
 
-    IO.puts("✓ Game created with low disease cubes")
+    IO.puts("✓ Game created with low infestation markers")
     IO.puts("  A few more infections could deplete cubes!")
 
   "lose_deck" ->

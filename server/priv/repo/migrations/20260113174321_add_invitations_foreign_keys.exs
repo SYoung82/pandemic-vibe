@@ -1,4 +1,4 @@
-defmodule PandemicVibeServer.Repo.Migrations.AddInvitationsForeignKeys do
+defmodule InfestationServer.Repo.Migrations.AddInvitationsForeignKeys do
   use Ecto.Migration
 
   def change do

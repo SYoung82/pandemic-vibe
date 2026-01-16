@@ -1,4 +1,4 @@
-defmodule PandemicVibeServer.Repo.Migrations.CreateGames do
+defmodule InfestationServer.Repo.Migrations.CreateGames do
   use Ecto.Migration
 
   def change do

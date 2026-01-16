@@ -108,7 +108,7 @@ export default function GameLobby() {
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className="text-2xl font-bold text-gray-800">Pandemic Vibe</h1>
+            <h1 className="text-2xl font-bold text-gray-800">Infestation</h1>
             <div className="flex items-center gap-4">
               <span className="text-gray-600">Welcome, {user?.name}</span>
               <button

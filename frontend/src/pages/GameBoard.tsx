@@ -4,7 +4,7 @@ import { useAuth } from '../lib/AuthContext';
 import { useGameChannel } from '../lib/useGameChannel';
 import type { Card } from '../lib/useGameChannel';
 import { gameAPI } from '../lib/api';
-import WorldMap from '../components/WorldMap';
+import GalaxyMap from '../components/GalaxyMap';
 import GameOverModal from '../components/GameOverModal';
 
 interface Player {
@@ -111,7 +111,7 @@ export default function GameBoard() {
     if (action === 'move') {
       try {
         const response = await getValidMoves();
-        setValidMoves(response.cities);
+        setValidMoves(response.planets || []);
       } catch (err) {
         console.error('Failed to load valid moves:', err);
         setValidMoves([]);
@@ -368,258 +368,170 @@ export default function GameBoard() {
                 </div>
               )}
 
-              {/* World Map */}
+              {/* Galaxy Map */}
               {gameState && (
-                <WorldMap
+                <GalaxyMap
                   cities={[
-                    // Blue cities (North America and Europe)
-                    { name: 'San Francisco', color: 'blue', x: 5, y: 40,
-                      hasResearchStation: gameState.state.research_stations?.includes('San Francisco'),
-                      infections: gameState.state.city_infections?.['San Francisco'] },
-                    { name: 'Chicago', color: 'blue', x: 18, y: 35,
-                      hasResearchStation: gameState.state.research_stations?.includes('Chicago'),
-                      infections: gameState.state.city_infections?.['Chicago'] },
-                    { name: 'Montreal', color: 'blue', x: 24, y: 30,
-                      hasResearchStation: gameState.state.research_stations?.includes('Montreal'),
-                      infections: gameState.state.city_infections?.['Montreal'] },
-                    { name: 'New York', color: 'blue', x: 26, y: 35,
-                      hasResearchStation: gameState.state.research_stations?.includes('New York'),
-                      infections: gameState.state.city_infections?.['New York'] },
-                    { name: 'Washington', color: 'blue', x: 24, y: 39,
-                      hasResearchStation: gameState.state.research_stations?.includes('Washington'),
-                      infections: gameState.state.city_infections?.['Washington'] },
-                    { name: 'Atlanta', color: 'blue', x: 20, y: 42,
-                      hasResearchStation: gameState.state.research_stations?.includes('Atlanta'),
-                      infections: gameState.state.city_infections?.['Atlanta'] },
-                    { name: 'London', color: 'blue', x: 45, y: 28,
-                      hasResearchStation: gameState.state.research_stations?.includes('London'),
-                      infections: gameState.state.city_infections?.['London'] },
-                    { name: 'Madrid', color: 'blue', x: 42, y: 38,
-                      hasResearchStation: gameState.state.research_stations?.includes('Madrid'),
-                      infections: gameState.state.city_infections?.['Madrid'] },
-                    { name: 'Paris', color: 'blue', x: 48, y: 33,
-                      hasResearchStation: gameState.state.research_stations?.includes('Paris'),
-                      infections: gameState.state.city_infections?.['Paris'] },
-                    { name: 'Essen', color: 'blue', x: 50, y: 28,
-                      hasResearchStation: gameState.state.research_stations?.includes('Essen'),
-                      infections: gameState.state.city_infections?.['Essen'] },
-                    { name: 'Milan', color: 'blue', x: 52, y: 35,
-                      hasResearchStation: gameState.state.research_stations?.includes('Milan'),
-                      infections: gameState.state.city_infections?.['Milan'] },
-                    { name: 'St. Petersburg', color: 'blue', x: 58, y: 22,
-                      hasResearchStation: gameState.state.research_stations?.includes('St. Petersburg'),
-                      infections: gameState.state.city_infections?.['St. Petersburg'] },
+                    // Orion Sector (Blue) - 12 planets
+                    { name: 'Kepler Prime', color: 'blue', x: 10, y: 35,
+                      hasResearchStation: gameState.state.command_bases?.includes('Kepler Prime'),
+                      infections: gameState.state.planet_infestations?.['Kepler Prime'] },
+                    { name: 'Zenith Station', color: 'blue', x: 15, y: 30,
+                      hasResearchStation: gameState.state.command_bases?.includes('Zenith Station'),
+                      infections: gameState.state.planet_infestations?.['Zenith Station'] },
+                    { name: 'Cryos', color: 'blue', x: 20, y: 28,
+                      hasResearchStation: gameState.state.command_bases?.includes('Cryos'),
+                      infections: gameState.state.planet_infestations?.['Cryos'] },
+                    { name: 'Titan City', color: 'blue', x: 24, y: 33,
+                      hasResearchStation: gameState.state.command_bases?.includes('Titan City'),
+                      infections: gameState.state.planet_infestations?.['Titan City'] },
+                    { name: 'Command Central', color: 'blue', x: 22, y: 38,
+                      hasResearchStation: gameState.state.command_bases?.includes('Command Central'),
+                      infections: gameState.state.planet_infestations?.['Command Central'] },
+                    { name: 'Nova Haven', color: 'blue', x: 18, y: 40,
+                      hasResearchStation: gameState.state.command_bases?.includes('Nova Haven'),
+                      infections: gameState.state.planet_infestations?.['Nova Haven'] },
+                    { name: 'Avalon', color: 'blue', x: 42, y: 28,
+                      hasResearchStation: gameState.state.command_bases?.includes('Avalon'),
+                      infections: gameState.state.planet_infestations?.['Avalon'] },
+                    { name: 'Solara', color: 'blue', x: 45, y: 32,
+                      hasResearchStation: gameState.state.command_bases?.includes('Solara'),
+                      infections: gameState.state.planet_infestations?.['Solara'] },
+                    { name: 'Lumina', color: 'blue', x: 48, y: 30,
+                      hasResearchStation: gameState.state.command_bases?.includes('Lumina'),
+                      infections: gameState.state.planet_infestations?.['Lumina'] },
+                    { name: 'Forge World', color: 'blue', x: 50, y: 27,
+                      hasResearchStation: gameState.state.command_bases?.includes('Forge World'),
+                      infections: gameState.state.planet_infestations?.['Forge World'] },
+                    { name: 'Crystallis', color: 'blue', x: 52, y: 33,
+                      hasResearchStation: gameState.state.command_bases?.includes('Crystallis'),
+                      infections: gameState.state.planet_infestations?.['Crystallis'] },
+                    { name: 'Polaris', color: 'blue', x: 55, y: 26,
+                      hasResearchStation: gameState.state.command_bases?.includes('Polaris'),
+                      infections: gameState.state.planet_infestations?.['Polaris'] },
 
-                    // Yellow cities (South America and Africa)
-                    { name: 'Los Angeles', color: 'yellow', x: 8, y: 45,
-                      hasResearchStation: gameState.state.research_stations?.includes('Los Angeles'),
-                      infections: gameState.state.city_infections?.['Los Angeles'] },
-                    { name: 'Mexico City', color: 'yellow', x: 14, y: 52,
-                      hasResearchStation: gameState.state.research_stations?.includes('Mexico City'),
-                      infections: gameState.state.city_infections?.['Mexico City'] },
-                    { name: 'Miami', color: 'yellow', x: 22, y: 50,
-                      hasResearchStation: gameState.state.research_stations?.includes('Miami'),
-                      infections: gameState.state.city_infections?.['Miami'] },
-                    { name: 'Bogota', color: 'yellow', x: 22, y: 62,
-                      hasResearchStation: gameState.state.research_stations?.includes('Bogota'),
-                      infections: gameState.state.city_infections?.['Bogota'] },
-                    { name: 'Lima', color: 'yellow', x: 20, y: 70,
-                      hasResearchStation: gameState.state.research_stations?.includes('Lima'),
-                      infections: gameState.state.city_infections?.['Lima'] },
-                    { name: 'Santiago', color: 'yellow', x: 24, y: 80,
-                      hasResearchStation: gameState.state.research_stations?.includes('Santiago'),
-                      infections: gameState.state.city_infections?.['Santiago'] },
-                    { name: 'Buenos Aires', color: 'yellow', x: 28, y: 78,
-                      hasResearchStation: gameState.state.research_stations?.includes('Buenos Aires'),
-                      infections: gameState.state.city_infections?.['Buenos Aires'] },
-                    { name: 'Sao Paulo', color: 'yellow', x: 32, y: 72,
-                      hasResearchStation: gameState.state.research_stations?.includes('Sao Paulo'),
-                      infections: gameState.state.city_infections?.['Sao Paulo'] },
-                    { name: 'Lagos', color: 'yellow', x: 48, y: 60,
-                      hasResearchStation: gameState.state.research_stations?.includes('Lagos'),
-                      infections: gameState.state.city_infections?.['Lagos'] },
-                    { name: 'Khartoum', color: 'yellow', x: 56, y: 56,
-                      hasResearchStation: gameState.state.research_stations?.includes('Khartoum'),
-                      infections: gameState.state.city_infections?.['Khartoum'] },
-                    { name: 'Kinshasa', color: 'yellow', x: 52, y: 66,
-                      hasResearchStation: gameState.state.research_stations?.includes('Kinshasa'),
-                      infections: gameState.state.city_infections?.['Kinshasa'] },
-                    { name: 'Johannesburg', color: 'yellow', x: 54, y: 75,
-                      hasResearchStation: gameState.state.research_stations?.includes('Johannesburg'),
-                      infections: gameState.state.city_infections?.['Johannesburg'] },
+                    // Hydra Sector (Yellow) - 12 planets
+                    { name: 'Star Harbor', color: 'yellow', x: 12, y: 45,
+                      hasResearchStation: gameState.state.command_bases?.includes('Star Harbor'),
+                      infections: gameState.state.planet_infestations?.['Star Harbor'] },
+                    { name: 'Azteca Prime', color: 'yellow', x: 16, y: 50,
+                      hasResearchStation: gameState.state.command_bases?.includes('Azteca Prime'),
+                      infections: gameState.state.planet_infestations?.['Azteca Prime'] },
+                    { name: 'Coral Station', color: 'yellow', x: 20, y: 48,
+                      hasResearchStation: gameState.state.command_bases?.includes('Coral Station'),
+                      infections: gameState.state.planet_infestations?.['Coral Station'] },
+                    { name: 'Emerald Ridge', color: 'yellow', x: 22, y: 55,
+                      hasResearchStation: gameState.state.command_bases?.includes('Emerald Ridge'),
+                      infections: gameState.state.planet_infestations?.['Emerald Ridge'] },
+                    { name: 'Condor Peak', color: 'yellow', x: 18, y: 58,
+                      hasResearchStation: gameState.state.command_bases?.includes('Condor Peak'),
+                      infections: gameState.state.planet_infestations?.['Condor Peak'] },
+                    { name: 'Sierra Nova', color: 'yellow', x: 22, y: 62,
+                      hasResearchStation: gameState.state.command_bases?.includes('Sierra Nova'),
+                      infections: gameState.state.planet_infestations?.['Sierra Nova'] },
+                    { name: 'Pampas Prime', color: 'yellow', x: 26, y: 65,
+                      hasResearchStation: gameState.state.command_bases?.includes('Pampas Prime'),
+                      infections: gameState.state.planet_infestations?.['Pampas Prime'] },
+                    { name: 'Amazon Station', color: 'yellow', x: 28, y: 60,
+                      hasResearchStation: gameState.state.command_bases?.includes('Amazon Station'),
+                      infections: gameState.state.planet_infestations?.['Amazon Station'] },
+                    { name: 'Savanna Prime', color: 'yellow', x: 45, y: 50,
+                      hasResearchStation: gameState.state.command_bases?.includes('Savanna Prime'),
+                      infections: gameState.state.planet_infestations?.['Savanna Prime'] },
+                    { name: 'Oasis Station', color: 'yellow', x: 50, y: 48,
+                      hasResearchStation: gameState.state.command_bases?.includes('Oasis Station'),
+                      infections: gameState.state.planet_infestations?.['Oasis Station'] },
+                    { name: 'Congo Nexus', color: 'yellow', x: 48, y: 56,
+                      hasResearchStation: gameState.state.command_bases?.includes('Congo Nexus'),
+                      infections: gameState.state.planet_infestations?.['Congo Nexus'] },
+                    { name: 'Diamond World', color: 'yellow', x: 52, y: 60,
+                      hasResearchStation: gameState.state.command_bases?.includes('Diamond World'),
+                      infections: gameState.state.planet_infestations?.['Diamond World'] },
 
-                    // Black cities (Asia and Middle East)
-                    { name: 'Algiers', color: 'black', x: 48, y: 43,
-                      hasResearchStation: gameState.state.research_stations?.includes('Algiers'),
-                      infections: gameState.state.city_infections?.['Algiers'] },
-                    { name: 'Cairo', color: 'black', x: 54, y: 46,
-                      hasResearchStation: gameState.state.research_stations?.includes('Cairo'),
-                      infections: gameState.state.city_infections?.['Cairo'] },
-                    { name: 'Istanbul', color: 'black', x: 56, y: 38,
-                      hasResearchStation: gameState.state.research_stations?.includes('Istanbul'),
-                      infections: gameState.state.city_infections?.['Istanbul'] },
-                    { name: 'Moscow', color: 'black', x: 62, y: 26,
-                      hasResearchStation: gameState.state.research_stations?.includes('Moscow'),
-                      infections: gameState.state.city_infections?.['Moscow'] },
-                    { name: 'Tehran', color: 'black', x: 66, y: 40,
-                      hasResearchStation: gameState.state.research_stations?.includes('Tehran'),
-                      infections: gameState.state.city_infections?.['Tehran'] },
-                    { name: 'Baghdad', color: 'black', x: 62, y: 44,
-                      hasResearchStation: gameState.state.research_stations?.includes('Baghdad'),
-                      infections: gameState.state.city_infections?.['Baghdad'] },
-                    { name: 'Riyadh', color: 'black', x: 62, y: 52,
-                      hasResearchStation: gameState.state.research_stations?.includes('Riyadh'),
-                      infections: gameState.state.city_infections?.['Riyadh'] },
-                    { name: 'Karachi', color: 'black', x: 70, y: 48,
-                      hasResearchStation: gameState.state.research_stations?.includes('Karachi'),
-                      infections: gameState.state.city_infections?.['Karachi'] },
-                    { name: 'Mumbai', color: 'black', x: 72, y: 54,
-                      hasResearchStation: gameState.state.research_stations?.includes('Mumbai'),
-                      infections: gameState.state.city_infections?.['Mumbai'] },
-                    { name: 'Delhi', color: 'black', x: 74, y: 46,
-                      hasResearchStation: gameState.state.research_stations?.includes('Delhi'),
-                      infections: gameState.state.city_infections?.['Delhi'] },
-                    { name: 'Chennai', color: 'black', x: 76, y: 58,
-                      hasResearchStation: gameState.state.research_stations?.includes('Chennai'),
-                      infections: gameState.state.city_infections?.['Chennai'] },
-                    { name: 'Kolkata', color: 'black', x: 78, y: 50,
-                      hasResearchStation: gameState.state.research_stations?.includes('Kolkata'),
-                      infections: gameState.state.city_infections?.['Kolkata'] },
+                    // Nebula Sector (Black) - 12 planets
+                    { name: 'Atlas Base', color: 'black', x: 47, y: 40,
+                      hasResearchStation: gameState.state.command_bases?.includes('Atlas Base'),
+                      infections: gameState.state.planet_infestations?.['Atlas Base'] },
+                    { name: 'Pyramid Station', color: 'black', x: 52, y: 42,
+                      hasResearchStation: gameState.state.command_bases?.includes('Pyramid Station'),
+                      infections: gameState.state.planet_infestations?.['Pyramid Station'] },
+                    { name: 'Crossroads Prime', color: 'black', x: 55, y: 38,
+                      hasResearchStation: gameState.state.command_bases?.includes('Crossroads Prime'),
+                      infections: gameState.state.planet_infestations?.['Crossroads Prime'] },
+                    { name: 'Crimson Reach', color: 'black', x: 58, y: 40,
+                      hasResearchStation: gameState.state.command_bases?.includes('Crimson Reach'),
+                      infections: gameState.state.planet_infestations?.['Crimson Reach'] },
+                    { name: 'Persia Nova', color: 'black', x: 60, y: 42,
+                      hasResearchStation: gameState.state.command_bases?.includes('Persia Nova'),
+                      infections: gameState.state.planet_infestations?.['Persia Nova'] },
+                    { name: 'Babylon Station', color: 'black', x: 58, y: 45,
+                      hasResearchStation: gameState.state.command_bases?.includes('Babylon Station'),
+                      infections: gameState.state.planet_infestations?.['Babylon Station'] },
+                    { name: 'Dune World', color: 'black', x: 62, y: 48,
+                      hasResearchStation: gameState.state.command_bases?.includes('Dune World'),
+                      infections: gameState.state.planet_infestations?.['Dune World'] },
+                    { name: 'Indus Prime', color: 'black', x: 64, y: 44,
+                      hasResearchStation: gameState.state.command_bases?.includes('Indus Prime'),
+                      infections: gameState.state.planet_infestations?.['Indus Prime'] },
+                    { name: 'Monsoon Station', color: 'black', x: 66, y: 46,
+                      hasResearchStation: gameState.state.command_bases?.includes('Monsoon Station'),
+                      infections: gameState.state.planet_infestations?.['Monsoon Station'] },
+                    { name: 'Ganges Nexus', color: 'black', x: 68, y: 48,
+                      hasResearchStation: gameState.state.command_bases?.includes('Ganges Nexus'),
+                      infections: gameState.state.planet_infestations?.['Ganges Nexus'] },
+                    { name: 'Spice World', color: 'black', x: 70, y: 50,
+                      hasResearchStation: gameState.state.command_bases?.includes('Spice World'),
+                      infections: gameState.state.planet_infestations?.['Spice World'] },
+                    { name: 'Bengal Station', color: 'black', x: 67, y: 52,
+                      hasResearchStation: gameState.state.command_bases?.includes('Bengal Station'),
+                      infections: gameState.state.planet_infestations?.['Bengal Station'] },
 
-                    // Red cities (East Asia and Oceania)
-                    { name: 'Beijing', color: 'red', x: 82, y: 38,
-                      hasResearchStation: gameState.state.research_stations?.includes('Beijing'),
-                      infections: gameState.state.city_infections?.['Beijing'] },
-                    { name: 'Seoul', color: 'red', x: 86, y: 36,
-                      hasResearchStation: gameState.state.research_stations?.includes('Seoul'),
-                      infections: gameState.state.city_infections?.['Seoul'] },
-                    { name: 'Shanghai', color: 'red', x: 84, y: 44,
-                      hasResearchStation: gameState.state.research_stations?.includes('Shanghai'),
-                      infections: gameState.state.city_infections?.['Shanghai'] },
-                    { name: 'Tokyo', color: 'red', x: 90, y: 38,
-                      hasResearchStation: gameState.state.research_stations?.includes('Tokyo'),
-                      infections: gameState.state.city_infections?.['Tokyo'] },
-                    { name: 'Osaka', color: 'red', x: 88, y: 42,
-                      hasResearchStation: gameState.state.research_stations?.includes('Osaka'),
-                      infections: gameState.state.city_infections?.['Osaka'] },
-                    { name: 'Taipei', color: 'red', x: 84, y: 50,
-                      hasResearchStation: gameState.state.research_stations?.includes('Taipei'),
-                      infections: gameState.state.city_infections?.['Taipei'] },
-                    { name: 'Hong Kong', color: 'red', x: 82, y: 52,
-                      hasResearchStation: gameState.state.research_stations?.includes('Hong Kong'),
-                      infections: gameState.state.city_infections?.['Hong Kong'] },
-                    { name: 'Bangkok', color: 'red', x: 78, y: 58,
-                      hasResearchStation: gameState.state.research_stations?.includes('Bangkok'),
-                      infections: gameState.state.city_infections?.['Bangkok'] },
-                    { name: 'Ho Chi Minh City', color: 'red', x: 80, y: 62,
-                      hasResearchStation: gameState.state.research_stations?.includes('Ho Chi Minh City'),
-                      infections: gameState.state.city_infections?.['Ho Chi Minh City'] },
-                    { name: 'Manila', color: 'red', x: 84, y: 60,
-                      hasResearchStation: gameState.state.research_stations?.includes('Manila'),
-                      infections: gameState.state.city_infections?.['Manila'] },
-                    { name: 'Jakarta', color: 'red', x: 80, y: 68,
-                      hasResearchStation: gameState.state.research_stations?.includes('Jakarta'),
-                      infections: gameState.state.city_infections?.['Jakarta'] },
-                    { name: 'Sydney', color: 'red', x: 88, y: 78,
-                      hasResearchStation: gameState.state.research_stations?.includes('Sydney'),
-                      infections: gameState.state.city_infections?.['Sydney'] },
+                    // Phoenix Sector (Red) - 12 planets
+                    { name: 'Dragon\'s Reach', color: 'red', x: 72, y: 36,
+                      hasResearchStation: gameState.state.command_bases?.includes('Dragon\'s Reach'),
+                      infections: gameState.state.planet_infestations?.['Dragon\'s Reach'] },
+                    { name: 'Techno Prime', color: 'red', x: 76, y: 38,
+                      hasResearchStation: gameState.state.command_bases?.includes('Techno Prime'),
+                      infections: gameState.state.planet_infestations?.['Techno Prime'] },
+                    { name: 'Pearl Harbor', color: 'red', x: 74, y: 42,
+                      hasResearchStation: gameState.state.command_bases?.includes('Pearl Harbor'),
+                      infections: gameState.state.planet_infestations?.['Pearl Harbor'] },
+                    { name: 'Sakura Station', color: 'red', x: 78, y: 40,
+                      hasResearchStation: gameState.state.command_bases?.includes('Sakura Station'),
+                      infections: gameState.state.planet_infestations?.['Sakura Station'] },
+                    { name: 'Neon City', color: 'red', x: 80, y: 38,
+                      hasResearchStation: gameState.state.command_bases?.includes('Neon City'),
+                      infections: gameState.state.planet_infestations?.['Neon City'] },
+                    { name: 'Jade World', color: 'red', x: 75, y: 45,
+                      hasResearchStation: gameState.state.command_bases?.includes('Jade World'),
+                      infections: gameState.state.planet_infestations?.['Jade World'] },
+                    { name: 'Harbor Prime', color: 'red', x: 73, y: 48,
+                      hasResearchStation: gameState.state.command_bases?.includes('Harbor Prime'),
+                      infections: gameState.state.planet_infestations?.['Harbor Prime'] },
+                    { name: 'Temple Station', color: 'red', x: 71, y: 52,
+                      hasResearchStation: gameState.state.command_bases?.includes('Temple Station'),
+                      infections: gameState.state.planet_infestations?.['Temple Station'] },
+                    { name: 'Mekong Nexus', color: 'red', x: 74, y: 54,
+                      hasResearchStation: gameState.state.command_bases?.includes('Mekong Nexus'),
+                      infections: gameState.state.planet_infestations?.['Mekong Nexus'] },
+                    { name: 'Archipelago Prime', color: 'red', x: 77, y: 50,
+                      hasResearchStation: gameState.state.command_bases?.includes('Archipelago Prime'),
+                      infections: gameState.state.planet_infestations?.['Archipelago Prime'] },
+                    { name: 'Equator Station', color: 'red', x: 79, y: 56,
+                      hasResearchStation: gameState.state.command_bases?.includes('Equator Station'),
+                      infections: gameState.state.planet_infestations?.['Equator Station'] },
+                    { name: 'Southern Cross', color: 'red', x: 82, y: 65,
+                      hasResearchStation: gameState.state.command_bases?.includes('Southern Cross'),
+                      infections: gameState.state.planet_infestations?.['Southern Cross'] },
                   ]}
                   players={gameState.players}
                   currentPlayerId={gameState.current_player_id}
-                  onCityClick={(cityName) => {
+                  onCityClick={(planetName) => {
                     if (isCurrentPlayer) {
-                      setActionParams({ target: cityName });
+                      setActionParams({ target: planetName });
                     }
                   }}
                 />
-              )}
-
-              {/* Game Status Cards */}
-              {gameState && (
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-                  {/* Outbreak Counter */}
-                  <div className="bg-white rounded-lg shadow p-2 sm:p-3 lg:p-4">
-                    <div className="text-xs sm:text-sm text-gray-600 mb-1">Outbreaks</div>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600">{gameState.game.outbreak_count}</span>
-                      <span className="text-xs sm:text-sm text-gray-500">/ 8</span>
-                    </div>
-                    <div className="mt-1 sm:mt-2 bg-red-100 rounded-full h-1.5 sm:h-2 overflow-hidden">
-                      <div
-                        className="bg-red-500 h-full transition-all"
-                        style={{ width: `${(gameState.game.outbreak_count / 8) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Infection Rate */}
-                  <div className="bg-white rounded-lg shadow p-2 sm:p-3 lg:p-4">
-                    <div className="text-xs sm:text-sm text-gray-600 mb-1">Infection Rate</div>
-                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600">{gameState.state?.infection_rate || 2}</div>
-                    <div className="text-xs text-gray-500 mt-1">cards per turn</div>
-                  </div>
-
-                  {/* Disease Cubes */}
-                  <div className="bg-white rounded-lg shadow p-2 sm:p-3 lg:p-4">
-                    <div className="text-xs sm:text-sm text-gray-600 mb-1">Disease Cubes</div>
-                    <div className="space-y-1">
-                      {Object.entries(gameState.state.disease_cubes || {}).slice(0, 2).map(([color, count]) => (
-                        <div key={color} className="flex justify-between text-xs">
-                          <span className="capitalize">{color}:</span>
-                          <span className="font-semibold">{String(count)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Research Stations */}
-                  <div className="bg-white rounded-lg shadow p-4">
-                    <div className="text-sm text-gray-600 mb-1">Research Stations</div>
-                    <div className="text-3xl font-bold text-purple-600">
-                      {gameState.state.research_stations?.length || 0}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">built</div>
-                  </div>
-                </div>
-              )}
-
-              {/* Cure Status */}
-              {gameState && (
-                <div className="bg-white rounded-lg shadow p-6">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">Cure Progress</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {Object.entries(gameState.state.cure_markers || {}).map(([color, status]) => {
-                      const colorClasses = {
-                        blue: 'from-blue-500 to-blue-600',
-                        yellow: 'from-yellow-400 to-yellow-500',
-                        black: 'from-gray-700 to-gray-800',
-                        red: 'from-red-500 to-red-600'
-                      };
-                      const isDiscovered = status === 'discovered' || status === 'eradicated';
-
-                      return (
-                        <div
-                          key={color}
-                          className={`rounded-lg p-4 text-center ${
-                            isDiscovered
-                              ? `bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses] || 'from-gray-500 to-gray-600'} text-white`
-                              : 'bg-gray-100 border-2 border-dashed border-gray-300'
-                          }`}
-                        >
-                          <div className="text-sm font-semibold capitalize mb-2">{color}</div>
-                          <div className="text-2xl">
-                            {isDiscovered ? '✓' : '○'}
-                          </div>
-                          <div className="text-xs mt-1">
-                            {String(status).replace(/_/g, ' ').split(' ').map(word =>
-                              word.charAt(0).toUpperCase() + word.slice(1)
-                            ).join(' ')}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
               )}
 
               {/* Player Actions */}
@@ -637,19 +549,19 @@ export default function GameBoard() {
                         onClick={() => handleSelectAction('treat_disease')}
                         className="bg-green-600 text-white py-2 rounded hover:bg-green-700"
                       >
-                        Treat Disease
+                        Treat Infestation
                       </button>
                       <button
                         onClick={() => handleSelectAction('build_station')}
                         className="bg-purple-600 text-white py-2 rounded hover:bg-purple-700"
                       >
-                        Build Station
+                        Build Command Base
                       </button>
                       <button
                         onClick={() => handleSelectAction('discover_cure')}
                         className="bg-yellow-600 text-white py-2 rounded hover:bg-yellow-700"
                       >
-                        Discover Cure
+                        Achieve Containment
                       </button>
                     </div>
 
@@ -657,13 +569,13 @@ export default function GameBoard() {
                       <div className="bg-gray-50 border border-gray-200 rounded p-4 mb-4">
                         <h4 className="font-semibold mb-2 capitalize">Action: {selectedAction}</h4>
 
-                        {selectedAction === 'move' && validMoves.length > 0 ? (
+                        {selectedAction === 'move' && validMoves && validMoves.length > 0 ? (
                           <select
                             className="w-full px-3 py-2 border rounded mb-2"
                             onChange={(e) => setActionParams({ target: e.target.value })}
                             defaultValue=""
                           >
-                            <option value="" disabled>Select destination city</option>
+                            <option value="" disabled>Select destination planet</option>
                             {validMoves.map((city) => (
                               <option key={city.name} value={city.name}>
                                 {city.name}
@@ -674,13 +586,13 @@ export default function GameBoard() {
                           <div className="text-sm text-gray-600 mb-2">Loading available destinations...</div>
                         ) : selectedAction === 'treat_disease' ? (
                           <div className="space-y-2 mb-2">
-                            <label className="block text-sm text-gray-600">Select disease color to treat:</label>
+                            <label className="block text-sm text-gray-600">Select infestation color to treat:</label>
                             <select
                               className="w-full px-3 py-2 border rounded"
                               onChange={(e) => setActionParams({ color: e.target.value })}
                               defaultValue=""
                             >
-                              <option value="" disabled>Select disease color</option>
+                              <option value="" disabled>Select infestation color</option>
                               <option value="blue">Blue</option>
                               <option value="yellow">Yellow</option>
                               <option value="black">Black</option>
@@ -689,14 +601,14 @@ export default function GameBoard() {
                           </div>
                         ) : selectedAction === 'discover_cure' && gameState ? (
                           <div className="space-y-2 mb-2">
-                            <label className="block text-sm text-gray-600">Select disease to cure:</label>
+                            <label className="block text-sm text-gray-600">Select infestation to contain:</label>
                             <select
                               className="w-full px-3 py-2 border rounded mb-2"
                               onChange={(e) => setActionParams({ color: e.target.value })}
                               defaultValue=""
                             >
-                              <option value="" disabled>Select disease color</option>
-                              {Object.entries(gameState.state?.cure_markers || {})
+                              <option value="" disabled>Select infestation color</option>
+                              {Object.entries(gameState.state?.containment_markers || {})
                                 .filter(([, status]) => status === 'not_discovered')
                                 .map(([color]) => (
                                   <option key={color} value={color} className="capitalize">
@@ -705,11 +617,11 @@ export default function GameBoard() {
                                 ))}
                             </select>
                             <p className="text-xs text-gray-500">
-                              You need {myPlayer?.role === 'scientist' ? '4' : '5'} cards of the selected color{myPlayer?.role === 'scientist' ? ' (Scientist bonus!)' : ''}. Select the cards from your hand below:
+                              You need {myPlayer?.role === 'xenobiologist' ? '4' : '5'} cards of the selected color{myPlayer?.role === 'xenobiologist' ? ' (Xenobiologist bonus!)' : ''}. Select the cards from your hand below:
                             </p>
                             <div className="space-y-1 max-h-40 overflow-y-auto">
                               {myPlayer?.cards
-                                ?.filter((card) => card.city_color === actionParams.color)
+                                ?.filter((card) => card.planet_color === actionParams.color)
                                 .map((card) => (
                                   <label key={card.id} className="flex items-center gap-2 p-2 hover:bg-white rounded cursor-pointer">
                                     <input
@@ -724,23 +636,23 @@ export default function GameBoard() {
                                       }}
                                       className="rounded"
                                     />
-                                    <span className="text-sm">{card.city_name}</span>
+                                    <span className="text-sm">{card.planet_name}</span>
                                   </label>
                                 ))}
                             </div>
-                            {actionParams.color && myPlayer?.cards?.filter((card) => card.city_color === actionParams.color).length === 0 ? (
+                            {actionParams.color && myPlayer?.cards?.filter((card) => card.planet_color === actionParams.color).length === 0 ? (
                               <p className="text-xs text-red-600">You don&apos;t have any {String(actionParams.color)} cards in your hand.</p>
                             ) : null}
                           </div>
                         ) : selectedAction === 'build_station' ? (
                           <p className="text-sm text-gray-600 mb-2">
-                            Build a research station at your current location.
-                            {myPlayer?.current_city_id && ` (${myPlayer.current_city_id})`}
+                            Build a command base at your current location.
+                            {myPlayer?.current_planet_id && ` (${myPlayer.current_planet_id})`}
                           </p>
                         ) : (
                           <input
                             type="text"
-                            placeholder="Enter parameters (e.g., city name)"
+                            placeholder="Enter parameters (e.g., planet name)"
                             className="w-full px-3 py-2 border rounded mb-2"
                             onChange={(e) => setActionParams({ target: e.target.value })}
                           />
@@ -763,91 +675,14 @@ export default function GameBoard() {
                   </button>
                 </div>
               )}
-
-              {/* Players */}
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">Players</h3>
-                <div className="space-y-3">
-                  {gameState?.players.map((player) => {
-                    const isActive = player.id === gameState.current_player_id;
-                    return (
-                      <div
-                        key={player.id}
-                        className={`rounded-lg p-4 border-2 ${
-                          isActive
-                            ? 'border-green-500 bg-green-50'
-                            : 'border-gray-200 bg-white'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${
-                              isActive ? 'bg-green-500' : 'bg-blue-500'
-                            }`}>
-                              {player.turn_order + 1}
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-gray-800 capitalize">{player.role || 'Player'}</h4>
-                              <p className="text-xs text-gray-500">
-                                {player.current_city_id || 'Unknown location'}
-                              </p>
-                            </div>
-                          </div>
-                          {isActive && (
-                            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                              Active
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex gap-4 text-sm text-gray-600 mt-2">
-                          <div>
-                            <span className="font-medium">Actions:</span> {player.actions_remaining}/4
-                          </div>
-                          <div>
-                            <span className="font-medium">Cards:</span> {player.cards?.length || 0}
-                          </div>
-                        </div>
-
-                        {/* Player's hand - only show for the current user */}
-                        {String(player.user_id) === String(user?.id) && player.cards && player.cards.length > 0 && (
-                          <div className="mt-3 pt-3 border-t border-gray-200">
-                            <p className="text-xs font-semibold text-gray-600 mb-2">Your Hand:</p>
-                            <div className="flex flex-wrap gap-2">
-                              {player.cards.map((card) => (
-                                <div
-                                  key={card.id}
-                                  className={`px-3 py-2 rounded-lg text-xs font-medium shadow-sm border-2 ${
-                                    card.card_type === 'epidemic'
-                                      ? 'bg-red-100 border-red-300 text-red-800'
-                                      : card.city_color === 'blue'
-                                      ? 'bg-blue-100 border-blue-300 text-blue-800'
-                                      : card.city_color === 'yellow'
-                                      ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
-                                      : card.city_color === 'black'
-                                      ? 'bg-gray-100 border-gray-300 text-gray-800'
-                                      : card.city_color === 'red'
-                                      ? 'bg-red-100 border-red-300 text-red-800'
-                                      : 'bg-gray-100 border-gray-300 text-gray-600'
-                                  }`}
-                                >
-                                  {card.card_type === 'epidemic' ? '⚠️ EPIDEMIC' : card.city_name || 'Unknown'}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
             </div>
 
-            {/* Chat */}
-            <div className="xl:col-span-1">
-              <div className="bg-white rounded-lg shadow p-3 sm:p-4 lg:p-6 h-[400px] sm:h-[500px] lg:h-[600px] flex flex-col">
+            {/* Right Sidebar - Chat and Game Stats */}
+            <div className="xl:col-span-1 flex flex-col gap-4 h-full">
+              {/* Chat - Flexible height */}
+              <div className="bg-white rounded-lg shadow p-3 sm:p-4 flex-1 flex flex-col min-h-0">
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Chat</h3>
-                <div className="flex-1 overflow-y-auto mb-3 sm:mb-4 space-y-2">
+                <div className="flex-1 overflow-y-auto mb-3 sm:mb-4 space-y-2 min-h-0">
                   {messages.map((msg, idx) => (
                     <div key={idx} className="text-xs sm:text-sm">
                       <span className="font-semibold text-gray-800">{msg.player_name}:</span>{' '}
@@ -860,7 +695,7 @@ export default function GameBoard() {
                     type="text"
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     placeholder="Type a message..."
                     className="flex-1 px-2 py-1.5 sm:px-3 sm:py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -872,6 +707,171 @@ export default function GameBoard() {
                   </button>
                 </div>
               </div>
+
+              {/* Game Status Cards - Compact */}
+              {gameState && (
+                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Outbreak Counter */}
+                    <div>
+                      <div className="text-xs text-gray-600 mb-1">Outbreaks</div>
+                      <div className="flex items-baseline gap-1 mb-1">
+                        <span className="text-xl font-bold text-red-600">{gameState.game.outbreak_count}</span>
+                        <span className="text-xs text-gray-500">/ 8</span>
+                      </div>
+                      <div className="bg-red-100 rounded-full h-1.5 overflow-hidden">
+                        <div
+                          className="bg-red-500 h-full transition-all"
+                          style={{ width: `${(gameState.game.outbreak_count / 8) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Infestation Rate */}
+                    <div>
+                      <div className="text-xs text-gray-600 mb-1">Infestation Rate</div>
+                      <div className="text-xl font-bold text-orange-600">{gameState.state?.infestation_rate || 2}</div>
+                      <div className="text-xs text-gray-500">cards/turn</div>
+                    </div>
+
+                    {/* Command Bases */}
+                    <div>
+                      <div className="text-xs text-gray-600 mb-1">Command Bases</div>
+                      <div className="text-xl font-bold text-purple-600">
+                        {gameState.state.command_bases?.length || 0}
+                      </div>
+                      <div className="text-xs text-gray-500">built</div>
+                    </div>
+
+                    {/* Infestation Markers - Compact */}
+                    <div>
+                      <div className="text-xs text-gray-600 mb-1">Markers Left</div>
+                      <div className="grid grid-cols-2 gap-x-2 text-xs">
+                        {Object.entries(gameState.state.infestation_markers || {}).map(([color, count]) => (
+                          <div key={color} className="flex justify-between">
+                            <span className="capitalize">{color.charAt(0)}:</span>
+                            <span className="font-semibold">{String(count)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Containment Status - Compact */}
+              {gameState && (
+                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
+                  <h3 className="text-sm font-bold text-gray-800 mb-2">Containment Progress</h3>
+                  <div className="flex gap-2 justify-between">
+                    {Object.entries(gameState.state.containment_markers || {}).map(([color, status]) => {
+                      const colorClasses = {
+                        blue: 'from-blue-500 to-blue-600',
+                        yellow: 'from-yellow-400 to-yellow-500',
+                        black: 'from-gray-700 to-gray-800',
+                        red: 'from-red-500 to-red-600'
+                      };
+                      const isDiscovered = status === 'discovered' || status === 'eradicated';
+
+                      return (
+                        <div
+                          key={color}
+                          className={`flex-1 rounded-lg p-2 text-center ${
+                            isDiscovered
+                              ? `bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses] || 'from-gray-500 to-gray-600'} text-white`
+                              : 'bg-gray-100 border border-dashed border-gray-300'
+                          }`}
+                        >
+                          <div className="text-xs font-semibold capitalize mb-1">{color}</div>
+                          <div className="text-xl">
+                            {isDiscovered ? '✓' : '○'}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Players */}
+              {gameState && (
+                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
+                  <h3 className="text-sm font-bold text-gray-800 mb-3">Players</h3>
+                  <div className="space-y-2">
+                    {gameState.players.map((player) => {
+                      const isActive = player.id === gameState.current_player_id;
+                      return (
+                        <div
+                          key={player.id}
+                          className={`rounded-lg p-3 border-2 ${
+                            isActive
+                              ? 'border-green-500 bg-green-50'
+                              : 'border-gray-200 bg-white'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                                isActive ? 'bg-green-500' : 'bg-blue-500'
+                              }`}>
+                                {player.turn_order + 1}
+                              </div>
+                              <div>
+                                <h4 className="text-sm font-semibold text-gray-800 capitalize">{player.role || 'Player'}</h4>
+                                <p className="text-xs text-gray-500">
+                                  {player.current_planet_id || 'Unknown location'}
+                                </p>
+                              </div>
+                            </div>
+                            {isActive && (
+                              <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                                Active
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex gap-3 text-xs text-gray-600">
+                            <div>
+                              <span className="font-medium">Actions:</span> {player.actions_remaining}/4
+                            </div>
+                            <div>
+                              <span className="font-medium">Cards:</span> {player.cards?.length || 0}
+                            </div>
+                          </div>
+
+                          {/* Player's hand - only show for the current user */}
+                          {String(player.user_id) === String(user?.id) && player.cards && player.cards.length > 0 && (
+                            <div className="mt-2 pt-2 border-t border-gray-200">
+                              <p className="text-xs font-semibold text-gray-600 mb-1">Your Hand:</p>
+                              <div className="flex flex-wrap gap-1">
+                                {player.cards.map((card) => (
+                                  <div
+                                    key={card.id}
+                                    className={`px-2 py-1 rounded text-xs font-medium shadow-sm border ${
+                                      card.card_type === 'epidemic'
+                                        ? 'bg-red-100 border-red-300 text-red-800'
+                                        : card.planet_color === 'blue'
+                                        ? 'bg-blue-100 border-blue-300 text-blue-800'
+                                        : card.planet_color === 'yellow'
+                                        ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
+                                        : card.planet_color === 'black'
+                                        ? 'bg-gray-100 border-gray-300 text-gray-800'
+                                        : card.planet_color === 'red'
+                                        ? 'bg-red-100 border-red-300 text-red-800'
+                                        : 'bg-gray-100 border-gray-300 text-gray-600'
+                                    }`}
+                                  >
+                                    {card.card_type === 'epidemic' ? '⚠️ SPREAD' : card.planet_name || 'Unknown'}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -909,21 +909,21 @@ export default function GameBoard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className={`font-semibold ${
-                        card.city_color === 'blue'
+                        card.planet_color === 'blue'
                           ? 'text-blue-700'
-                          : card.city_color === 'yellow'
+                          : card.planet_color === 'yellow'
                           ? 'text-yellow-700'
-                          : card.city_color === 'black'
+                          : card.planet_color === 'black'
                           ? 'text-gray-700'
-                          : card.city_color === 'red'
+                          : card.planet_color === 'red'
                           ? 'text-red-700'
                           : 'text-gray-600'
                       }`}>
-                        {card.card_type === 'epidemic' ? '⚠️ EPIDEMIC' : card.city_name}
+                        {card.card_type === 'epidemic' ? '⚠️ INFESTATION SPREAD' : card.planet_name}
                       </div>
-                      {card.city_color && card.card_type !== 'epidemic' && (
+                      {card.planet_color && card.card_type !== 'epidemic' && (
                         <div className="text-xs text-gray-500 capitalize mt-1">
-                          {card.city_color}
+                          {card.planet_color}
                         </div>
                       )}
                     </div>
@@ -964,7 +964,7 @@ export default function GameBoard() {
           gameStats={{
             turnNumber: gameState.turn_number || 0,
             outbreakCount: gameState.game.outbreak_count || 0,
-            curesDiscovered: Object.values(gameState.state?.cure_markers || {}).filter(
+            containmentsAchieved: Object.values(gameState.state?.containment_markers || {}).filter(
               (status) => status === 'discovered' || status === 'eradicated'
             ).length,
             difficulty: gameState.game.difficulty || 'normal'

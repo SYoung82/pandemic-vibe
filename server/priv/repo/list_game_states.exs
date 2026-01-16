@@ -1,5 +1,5 @@
 # List all game states for the WIN game
-alias PandemicVibeServer.{Repo, Games}
+alias InfestationServer.{Repo, Games}
 import Ecto.Query
 
 # Find the WIN game
@@ -27,7 +27,7 @@ if game do
     IO.puts("  Turn: #{state.turn_number}")
     IO.puts("  Inserted at: #{state.inserted_at}")
     IO.puts("  Updated at: #{state.updated_at}")
-    IO.puts("  Cure markers: #{inspect(state.state_data["cure_markers"])}")
+    IO.puts("  Cure markers: #{inspect(state.state_data["containment_markers"])}")
     IO.puts("")
   end)
 
@@ -35,7 +35,7 @@ if game do
   latest = Games.get_latest_game_state(game.id)
   IO.puts("get_latest_game_state returns:")
   IO.puts("  ID: #{latest.id}")
-  IO.puts("  Cure markers: #{inspect(latest.state_data["cure_markers"])}")
+  IO.puts("  Cure markers: #{inspect(latest.state_data["containment_markers"])}")
 else
   IO.puts("WIN game not found!")
 end

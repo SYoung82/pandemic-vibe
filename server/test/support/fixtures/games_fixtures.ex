@@ -1,40 +1,42 @@
-defmodule PandemicVibeServer.GamesFixtures do
+defmodule InfestationServer.GamesFixtures do
   @moduledoc """
   This module defines test helpers for creating
   entities related to the Games context.
   """
 
-  alias PandemicVibeServer.{Repo, Games, Accounts}
-  alias PandemicVibeServer.Games.City
-  alias PandemicVibeServer.GameEngine.GameEngine
+  alias InfestationServer.{Repo, Games, Accounts}
+  alias InfestationServer.Games.Planet
+  alias InfestationServer.GameEngine.GameEngine
 
   @doc """
-  Ensures cities are seeded in the test database.
-  Call this at the beginning of tests that need cities.
+  Ensures planets are seeded in the test database.
+  Call this at the beginning of tests that need planets.
   """
-  def ensure_cities_seeded do
-    cities = [
-      %{name: "Atlanta", color: "blue", population: 500_000},
-      %{name: "Chicago", color: "blue", population: 600_000},
-      %{name: "Montreal", color: "blue", population: 400_000},
-      %{name: "New York", color: "blue", population: 800_000},
-      %{name: "Washington", color: "blue", population: 500_000},
-      %{name: "London", color: "blue", population: 700_000},
-      %{name: "Paris", color: "blue", population: 600_000},
-      %{name: "Essen", color: "blue", population: 500_000},
-      %{name: "Milan", color: "blue", population: 500_000},
-      %{name: "St. Petersburg", color: "blue", population: 500_000},
-      %{name: "Madrid", color: "blue", population: 600_000},
-      %{name: "San Francisco", color: "blue", population: 700_000}
+  def ensure_planets_seeded do
+    # Seed a subset of planets needed for testing (including Nova Haven which is the starting planet)
+    planets = [
+      %{name: "Kepler Prime", color: "blue", population: 5_864_000},
+      %{name: "Zenith Station", color: "blue", population: 9_121_000},
+      %{name: "Cryos", color: "blue", population: 3_429_000},
+      %{name: "Titan City", color: "blue", population: 20_464_000},
+      %{name: "Command Central", color: "blue", population: 4_679_000},
+      # Starting planet
+      %{name: "Nova Haven", color: "blue", population: 4_715_000},
+      %{name: "Avalon", color: "blue", population: 8_586_000},
+      %{name: "Solara", color: "blue", population: 5_427_000},
+      %{name: "Star Harbor", color: "yellow", population: 14_900_000},
+      %{name: "Azteca Prime", color: "yellow", population: 19_463_000},
+      %{name: "Atlas Base", color: "black", population: 2_946_000},
+      %{name: "Dragon's Reach", color: "red", population: 17_311_000}
     ]
 
-    Enum.each(cities, fn city_attrs ->
-      case Repo.get_by(City, name: city_attrs.name) do
+    Enum.each(planets, fn planet_attrs ->
+      case Repo.get_by(Planet, name: planet_attrs.name) do
         nil ->
-          Repo.insert!(%City{
-            name: city_attrs.name,
-            color: city_attrs.color,
-            population: city_attrs.population
+          Repo.insert!(%Planet{
+            name: planet_attrs.name,
+            color: planet_attrs.color,
+            population: planet_attrs.population
           })
 
         _ ->
@@ -67,6 +69,7 @@ defmodule PandemicVibeServer.GamesFixtures do
   Generate a game.
   """
   def game_fixture(attrs \\ %{}) do
+    ensure_planets_seeded()
     user = attrs[:created_by] || user_fixture()
 
     {:ok, game} =
@@ -85,6 +88,7 @@ defmodule PandemicVibeServer.GamesFixtures do
   Generate a game with a specified number of players.
   """
   def game_fixture_with_players(count, attrs \\ %{}) when count in 1..4 do
+    ensure_planets_seeded()
     game = game_fixture(attrs)
 
     # Add players to the game
@@ -111,12 +115,12 @@ defmodule PandemicVibeServer.GamesFixtures do
   end
 
   @doc """
-  Generate a city.
+  Generate a planet.
   """
-  def city_fixture(attrs \\ %{}) do
-    name = "City#{System.unique_integer([:positive])}"
+  def planet_fixture(attrs \\ %{}) do
+    name = "Planet#{System.unique_integer([:positive])}"
 
-    {:ok, city} =
+    {:ok, planet} =
       attrs
       |> Enum.into(%{
         name: name,
@@ -125,9 +129,9 @@ defmodule PandemicVibeServer.GamesFixtures do
         x_coord: 0,
         y_coord: 0
       })
-      |> Games.create_city()
+      |> Games.create_planet()
 
-    city
+    planet
   end
 
   @doc """
@@ -135,7 +139,7 @@ defmodule PandemicVibeServer.GamesFixtures do
   Returns the game with all initial state set up.
   """
   def setup_initialized_game(player_count \\ 2, difficulty \\ "normal") do
-    ensure_cities_seeded()
+    ensure_planets_seeded()
     game = game_fixture_with_players(player_count, %{difficulty: difficulty})
     {:ok, _initialized_game} = GameEngine.initialize_game(game.id)
     Games.get_game_with_players!(game.id)

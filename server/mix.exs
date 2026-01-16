@@ -1,9 +1,9 @@
-defmodule PandemicVibeServer.MixProject do
+defmodule InfestationServer.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :pandemic_vibe_server,
+      app: :infestation_server,
       version: "0.1.0",
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -19,7 +19,7 @@ defmodule PandemicVibeServer.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {PandemicVibeServer.Application, []},
+      mod: {InfestationServer.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -53,7 +53,8 @@ defmodule PandemicVibeServer.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:bcrypt_elixir, "~> 3.0"},
-      {:guardian, "~> 2.3"}
+      {:guardian, "~> 2.3"},
+      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end
 

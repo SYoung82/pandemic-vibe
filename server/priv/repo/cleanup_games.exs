@@ -1,5 +1,5 @@
 # Clean up all games and related data
-alias PandemicVibeServer.{Repo, Games}
+alias InfestationServer.{Repo, Games}
 
 IO.puts("Cleaning up all games...")
 

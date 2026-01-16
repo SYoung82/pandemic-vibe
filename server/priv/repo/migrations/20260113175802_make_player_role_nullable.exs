@@ -1,4 +1,4 @@
-defmodule PandemicVibeServer.Repo.Migrations.MakePlayerRoleNullable do
+defmodule InfestationServer.Repo.Migrations.MakePlayerRoleNullable do
   use Ecto.Migration
 
   def change do
