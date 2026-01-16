@@ -678,11 +678,11 @@ export default function GameBoard() {
             </div>
 
             {/* Right Sidebar - Chat and Game Stats */}
-            <div className="xl:col-span-1 space-y-4">
-              {/* Chat */}
-              <div className="bg-white rounded-lg shadow p-3 sm:p-4 lg:p-6 h-[300px] sm:h-[350px] flex flex-col">
+            <div className="xl:col-span-1 flex flex-col gap-4 h-full">
+              {/* Chat - Flexible height */}
+              <div className="bg-white rounded-lg shadow p-3 sm:p-4 flex-1 flex flex-col min-h-0">
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Chat</h3>
-                <div className="flex-1 overflow-y-auto mb-3 sm:mb-4 space-y-2">
+                <div className="flex-1 overflow-y-auto mb-3 sm:mb-4 space-y-2 min-h-0">
                   {messages.map((msg, idx) => (
                     <div key={idx} className="text-xs sm:text-sm">
                       <span className="font-semibold text-gray-800">{msg.player_name}:</span>{' '}
@@ -695,7 +695,7 @@ export default function GameBoard() {
                     type="text"
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     placeholder="Type a message..."
                     className="flex-1 px-2 py-1.5 sm:px-3 sm:py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
