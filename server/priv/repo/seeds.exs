@@ -26,7 +26,8 @@ planets = [
   %{name: "Cryos", color: "blue", population: 3_429_000},
   %{name: "Titan City", color: "blue", population: 20_464_000},
   %{name: "Command Central", color: "blue", population: 4_679_000},
-  %{name: "Nova Haven", color: "blue", population: 4_715_000}, # Starting planet (was Atlanta)
+  # Starting planet (was Atlanta)
+  %{name: "Nova Haven", color: "blue", population: 4_715_000},
   %{name: "Avalon", color: "blue", population: 8_586_000},
   %{name: "Solara", color: "blue", population: 5_427_000},
   %{name: "Lumina", color: "blue", population: 10_755_000},

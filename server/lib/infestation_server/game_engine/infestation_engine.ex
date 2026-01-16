@@ -47,7 +47,8 @@ defmodule InfestationServer.GameEngine.InfectionEngine do
       city_infections = state_data["planet_infestations"] || %{}
 
       infestation_markers =
-        state_data["infestation_markers"] || %{"blue" => 24, "yellow" => 24, "black" => 24, "red" => 24}
+        state_data["infestation_markers"] ||
+          %{"blue" => 24, "yellow" => 24, "black" => 24, "red" => 24}
 
       current_count = Map.get(city_infections, planet.name, %{}) |> Map.get(planet.color, 0)
       new_count = current_count + cube_count
@@ -66,7 +67,8 @@ defmodule InfestationServer.GameEngine.InfectionEngine do
               new_count
             )
 
-          updated_infestation_markers = Map.update!(infestation_markers, planet.color, &(&1 - cube_count))
+          updated_infestation_markers =
+            Map.update!(infestation_markers, planet.color, &(&1 - cube_count))
 
           updated_state_data =
             state_data

@@ -12,7 +12,9 @@ defmodule InfestationServer.Games.Planet do
     field :longitude, :float
 
     has_many :cards, InfestationServer.Games.Card
-    has_many :planet_connections, InfestationServer.Games.PlanetConnection, foreign_key: :planet_id
+
+    has_many :planet_connections, InfestationServer.Games.PlanetConnection,
+      foreign_key: :planet_id
 
     many_to_many :connected_planets, InfestationServer.Games.Planet,
       join_through: InfestationServer.Games.PlanetConnection,

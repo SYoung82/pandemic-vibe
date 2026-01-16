@@ -22,7 +22,14 @@ defmodule InfestationServer.Games.Player do
   @doc false
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:role, :turn_order, :actions_remaining, :game_id, :user_id, :current_planet_id])
+    |> cast(attrs, [
+      :role,
+      :turn_order,
+      :actions_remaining,
+      :game_id,
+      :user_id,
+      :current_planet_id
+    ])
     |> validate_required([:turn_order, :game_id, :user_id])
     |> validate_inclusion(:role, @roles, message: "is not a valid role")
     |> validate_number(:turn_order, greater_than_or_equal_to: 0)

@@ -50,7 +50,8 @@ defmodule InfestationServer.GameEngine.ActionHandler do
     with :ok <- validate_has_actions(player),
          :ok <- validate_research_stations_available(game),
          :ok <- validate_no_station_exists(game_state, player.current_planet.name) do
-      research_stations = game_state.state_data["research_stations"] ++ [player.current_planet.name]
+      research_stations =
+        game_state.state_data["research_stations"] ++ [player.current_planet.name]
 
       updated_state_data = Map.put(game_state.state_data, "research_stations", research_stations)
 
@@ -98,8 +99,11 @@ defmodule InfestationServer.GameEngine.ActionHandler do
       end)
 
       # Mark cure as discovered
-      containment_markers = Map.put(game_state.state_data["containment_markers"], color, "discovered")
-      updated_state_data = Map.put(game_state.state_data, "containment_markers", containment_markers)
+      containment_markers =
+        Map.put(game_state.state_data["containment_markers"], color, "discovered")
+
+      updated_state_data =
+        Map.put(game_state.state_data, "containment_markers", containment_markers)
 
       Games.save_game_state(player.game_id, %{
         turn_number: game_state.turn_number,
@@ -236,8 +240,10 @@ defmodule InfestationServer.GameEngine.ActionHandler do
     end
   end
 
-  defp validate_same_planet(%Player{current_planet_id: planet_id}, %Player{current_planet_id: planet_id}),
-    do: :ok
+  defp validate_same_planet(%Player{current_planet_id: planet_id}, %Player{
+         current_planet_id: planet_id
+       }),
+       do: :ok
 
   defp validate_same_planet(_, _), do: {:error, :players_not_in_same_planet}
 
