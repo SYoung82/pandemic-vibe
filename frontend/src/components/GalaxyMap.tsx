@@ -52,7 +52,7 @@ const PLANET_POSITIONS: Record<string, { x: number; y: number }> = {
   'Temple Station': { x: 60, y: 28 },
   'Mekong Nexus': { x: 70, y: 26 },
   'Equator Station': { x: 80, y: 30 },
-  'Southern Cross': { x: 85, y: 38 },
+  'Southern Cross': { x: 88, y: 32 },
 
   // Hydra Sector (Yellow) - Bottom Left Quadrant
   'Star Harbor': { x: 6, y: 42 },
