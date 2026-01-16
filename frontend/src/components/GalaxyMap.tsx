@@ -317,19 +317,34 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
           const planetRadius = hasInfections ? 1.6 : 1.3;
           const sectorName = SECTOR_NAMES[colorKey] || 'Unknown Sector';
 
-          // Build infection summary for tooltip
-          const infectionSummary = planet.infections
+          // Build detailed infection status for tooltip
+          const totalInfestations = planet.infections
+            ? Object.values(planet.infections).reduce((sum, count) => sum + (count as number), 0)
+            : 0;
+
+          const threatLevel = totalInfestations >= 3 ? 'CRITICAL'
+            : totalInfestations === 2 ? 'Elevated'
+            : totalInfestations === 1 ? 'Minor'
+            : 'Clear';
+
+          const infectionDetails = planet.infections
             ? Object.entries(planet.infections)
                 .filter(([, count]) => count > 0)
-                .map(([color, count]) => `${color}: ${count}`)
-                .join(', ')
+                .map(([infColor, count]) => {
+                  const markers = '●'.repeat(count as number);
+                  return `  ${infColor.charAt(0).toUpperCase() + infColor.slice(1)}: ${markers} (${count})`;
+                })
+                .join('\n')
             : null;
 
           const planetTooltip = [
-            planet.name,
-            sectorName,
-            planet.hasResearchStation ? '⬡ Command Base' : null,
-            infectionSummary ? `Infestation: ${infectionSummary}` : null,
+            `═══ ${planet.name} ═══`,
+            `Sector: ${sectorName}`,
+            planet.hasResearchStation ? '⬡ Command Base Present' : null,
+            '─────────────────',
+            `Status: ${threatLevel}`,
+            totalInfestations > 0 ? `Infestations: ${totalInfestations}` : 'No active infestations',
+            infectionDetails,
           ].filter(Boolean).join('\n');
 
           return (
