@@ -91,15 +91,18 @@ const COLOR_MAP: Record<string, { primary: string; glow: string; dark: string }>
   red: { primary: '#EF4444', glow: '#F87171', dark: '#B91C1C' },
 };
 
-// Role colors for player pawns
-const ROLE_COLORS: Record<string, string> = {
-  combat_medic: '#EF4444',
-  xenobiologist: '#8B5CF6',
-  field_researcher: '#3B82F6',
-  operations_commander: '#10B981',
-  fleet_commander: '#F59E0B',
-  tactical_officer: '#EC4899',
-  containment_specialist: '#06B6D4',
+// Player colors matching GameBoard card colors
+const PLAYER_COLORS = {
+  active: '#22C55E',   // green-500 - matches active player card
+  inactive: '#3B82F6', // blue-500 - matches inactive player card
+};
+
+// Sector names by color
+const SECTOR_NAMES: Record<string, string> = {
+  blue: 'Orion Sector',
+  red: 'Phoenix Sector',
+  yellow: 'Hydra Sector',
+  black: 'Nebula Sector',
 };
 
 // Generate deterministic star positions
@@ -312,6 +315,22 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
           const colorKey = planet.color || 'blue';
           const colors = COLOR_MAP[colorKey] || COLOR_MAP.blue;
           const planetRadius = hasInfections ? 1.6 : 1.3;
+          const sectorName = SECTOR_NAMES[colorKey] || 'Unknown Sector';
+
+          // Build infection summary for tooltip
+          const infectionSummary = planet.infections
+            ? Object.entries(planet.infections)
+                .filter(([, count]) => count > 0)
+                .map(([color, count]) => `${color}: ${count}`)
+                .join(', ')
+            : null;
+
+          const planetTooltip = [
+            planet.name,
+            sectorName,
+            planet.hasResearchStation ? '⬡ Command Base' : null,
+            infectionSummary ? `Infestation: ${infectionSummary}` : null,
+          ].filter(Boolean).join('\n');
 
           return (
             <g key={planet.name}>
@@ -325,7 +344,7 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
                 style={{ transition: 'opacity 0.2s ease' }}
               />
 
-              {/* Planet circle */}
+              {/* Planet circle with tooltip */}
               <circle
                 cx={planet.x}
                 cy={planet.y}
@@ -337,7 +356,9 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
                 onMouseEnter={() => setHoveredPlanet(planet.name)}
                 onMouseLeave={() => setHoveredPlanet(null)}
                 style={{ transition: 'r 0.2s ease' }}
-              />
+              >
+                <title>{planetTooltip}</title>
+              </circle>
 
               {/* Planet name */}
               <text
@@ -441,9 +462,10 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
               {/* Players at this planet */}
               {playersAtPlanets[planet.name]?.map((player, idx) => {
                 const isCurrentPlayer = player.id === currentPlayerId;
-                const playerColor = player.role ? ROLE_COLORS[player.role] || '#3B82F6' : '#3B82F6';
+                const playerColor = isCurrentPlayer ? PLAYER_COLORS.active : PLAYER_COLORS.inactive;
                 const xOffset = planet.x + (idx - playersAtPlanets[planet.name].length / 2 + 0.5) * 2.2;
                 const yOffset = planet.y + 5;
+                const roleName = player.role ? player.role.replace(/_/g, ' ') : 'Unknown Role';
 
                 return (
                   <g key={player.id} filter={isCurrentPlayer ? 'url(#player-glow)' : undefined}>
@@ -480,6 +502,7 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
                         fill={playerColor}
                         stroke={isCurrentPlayer ? '#FBBF24' : '#E5E7EB'}
                         strokeWidth={isCurrentPlayer ? 0.2 : 0.12}
+                        className="cursor-pointer"
                       />
                       {/* Ship cockpit */}
                       <ellipse
@@ -487,6 +510,7 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
                         ry={0.25}
                         fill="#1F2937"
                         opacity={0.5}
+                        className="pointer-events-none"
                       />
                       {/* Player number */}
                       <text
@@ -499,12 +523,9 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
                       >
                         {player.turn_order + 1}
                       </text>
+                      {/* Player tooltip */}
+                      <title>{`Player ${player.turn_order + 1}: ${roleName}${isCurrentPlayer ? ' (Active)' : ''}\nLocation: ${planet.name}`}</title>
                     </g>
-
-                    {/* Role tooltip */}
-                    {player.role && (
-                      <title>{player.role.replace(/_/g, ' ')}</title>
-                    )}
                   </g>
                 );
               })}
