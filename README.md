@@ -1,6 +1,6 @@
-# Pandemic Vibe
+# Infestation
 
-Multiplayer web-based clone of the Pandemic board game with real-time gameplay.
+Multiplayer web-based cooperative board game with real-time gameplay. Command a team of specialists to contain alien infestations across 48 planets in 4 galactic sectors.
 
 ## Project Structure
 
@@ -42,8 +42,8 @@ cd server
 mix deps.get
 mix ecto.create
 mix ecto.migrate
-mix run priv/repo/seeds.exs              # Seed cities
-mix run priv/repo/seeds_city_connections.exs  # Seed connections
+mix run priv/repo/seeds.exs              # Seed planets
+mix run priv/repo/seeds_planet_connections.exs  # Seed connections
 mix phx.server
 ```
 
@@ -123,11 +123,12 @@ All pull requests must pass:
 ## Game Features
 
 - 2-4 player cooperative gameplay
-- 7 unique player roles (Medic, Scientist, Researcher, etc.)
+- 7 unique player roles (Combat Medic, Xenobiologist, Field Researcher, Operations Commander, Fleet Commander, Tactical Officer, Containment Specialist)
+- 48 planets across 4 galactic sectors (Orion, Hydra, Nebula, Phoenix)
 - Three difficulty levels (Easy, Normal, Hard)
 - Real-time game state synchronization
 - In-game chat
-- Complete Pandemic ruleset implementation
+- Complete cooperative game mechanics with containment objectives
 
 ## Architecture
 

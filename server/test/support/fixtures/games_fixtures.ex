@@ -13,19 +13,20 @@ defmodule InfestationServer.GamesFixtures do
   Call this at the beginning of tests that need planets.
   """
   def ensure_cities_seeded do
+    # Seed a subset of planets needed for testing (including Nova Haven which is the starting planet)
     planets = [
-      %{name: "Atlanta", color: "blue", population: 500_000},
-      %{name: "Chicago", color: "blue", population: 600_000},
-      %{name: "Montreal", color: "blue", population: 400_000},
-      %{name: "New York", color: "blue", population: 800_000},
-      %{name: "Washington", color: "blue", population: 500_000},
-      %{name: "London", color: "blue", population: 700_000},
-      %{name: "Paris", color: "blue", population: 600_000},
-      %{name: "Essen", color: "blue", population: 500_000},
-      %{name: "Milan", color: "blue", population: 500_000},
-      %{name: "St. Petersburg", color: "blue", population: 500_000},
-      %{name: "Madrid", color: "blue", population: 600_000},
-      %{name: "San Francisco", color: "blue", population: 700_000}
+      %{name: "Kepler Prime", color: "blue", population: 5_864_000},
+      %{name: "Zenith Station", color: "blue", population: 9_121_000},
+      %{name: "Cryos", color: "blue", population: 3_429_000},
+      %{name: "Titan City", color: "blue", population: 20_464_000},
+      %{name: "Command Central", color: "blue", population: 4_679_000},
+      %{name: "Nova Haven", color: "blue", population: 4_715_000},  # Starting planet
+      %{name: "Avalon", color: "blue", population: 8_586_000},
+      %{name: "Solara", color: "blue", population: 5_427_000},
+      %{name: "Star Harbor", color: "yellow", population: 14_900_000},
+      %{name: "Azteca Prime", color: "yellow", population: 19_463_000},
+      %{name: "Atlas Base", color: "black", population: 2_946_000},
+      %{name: "Dragon's Reach", color: "red", population: 17_311_000}
     ]
 
     Enum.each(planets, fn planet_attrs ->

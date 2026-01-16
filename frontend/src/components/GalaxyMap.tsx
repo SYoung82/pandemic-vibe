@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-interface City {
+interface Planet {
   name: string;
   color: string;
   x: number; // percentage position on map
@@ -14,74 +14,73 @@ interface Player {
   user_id: string;
   role?: string;
   turn_order: number;
-  current_city_id?: string | null;
+  current_planet_id?: string | null;
 }
 
-interface WorldMapProps {
-  cities: City[];
+interface GalaxyMapProps {
+  cities: Planet[];
   players: Player[];
   onCityClick?: (cityName: string) => void;
   currentPlayerId?: string;
 }
 
-// Pandemic game cities with approximate world map positions (percentage-based)
-const CITY_POSITIONS: Record<string, { x: number; y: number }> = {
-  // North America (Blue)
-  'San Francisco': { x: 12, y: 38 },
-  'Chicago': { x: 18, y: 35 },
-  'Montreal': { x: 22, y: 32 },
-  'New York': { x: 24, y: 36 },
-  'Washington': { x: 23, y: 39 },
-  'Atlanta': { x: 20, y: 40 },
+// Infestation game planets with approximate galaxy map positions (percentage-based)
+const PLANET_POSITIONS: Record<string, { x: number; y: number }> = {
+  // Orion Sector (Blue) - 12 planets
+  'Kepler Prime': { x: 10, y: 35 },
+  'Zenith Station': { x: 15, y: 30 },
+  'Cryos': { x: 20, y: 28 },
+  'Titan City': { x: 24, y: 33 },
+  'Command Central': { x: 22, y: 38 },
+  'Nova Haven': { x: 18, y: 40 }, // Starting planet
+  'Avalon': { x: 42, y: 28 },
+  'Solara': { x: 45, y: 32 },
+  'Lumina': { x: 48, y: 30 },
+  'Forge World': { x: 50, y: 27 },
+  'Crystallis': { x: 52, y: 33 },
+  'Polaris': { x: 55, y: 26 },
 
-  // Europe (Blue)
-  'London': { x: 45, y: 30 },
-  'Madrid': { x: 43, y: 38 },
-  'Paris': { x: 47, y: 32 },
-  'Essen': { x: 48, y: 30 },
-  'Milan': { x: 49, y: 34 },
-  'St. Petersburg': { x: 54, y: 27 },
+  // Hydra Sector (Yellow) - 12 planets
+  'Star Harbor': { x: 12, y: 45 },
+  'Azteca Prime': { x: 16, y: 50 },
+  'Coral Station': { x: 20, y: 48 },
+  'Emerald Ridge': { x: 22, y: 55 },
+  'Condor Peak': { x: 18, y: 58 },
+  'Sierra Nova': { x: 22, y: 62 },
+  'Pampas Prime': { x: 26, y: 65 },
+  'Amazon Station': { x: 28, y: 60 },
+  'Savanna Prime': { x: 45, y: 50 },
+  'Oasis Station': { x: 50, y: 48 },
+  'Congo Nexus': { x: 48, y: 56 },
+  'Diamond World': { x: 52, y: 60 },
 
-  // Asia (Red)
-  'Beijing': { x: 72, y: 36 },
-  'Seoul': { x: 76, y: 37 },
-  'Shanghai': { x: 74, y: 40 },
-  'Tokyo': { x: 78, y: 38 },
-  'Osaka': { x: 77, y: 40 },
-  'Taipei': { x: 75, y: 44 },
-  'Hong Kong': { x: 73, y: 46 },
-  'Bangkok': { x: 70, y: 50 },
-  'Manila': { x: 76, y: 50 },
-  'Ho Chi Minh City': { x: 71, y: 52 },
-  'Jakarta': { x: 72, y: 58 },
-  'Sydney': { x: 82, y: 68 },
+  // Nebula Sector (Black) - 12 planets
+  'Atlas Base': { x: 47, y: 40 },
+  'Pyramid Station': { x: 52, y: 42 },
+  'Crossroads Prime': { x: 55, y: 38 },
+  'Crimson Reach': { x: 58, y: 40 },
+  'Persia Nova': { x: 60, y: 42 },
+  'Babylon Station': { x: 58, y: 45 },
+  'Dune World': { x: 62, y: 48 },
+  'Indus Prime': { x: 64, y: 44 },
+  'Monsoon Station': { x: 66, y: 46 },
+  'Ganges Nexus': { x: 68, y: 48 },
+  'Spice World': { x: 70, y: 50 },
+  'Bengal Station': { x: 67, y: 52 },
 
-  // Middle East/South Asia (Black)
-  'Istanbul': { x: 52, y: 38 },
-  'Moscow': { x: 56, y: 30 },
-  'Tehran': { x: 58, y: 40 },
-  'Delhi': { x: 64, y: 44 },
-  'Mumbai': { x: 63, y: 48 },
-  'Chennai': { x: 66, y: 52 },
-  'Kolkata': { x: 67, y: 46 },
-  'Karachi': { x: 61, y: 45 },
-  'Riyadh': { x: 58, y: 45 },
-  'Baghdad': { x: 57, y: 41 },
-  'Cairo': { x: 52, y: 43 },
-  'Algiers': { x: 47, y: 40 },
-
-  // South America/Africa (Yellow)
-  'Mexico City': { x: 16, y: 48 },
-  'Miami': { x: 21, y: 45 },
-  'Bogota': { x: 22, y: 54 },
-  'Lima': { x: 20, y: 60 },
-  'Santiago': { x: 22, y: 68 },
-  'Buenos Aires': { x: 26, y: 68 },
-  'São Paulo': { x: 30, y: 64 },
-  'Lagos': { x: 47, y: 52 },
-  'Kinshasa': { x: 50, y: 58 },
-  'Khartoum': { x: 54, y: 50 },
-  'Johannesburg': { x: 52, y: 66 },
+  // Phoenix Sector (Red) - 12 planets
+  'Dragon\'s Reach': { x: 72, y: 36 },
+  'Techno Prime': { x: 76, y: 38 },
+  'Pearl Harbor': { x: 74, y: 42 },
+  'Sakura Station': { x: 78, y: 40 },
+  'Neon City': { x: 80, y: 38 },
+  'Jade World': { x: 75, y: 45 },
+  'Harbor Prime': { x: 73, y: 48 },
+  'Temple Station': { x: 71, y: 52 },
+  'Mekong Nexus': { x: 74, y: 54 },
+  'Archipelago Prime': { x: 77, y: 50 },
+  'Equator Station': { x: 79, y: 56 },
+  'Southern Cross': { x: 82, y: 65 },
 };
 
 const COLOR_MAP: Record<string, string> = {
@@ -92,40 +91,40 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  medic: '#EF4444',          // Red
-  scientist: '#8B5CF6',      // Purple
-  researcher: '#3B82F6',     // Blue
-  operations_expert: '#10B981', // Green
-  dispatcher: '#F59E0B',     // Amber
-  contingency_planner: '#EC4899', // Pink
-  quarantine_specialist: '#06B6D4', // Cyan
+  combat_medic: '#EF4444',          // Red
+  xenobiologist: '#8B5CF6',         // Purple
+  field_researcher: '#3B82F6',      // Blue
+  operations_commander: '#10B981',  // Green
+  fleet_commander: '#F59E0B',       // Amber
+  tactical_officer: '#EC4899',      // Pink
+  containment_specialist: '#06B6D4', // Cyan
 };
 
-export default function WorldMap({ cities, players, onCityClick, currentPlayerId }: WorldMapProps) {
-  const citiesWithPositions = useMemo(() => {
-    return cities.map(city => ({
-      ...city,
-      ...CITY_POSITIONS[city.name] || { x: 50, y: 50 }, // Default center if not found
+export default function GalaxyMap({ cities, players, onCityClick, currentPlayerId }: GalaxyMapProps) {
+  const planetsWithPositions = useMemo(() => {
+    return cities.map(planet => ({
+      ...planet,
+      ...PLANET_POSITIONS[planet.name] || { x: 50, y: 50 }, // Default center if not found
     }));
   }, [cities]);
 
-  const playersAtCities = useMemo(() => {
-    const cityMap: Record<string, Player[]> = {};
+  const playersAtPlanets = useMemo(() => {
+    const planetMap: Record<string, Player[]> = {};
     players.forEach(player => {
-      if (player.current_city_id) {
-        if (!cityMap[player.current_city_id]) {
-          cityMap[player.current_city_id] = [];
+      if (player.current_planet_id) {
+        if (!planetMap[player.current_planet_id]) {
+          planetMap[player.current_planet_id] = [];
         }
-        cityMap[player.current_city_id].push(player);
+        planetMap[player.current_planet_id].push(player);
       }
     });
-    return cityMap;
+    return planetMap;
   }, [players]);
 
   return (
     <div className="relative w-full bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow-lg overflow-hidden">
       <svg viewBox="0 0 100 70" className="w-full" style={{ aspectRatio: '100/70' }}>
-        {/* Simplified world map background - continents as rough shapes */}
+        {/* Simplified galaxy map background - star systems as rough shapes */}
         <g opacity="0.2" fill="#1F2937">
           {/* North America */}
           <path d="M 10,25 Q 15,20 20,25 L 25,30 Q 28,35 25,40 Q 22,45 18,48 L 12,45 Q 8,40 10,35 Z" />
@@ -146,10 +145,10 @@ export default function WorldMap({ cities, players, onCityClick, currentPlayerId
           <path d="M 78,62 Q 83,60 86,64 L 84,68 Q 80,70 78,66 Z" />
         </g>
 
-        {/* Connection lines between cities (simplified - just showing major routes) */}
+        {/* Connection lines between planets (simplified - just showing major routes) */}
         <g stroke="#94A3B8" strokeWidth="0.2" opacity="0.3" fill="none">
-          {citiesWithPositions.map((city, i) => {
-            const nearestCity = citiesWithPositions.find((c, j) =>
+          {planetsWithPositions.map((city, i) => {
+            const nearestCity = planetsWithPositions.find((c, j) =>
               i !== j && Math.abs(c.x - city.x) < 15 && Math.abs(c.y - city.y) < 10
             );
             if (nearestCity) {
@@ -167,44 +166,44 @@ export default function WorldMap({ cities, players, onCityClick, currentPlayerId
           })}
         </g>
 
-        {/* Cities */}
-        {citiesWithPositions.map((city) => {
-          const hasInfections = city.infections && Object.values(city.infections).some(count => count > 0);
+        {/* Planets */}
+        {planetsWithPositions.map((planet) => {
+          const hasInfections = planet.infections && Object.values(planet.infections).some(count => count > 0);
 
           return (
-            <g key={city.name}>
-              {/* City circle */}
+            <g key={planet.name}>
+              {/* Planet circle */}
               <circle
-                cx={city.x}
-                cy={city.y}
+                cx={planet.x}
+                cy={planet.y}
                 r={hasInfections ? 1.5 : 1}
-                fill={COLOR_MAP[city.color] || '#6B7280'}
+                fill={COLOR_MAP[planet.color] || '#6B7280'}
                 stroke="white"
                 strokeWidth="0.3"
                 className={onCityClick ? 'cursor-pointer hover:opacity-80' : ''}
-                onClick={() => onCityClick?.(city.name)}
+                onClick={() => onCityClick?.(planet.name)}
               />
 
-              {/* City name */}
+              {/* Planet name */}
               <text
-                x={city.x}
-                y={city.y - 2}
+                x={planet.x}
+                y={planet.y - 2}
                 fontSize="1.5"
                 fill="#1F2937"
                 textAnchor="middle"
                 className="font-semibold select-none pointer-events-none"
                 style={{ textShadow: '0 0 2px white' }}
               >
-                {city.name}
+                {planet.name}
               </text>
 
-              {/* Research Station */}
-              {city.hasResearchStation && (
+              {/* Command Base */}
+              {planet.hasResearchStation && (
                 <g>
                   {/* White square background */}
                   <rect
-                    x={city.x - 0.8}
-                    y={city.y - 0.8}
+                    x={planet.x - 0.8}
+                    y={planet.y - 0.8}
                     width="1.6"
                     height="1.6"
                     fill="white"
@@ -214,20 +213,20 @@ export default function WorldMap({ cities, players, onCityClick, currentPlayerId
                   />
                   {/* Red cross */}
                   <g fill="#DC2626">
-                    <rect x={city.x - 0.5} y={city.y - 0.15} width="1" height="0.3" />
-                    <rect x={city.x - 0.15} y={city.y - 0.5} width="0.3" height="1" />
+                    <rect x={planet.x - 0.5} y={planet.y - 0.15} width="1" height="0.3" />
+                    <rect x={planet.x - 0.15} y={planet.y - 0.5} width="0.3" height="1" />
                   </g>
                 </g>
               )}
 
-              {/* Disease cubes */}
-              {city.infections && Object.entries(city.infections).map(([color, count], idx) => {
+              {/* Infestation markers */}
+              {planet.infections && Object.entries(planet.infections).map(([color, count], idx) => {
                 if (count === 0) return null;
                 return (
                   <g key={color}>
                     <circle
-                      cx={city.x + (idx - 1.5) * 0.8}
-                      cy={city.y + 2.2}
+                      cx={planet.x + (idx - 1.5) * 0.8}
+                      cy={planet.y + 2.2}
                       r={0.5}
                       fill={COLOR_MAP[color]}
                       stroke="white"
@@ -235,8 +234,8 @@ export default function WorldMap({ cities, players, onCityClick, currentPlayerId
                     />
                     {count > 1 && (
                       <text
-                        x={city.x + (idx - 1.5) * 0.8}
-                        y={city.y + 2.5}
+                        x={planet.x + (idx - 1.5) * 0.8}
+                        y={planet.y + 2.5}
                         fontSize="0.8"
                         fill="white"
                         textAnchor="middle"
@@ -249,12 +248,12 @@ export default function WorldMap({ cities, players, onCityClick, currentPlayerId
                 );
               })}
 
-              {/* Players at this city - Enhanced pawns */}
-              {playersAtCities[city.name]?.map((player, idx) => {
+              {/* Players at this planet - Enhanced pawns */}
+              {playersAtPlanets[planet.name]?.map((player, idx) => {
                 const isCurrentPlayer = player.id === currentPlayerId;
                 const playerColor = player.role ? ROLE_COLORS[player.role] || '#3B82F6' : '#3B82F6';
-                const xOffset = city.x + (idx - playersAtCities[city.name].length / 2 + 0.5) * 2;
-                const yOffset = city.y + 4;
+                const xOffset = planet.x + (idx - playersAtPlanets[planet.name].length / 2 + 0.5) * 2;
+                const yOffset = planet.y + 4;
 
                 return (
                   <g key={player.id}>
@@ -308,8 +307,8 @@ export default function WorldMap({ cities, players, onCityClick, currentPlayerId
       <div className="absolute bottom-2 right-2 bg-white bg-opacity-95 rounded-lg p-3 shadow-lg text-xs max-w-xs">
         <div className="font-bold mb-2 text-gray-800 border-b pb-1">Map Legend</div>
         <div className="space-y-1.5">
-          {/* Cities */}
-          <div className="text-xs font-semibold text-gray-600 mt-1">Cities</div>
+          {/* Planets */}
+          <div className="text-xs font-semibold text-gray-600 mt-1">Planets</div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1">
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
@@ -336,11 +335,11 @@ export default function WorldMap({ cities, players, onCityClick, currentPlayerId
               <div className="w-2 h-0.5 bg-red-600"></div>
               <div className="w-0.5 h-2 bg-red-600 absolute"></div>
             </div>
-            <span>Research Station</span>
+            <span>Command Base</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <span>Disease Cubes</span>
+            <span>Infestation Markers</span>
           </div>
 
           {/* Players */}
