@@ -534,91 +534,6 @@ export default function GameBoard() {
                 />
               )}
 
-              {/* Game Status Cards - Compact */}
-              {gameState && (
-                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    {/* Outbreak Counter */}
-                    <div>
-                      <div className="text-xs text-gray-600 mb-1">Outbreaks</div>
-                      <div className="flex items-baseline gap-1 mb-1">
-                        <span className="text-xl sm:text-2xl font-bold text-red-600">{gameState.game.outbreak_count}</span>
-                        <span className="text-xs text-gray-500">/ 8</span>
-                      </div>
-                      <div className="bg-red-100 rounded-full h-1.5 overflow-hidden">
-                        <div
-                          className="bg-red-500 h-full transition-all"
-                          style={{ width: `${(gameState.game.outbreak_count / 8) * 100}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Infestation Rate */}
-                    <div>
-                      <div className="text-xs text-gray-600 mb-1">Infestation Rate</div>
-                      <div className="text-xl sm:text-2xl font-bold text-orange-600">{gameState.state?.infestation_rate || 2}</div>
-                      <div className="text-xs text-gray-500">cards/turn</div>
-                    </div>
-
-                    {/* Command Bases */}
-                    <div>
-                      <div className="text-xs text-gray-600 mb-1">Command Bases</div>
-                      <div className="text-xl sm:text-2xl font-bold text-purple-600">
-                        {gameState.state.command_bases?.length || 0}
-                      </div>
-                      <div className="text-xs text-gray-500">built</div>
-                    </div>
-
-                    {/* Infestation Markers - Compact */}
-                    <div>
-                      <div className="text-xs text-gray-600 mb-1">Markers Left</div>
-                      <div className="grid grid-cols-2 gap-x-2 text-xs">
-                        {Object.entries(gameState.state.infestation_markers || {}).map(([color, count]) => (
-                          <div key={color} className="flex justify-between">
-                            <span className="capitalize">{color.charAt(0)}:</span>
-                            <span className="font-semibold">{String(count)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Containment Status - Compact */}
-              {gameState && (
-                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
-                  <h3 className="text-sm font-bold text-gray-800 mb-2">Containment Progress</h3>
-                  <div className="flex gap-2 justify-between">
-                    {Object.entries(gameState.state.containment_markers || {}).map(([color, status]) => {
-                      const colorClasses = {
-                        blue: 'from-blue-500 to-blue-600',
-                        yellow: 'from-yellow-400 to-yellow-500',
-                        black: 'from-gray-700 to-gray-800',
-                        red: 'from-red-500 to-red-600'
-                      };
-                      const isDiscovered = status === 'discovered' || status === 'eradicated';
-
-                      return (
-                        <div
-                          key={color}
-                          className={`flex-1 rounded-lg p-2 text-center ${
-                            isDiscovered
-                              ? `bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses] || 'from-gray-500 to-gray-600'} text-white`
-                              : 'bg-gray-100 border border-dashed border-gray-300'
-                          }`}
-                        >
-                          <div className="text-xs font-semibold capitalize mb-1">{color}</div>
-                          <div className="text-xl">
-                            {isDiscovered ? '✓' : '○'}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
               {/* Player Actions */}
               {isCurrentPlayer && (
                 <div className="bg-white rounded-lg shadow p-6">
@@ -840,9 +755,10 @@ export default function GameBoard() {
               </div>
             </div>
 
-            {/* Chat */}
-            <div className="xl:col-span-1">
-              <div className="bg-white rounded-lg shadow p-3 sm:p-4 lg:p-6 h-[400px] sm:h-[500px] lg:h-[600px] flex flex-col">
+            {/* Right Sidebar - Chat and Game Stats */}
+            <div className="xl:col-span-1 space-y-4">
+              {/* Chat */}
+              <div className="bg-white rounded-lg shadow p-3 sm:p-4 lg:p-6 h-[300px] sm:h-[350px] flex flex-col">
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Chat</h3>
                 <div className="flex-1 overflow-y-auto mb-3 sm:mb-4 space-y-2">
                   {messages.map((msg, idx) => (
@@ -869,6 +785,91 @@ export default function GameBoard() {
                   </button>
                 </div>
               </div>
+
+              {/* Game Status Cards - Compact */}
+              {gameState && (
+                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Outbreak Counter */}
+                    <div>
+                      <div className="text-xs text-gray-600 mb-1">Outbreaks</div>
+                      <div className="flex items-baseline gap-1 mb-1">
+                        <span className="text-xl font-bold text-red-600">{gameState.game.outbreak_count}</span>
+                        <span className="text-xs text-gray-500">/ 8</span>
+                      </div>
+                      <div className="bg-red-100 rounded-full h-1.5 overflow-hidden">
+                        <div
+                          className="bg-red-500 h-full transition-all"
+                          style={{ width: `${(gameState.game.outbreak_count / 8) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Infestation Rate */}
+                    <div>
+                      <div className="text-xs text-gray-600 mb-1">Infestation Rate</div>
+                      <div className="text-xl font-bold text-orange-600">{gameState.state?.infestation_rate || 2}</div>
+                      <div className="text-xs text-gray-500">cards/turn</div>
+                    </div>
+
+                    {/* Command Bases */}
+                    <div>
+                      <div className="text-xs text-gray-600 mb-1">Command Bases</div>
+                      <div className="text-xl font-bold text-purple-600">
+                        {gameState.state.command_bases?.length || 0}
+                      </div>
+                      <div className="text-xs text-gray-500">built</div>
+                    </div>
+
+                    {/* Infestation Markers - Compact */}
+                    <div>
+                      <div className="text-xs text-gray-600 mb-1">Markers Left</div>
+                      <div className="grid grid-cols-2 gap-x-2 text-xs">
+                        {Object.entries(gameState.state.infestation_markers || {}).map(([color, count]) => (
+                          <div key={color} className="flex justify-between">
+                            <span className="capitalize">{color.charAt(0)}:</span>
+                            <span className="font-semibold">{String(count)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Containment Status - Compact */}
+              {gameState && (
+                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
+                  <h3 className="text-sm font-bold text-gray-800 mb-2">Containment Progress</h3>
+                  <div className="flex gap-2 justify-between">
+                    {Object.entries(gameState.state.containment_markers || {}).map(([color, status]) => {
+                      const colorClasses = {
+                        blue: 'from-blue-500 to-blue-600',
+                        yellow: 'from-yellow-400 to-yellow-500',
+                        black: 'from-gray-700 to-gray-800',
+                        red: 'from-red-500 to-red-600'
+                      };
+                      const isDiscovered = status === 'discovered' || status === 'eradicated';
+
+                      return (
+                        <div
+                          key={color}
+                          className={`flex-1 rounded-lg p-2 text-center ${
+                            isDiscovered
+                              ? `bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses] || 'from-gray-500 to-gray-600'} text-white`
+                              : 'bg-gray-100 border border-dashed border-gray-300'
+                          }`}
+                        >
+                          <div className="text-xs font-semibold capitalize mb-1">{color}</div>
+                          <div className="text-xl">
+                            {isDiscovered ? '✓' : '○'}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
