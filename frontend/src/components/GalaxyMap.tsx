@@ -573,30 +573,30 @@ export default function GalaxyMap({ cities, players, onCityClick, currentPlayerI
 
       {/* Legend */}
       <div className="absolute bottom-2 right-2 bg-gray-900 bg-opacity-90 rounded-lg p-3 shadow-lg text-xs max-w-xs border border-gray-700">
-        <div className="font-bold mb-2 text-gray-100 border-b border-gray-700 pb-1">Galaxy Map</div>
+        <div className="font-bold mb-2 text-white border-b border-gray-700 pb-1">Galaxy Map</div>
         <div className="space-y-1.5">
           {/* Elements */}
-          <div className="text-xs font-semibold text-gray-400 mt-1">Elements</div>
+          <div className="text-xs font-semibold text-white mt-1">Elements</div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-gradient-to-br from-gray-300 to-gray-600 clip-hexagon flex items-center justify-center">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
             </div>
-            <span className="text-gray-300">Command Base</span>
+            <span className="text-white">Command Base</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.6)]"></div>
-            <span className="text-gray-300">Infestation</span>
+            <span className="text-white">Infestation</span>
           </div>
 
           {/* Players */}
-          <div className="text-xs font-semibold text-gray-400 mt-2 pt-1 border-t border-gray-700">Fleet</div>
+          <div className="text-xs font-semibold text-white mt-2 pt-1 border-t border-gray-700">Fleet</div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-3 rounded-full bg-blue-500 border border-gray-300 flex items-center justify-center text-white text-[7px] font-bold">1</div>
-            <span className="text-gray-300">Ship</span>
+            <span className="text-white">Ship</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-3 rounded-full bg-green-500 border-2 border-yellow-400 flex items-center justify-center text-white text-[7px] font-bold shadow-[0_0_8px_rgba(16,185,129,0.5)]">1</div>
-            <span className="text-gray-300">Active Ship</span>
+            <span className="text-white">Active Ship</span>
           </div>
         </div>
       </div>

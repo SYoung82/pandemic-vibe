@@ -212,7 +212,7 @@ export default function GameBoard() {
   if (!currentGameInfo) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-xl text-gray-600">Loading game...</div>
+        <div className="text-xl text-white">Loading game...</div>
       </div>
     );
   }
@@ -222,14 +222,14 @@ export default function GameBoard() {
       <nav className="bg-white shadow-sm">
         <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex justify-between h-14 sm:h-16 items-center">
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">{currentGameInfo.name}</h1>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{currentGameInfo.name}</h1>
             <div className="flex items-center gap-2 sm:gap-4">
               <span className={`text-xs sm:text-sm ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
                 {isConnected ? '● Connected' : '○ Disconnected'}
               </span>
               <button
                 onClick={() => navigate('/games')}
-                className="px-2 py-1 sm:px-4 sm:py-2 text-sm sm:text-base text-gray-600 hover:text-gray-800"
+                className="px-2 py-1 sm:px-4 sm:py-2 text-sm sm:text-base text-white hover:text-white"
               >
                 Back to Lobby
               </button>
@@ -251,28 +251,28 @@ export default function GameBoard() {
           <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">Game Lobby</h2>
-                <p className="text-gray-600">Waiting for players to join...</p>
+                <h2 className="text-3xl font-bold text-white mb-2">Game Lobby</h2>
+                <p className="text-white">Waiting for players to join...</p>
               </div>
 
               {/* Game Settings */}
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Game Settings</h3>
+                <h3 className="text-sm font-semibold text-white mb-3">Game Settings</h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-600">Difficulty:</span>
-                    <span className="ml-2 font-medium text-gray-800 capitalize">{currentGameInfo.difficulty}</span>
+                    <span className="text-white">Difficulty:</span>
+                    <span className="ml-2 font-medium text-white capitalize">{currentGameInfo.difficulty}</span>
                   </div>
                   <div>
-                    <span className="text-gray-600">Players:</span>
-                    <span className="ml-2 font-medium text-gray-800">{currentGameInfo.players.length}/4</span>
+                    <span className="text-white">Players:</span>
+                    <span className="ml-2 font-medium text-white">{currentGameInfo.players.length}/4</span>
                   </div>
                 </div>
               </div>
 
               {/* Player List */}
               <div className="mb-8">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Players ({currentGameInfo.players.length})</h3>
+                <h3 className="text-sm font-semibold text-white mb-3">Players ({currentGameInfo.players.length})</h3>
                 <div className="space-y-2">
                   {currentGameInfo.players.map((player: Player, index: number) => (
                     <div
@@ -284,7 +284,7 @@ export default function GameBoard() {
                           {String(player.username || player.user_id).charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <div className="font-medium text-gray-800">
+                          <div className="font-medium text-white">
                             {String(player.username || player.user_id)}
                           </div>
                           {index === 0 && (
@@ -302,10 +302,10 @@ export default function GameBoard() {
                       key={`empty-${i}`}
                       className="flex items-center gap-3 bg-gray-50 border border-gray-200 border-dashed rounded-lg p-3"
                     >
-                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
+                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white">
                         ?
                       </div>
-                      <span className="text-gray-500 italic">Waiting for player...</span>
+                      <span className="text-white italic">Waiting for player...</span>
                     </div>
                   ))}
                 </div>
@@ -328,7 +328,7 @@ export default function GameBoard() {
                       Start Game ({currentGameInfo.players.length} players ready)
                     </button>
                   )}
-                  <p className="text-xs text-center text-gray-500">
+                  <p className="text-xs text-center text-white">
                     You are the host. Click Start Game when everyone is ready.
                   </p>
                 </div>
@@ -347,20 +347,20 @@ export default function GameBoard() {
             <div className="xl:col-span-3 space-y-4">
               {/* Current Turn Indicator */}
               {currentPlayer && (
-                <div className={`rounded-lg shadow-lg p-3 sm:p-4 lg:p-6 border ${isCurrentPlayer ? 'bg-gradient-to-r from-emerald-900 to-teal-900 border-emerald-500/50' : 'bg-gradient-to-r from-slate-800 to-slate-900 border-slate-600/50'}`}>
+                <div className={`rounded-lg shadow-lg p-3 sm:p-4 lg:p-6 border bg-slate-900`}>
                   <div className="text-white">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                       <div>
-                        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1">
-                          {isCurrentPlayer ? '🚀 Your Turn!' : `${currentPlayer.role}'s Turn`}
+                        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 capitalize">
+                          {isCurrentPlayer ? '🚀 Your Turn!' : `${currentPlayer.role.replace('_', ' ')}'s Turn`}
                         </h3>
                         <p className="text-slate-300 text-sm lg:text-base">
                           Turn #{gameState?.turn_number || 0} • {currentPlayer.actions_remaining} actions remaining
                         </p>
                       </div>
                       {currentPlayer.role && (
-                        <div className="bg-slate-700/50 border border-slate-500/30 rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 self-start sm:self-auto">
-                          <span className="text-slate-200 text-sm lg:text-base font-semibold capitalize">{currentPlayer.role}</span>
+                        <div className={`${isCurrentPlayer ? 'bg-emerald-800/50 border border-emerald-500/50' : 'bg-slate-700/50 border border-slate-500/30'} rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 self-start sm:self-auto`}>
+                          <span className={`${isCurrentPlayer ? 'text-emerald-400' : 'text-slate-400'} text-sm lg:text-base font-semibold capitalize`}>{currentPlayer.role.replace('_', ' ')}</span>
                         </div>
                       )}
                     </div>
@@ -680,13 +680,13 @@ export default function GameBoard() {
             {/* Right Sidebar - Chat and Game Stats */}
             <div className="xl:col-span-1 flex flex-col gap-4 h-full">
               {/* Chat - Flexible height */}
-              <div className="bg-white rounded-lg shadow p-3 sm:p-4 flex-1 flex flex-col min-h-0">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Chat</h3>
+              <div className="bg-slate-900 rounded-lg shadow p-3 sm:p-4 flex-1 flex flex-col min-h-0">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">Chat</h3>
                 <div className="flex-1 overflow-y-auto mb-3 sm:mb-4 space-y-2 min-h-0">
                   {messages.map((msg, idx) => (
                     <div key={idx} className="text-xs sm:text-sm">
-                      <span className="font-semibold text-gray-800">{msg.player_name}:</span>{' '}
-                      <span className="text-gray-600">{msg.message}</span>
+                      <span className="font-semibold text-white">{msg.player_name}:</span>{' '}
+                      <span className="text-white">{msg.message}</span>
                     </div>
                   ))}
                 </div>
@@ -710,14 +710,14 @@ export default function GameBoard() {
 
               {/* Game Status Cards - Compact */}
               {gameState && (
-                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
+                <div className="bg-slate-900 rounded-lg shadow p-3 sm:p-4">
                   <div className="grid grid-cols-2 gap-3">
                     {/* Outbreak Counter */}
                     <div>
-                      <div className="text-xs text-gray-600 mb-1">Outbreaks</div>
+                      <div className="text-s text-white mb-1">Outbreaks</div>
                       <div className="flex items-baseline gap-1 mb-1">
                         <span className="text-xl font-bold text-red-600">{gameState.game.outbreak_count}</span>
-                        <span className="text-xs text-gray-500">/ 8</span>
+                        <span className="text-xs text-white">/ 8</span>
                       </div>
                       <div className="bg-red-100 rounded-full h-1.5 overflow-hidden">
                         <div
@@ -729,28 +729,28 @@ export default function GameBoard() {
 
                     {/* Infestation Rate */}
                     <div>
-                      <div className="text-xs text-gray-600 mb-1">Infestation Rate</div>
+                      <div className="text-s text-white mb-1">Infestation Rate</div>
                       <div className="text-xl font-bold text-orange-600">{gameState.state?.infestation_rate || 2}</div>
-                      <div className="text-xs text-gray-500">cards/turn</div>
+                      <div className="text-xs text-white">cards/turn</div>
                     </div>
 
                     {/* Command Bases */}
                     <div>
-                      <div className="text-xs text-gray-600 mb-1">Command Bases</div>
+                      <div className="text-s text-white mb-1">Command Bases</div>
                       <div className="text-xl font-bold text-purple-600">
                         {gameState.state.command_bases?.length || 0}
                       </div>
-                      <div className="text-xs text-gray-500">built</div>
+                      <div className="text-xs text-white">built</div>
                     </div>
 
                     {/* Infestation Markers - Compact */}
                     <div>
-                      <div className="text-xs text-gray-600 mb-1">Markers Left</div>
+                      <div className="text-s text-white mb-1">Markers Left</div>
                       <div className="grid grid-cols-2 gap-x-2 text-xs">
                         {Object.entries(gameState.state.infestation_markers || {}).map(([color, count]) => (
-                          <div key={color} className="flex justify-between">
-                            <span className="capitalize">{color.charAt(0)}:</span>
-                            <span className="font-semibold">{String(count)}</span>
+                          <div key={color} className="flex justify-normal gap-2">
+                            <span className="capitalize text-white">{color.charAt(0)}:</span>
+                            <span className="font-semibold text-white">{String(count)}</span>
                           </div>
                         ))}
                       </div>
@@ -761,8 +761,8 @@ export default function GameBoard() {
 
               {/* Containment Status - Compact */}
               {gameState && (
-                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
-                  <h3 className="text-sm font-bold text-gray-800 mb-2">Containment Progress</h3>
+                <div className="bg-slate-900 rounded-lg shadow p-3 sm:p-4">
+                  <h3 className="text-sm font-bold text-white mb-2">Containment Progress</h3>
                   <div className="flex gap-2 justify-between">
                     {Object.entries(gameState.state.containment_markers || {}).map(([color, status]) => {
                       const colorClasses = {
@@ -774,7 +774,7 @@ export default function GameBoard() {
                       const textColors = {
                         blue: 'text-blue-100',
                         yellow: 'text-yellow-900',
-                        black: 'text-gray-100',
+                        black: 'text-white',
                         red: 'text-red-100'
                       };
                       const isDiscovered = status === 'discovered' || status === 'eradicated';
@@ -799,8 +799,8 @@ export default function GameBoard() {
 
               {/* Players */}
               {gameState && (
-                <div className="bg-white rounded-lg shadow p-3 sm:p-4">
-                  <h3 className="text-sm font-bold text-gray-800 mb-3">Players</h3>
+                <div className="bg-slate-900 rounded-lg shadow p-3 sm:p-4">
+                  <h3 className="text-sm font-bold text-white mb-3">Players</h3>
                   <div className="space-y-2">
                     {gameState.players.map((player) => {
                       const isActive = player.id === gameState.current_player_id;
@@ -821,19 +821,19 @@ export default function GameBoard() {
                                 {player.turn_order + 1}
                               </div>
                               <div>
-                                <h4 className="text-sm font-semibold text-gray-800 capitalize">{player.role || 'Player'}</h4>
-                                <p className="text-xs text-gray-500">
+                                <h4 className="text-sm font-semibold capitalize">{player.role.replace('_', ' ') || 'Player'}</h4>
+                                <p className="text-xs">
                                   {player.current_planet_id || 'Unknown location'}
                                 </p>
                               </div>
                             </div>
                             {isActive && (
-                              <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                              <span className="bg-green-500 text-xs px-2 py-0.5 rounded-full font-semibold">
                                 Active
                               </span>
                             )}
                           </div>
-                          <div className="flex gap-3 text-xs text-gray-600">
+                          <div className="flex gap-3 text-xs">
                             <div>
                               <span className="font-medium">Actions:</span> {player.actions_remaining}/4
                             </div>
@@ -845,7 +845,7 @@ export default function GameBoard() {
                           {/* Player's hand - only show for the current user */}
                           {String(player.user_id) === String(user?.id) && player.cards && player.cards.length > 0 && (
                             <div className="mt-2 pt-2 border-t border-gray-200">
-                              <p className="text-xs font-semibold text-gray-600 mb-1">Your Hand:</p>
+                              <p className="text-xs font-semibold mb-1">Your Hand:</p>
                               <div className="flex flex-wrap gap-1">
                                 {player.cards.map((card) => (
                                   <div
@@ -858,10 +858,10 @@ export default function GameBoard() {
                                         : card.planet_color === 'yellow'
                                         ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
                                         : card.planet_color === 'black'
-                                        ? 'bg-gray-100 border-gray-300 text-gray-800'
+                                        ? 'bg-gray-100 border-gray-300'
                                         : card.planet_color === 'red'
                                         ? 'bg-red-100 border-red-300 text-red-800'
-                                        : 'bg-gray-100 border-gray-300 text-gray-600'
+                                        : 'bg-gray-100 border-gray-300 text-white'
                                     }`}
                                   >
                                     {card.card_type === 'epidemic' ? '⚠️ SPREAD' : card.planet_name || 'Unknown'}
@@ -885,10 +885,10 @@ export default function GameBoard() {
       {showDiscardModal && myPlayer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            <h2 className="text-2xl font-bold text-white mb-4">
               Hand Limit Exceeded
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-white mb-6">
               You have {myPlayer.cards?.length || 0} cards. Please select{' '}
               <span className="font-bold text-red-600">{requiredDiscardCount}</span> card(s) to discard.
               (Maximum hand size is 7 cards)
@@ -918,15 +918,15 @@ export default function GameBoard() {
                           : card.planet_color === 'yellow'
                           ? 'text-yellow-700'
                           : card.planet_color === 'black'
-                          ? 'text-gray-700'
+                          ? 'text-white'
                           : card.planet_color === 'red'
                           ? 'text-red-700'
-                          : 'text-gray-600'
+                          : 'text-white'
                       }`}>
                         {card.card_type === 'epidemic' ? '⚠️ INFESTATION SPREAD' : card.planet_name}
                       </div>
                       {card.planet_color && card.card_type !== 'epidemic' && (
-                        <div className="text-xs text-gray-500 capitalize mt-1">
+                        <div className="text-xs text-white capitalize mt-1">
                           {card.planet_color}
                         </div>
                       )}
@@ -946,14 +946,14 @@ export default function GameBoard() {
                 className={`flex-1 py-3 rounded-lg font-semibold ${
                   selectedCardsToDiscard.length === requiredDiscardCount
                     ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-300 text-white cursor-not-allowed'
                 }`}
               >
                 Discard {selectedCardsToDiscard.length}/{requiredDiscardCount} Selected
               </button>
             </div>
 
-            <p className="text-xs text-gray-500 mt-4 text-center">
+            <p className="text-xs text-white mt-4 text-center">
               Selected: {selectedCardsToDiscard.length} | Required: {requiredDiscardCount}
             </p>
           </div>

@@ -30,8 +30,8 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Pandemic Vibe</h1>
-        <h2 className="text-xl text-gray-600 mb-8 text-center">Login to Play</h2>
+        <h1 className="text-3xl font-bold text-white mb-6 text-center">Pandemic Vibe</h1>
+        <h2 className="text-xl text-white mb-8 text-center">Login to Play</h2>
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
@@ -41,7 +41,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="username" className="block text-sm font-medium text-white mb-1">
               Username
             </label>
             <input
@@ -56,7 +56,7 @@ export default function Login() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-white mb-1">
               Password
             </label>
             <input
@@ -79,7 +79,7 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-gray-600">
+        <p className="mt-6 text-center text-white">
           Don't have an account?{' '}
           <Link to="/register" className="text-blue-600 hover:underline">
             Register here

@@ -43,8 +43,8 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Pandemic Vibe</h1>
-        <h2 className="text-xl text-gray-600 mb-8 text-center">Create Account</h2>
+        <h1 className="text-3xl font-bold text-white mb-6 text-center">Pandemic Vibe</h1>
+        <h2 className="text-xl text-white mb-8 text-center">Create Account</h2>
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
@@ -54,7 +54,7 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="username" className="block text-sm font-medium text-white mb-1">
               Username
             </label>
             <input
@@ -69,7 +69,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-medium text-white mb-1">
               Email
             </label>
             <input
@@ -84,7 +84,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-white mb-1">
               Password
             </label>
             <input
@@ -99,7 +99,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-white mb-1">
               Confirm Password
             </label>
             <input
@@ -122,7 +122,7 @@ export default function Register() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-gray-600">
+        <p className="mt-6 text-center text-white">
           Already have an account?{' '}
           <Link to="/login" className="text-blue-600 hover:underline">
             Login here
