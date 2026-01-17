@@ -212,7 +212,7 @@ export default function GameBoard() {
   if (!currentGameInfo) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-xl text-white">Loading game...</div>
+        <div className="text-xl text-gray-600">Loading game...</div>
       </div>
     );
   }
@@ -222,14 +222,14 @@ export default function GameBoard() {
       <nav className="bg-white shadow-sm">
         <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex justify-between h-14 sm:h-16 items-center">
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{currentGameInfo.name}</h1>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">{currentGameInfo.name}</h1>
             <div className="flex items-center gap-2 sm:gap-4">
               <span className={`text-xs sm:text-sm ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
                 {isConnected ? '● Connected' : '○ Disconnected'}
               </span>
               <button
                 onClick={() => navigate('/games')}
-                className="px-2 py-1 sm:px-4 sm:py-2 text-sm sm:text-base text-white hover:text-white"
+                className="px-2 py-1 sm:px-4 sm:py-2 text-sm sm:text-base text-gray-600 hover:text-gray-800"
               >
                 Back to Lobby
               </button>
@@ -251,28 +251,28 @@ export default function GameBoard() {
           <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-white mb-2">Game Lobby</h2>
-                <p className="text-white">Waiting for players to join...</p>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">Game Lobby</h2>
+                <p className="text-gray-600">Waiting for players to join...</p>
               </div>
 
               {/* Game Settings */}
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h3 className="text-sm font-semibold text-white mb-3">Game Settings</h3>
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Game Settings</h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-white">Difficulty:</span>
-                    <span className="ml-2 font-medium text-white capitalize">{currentGameInfo.difficulty}</span>
+                    <span className="text-gray-600">Difficulty:</span>
+                    <span className="ml-2 font-medium text-gray-800 capitalize">{currentGameInfo.difficulty}</span>
                   </div>
                   <div>
-                    <span className="text-white">Players:</span>
-                    <span className="ml-2 font-medium text-white">{currentGameInfo.players.length}/4</span>
+                    <span className="text-gray-600">Players:</span>
+                    <span className="ml-2 font-medium text-gray-800">{currentGameInfo.players.length}/4</span>
                   </div>
                 </div>
               </div>
 
               {/* Player List */}
               <div className="mb-8">
-                <h3 className="text-sm font-semibold text-white mb-3">Players ({currentGameInfo.players.length})</h3>
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Players ({currentGameInfo.players.length})</h3>
                 <div className="space-y-2">
                   {currentGameInfo.players.map((player: Player, index: number) => (
                     <div
@@ -284,7 +284,7 @@ export default function GameBoard() {
                           {String(player.username || player.user_id).charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <div className="font-medium text-white">
+                          <div className="font-medium text-gray-800">
                             {String(player.username || player.user_id)}
                           </div>
                           {index === 0 && (
@@ -302,10 +302,10 @@ export default function GameBoard() {
                       key={`empty-${i}`}
                       className="flex items-center gap-3 bg-gray-50 border border-gray-200 border-dashed rounded-lg p-3"
                     >
-                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white">
+                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
                         ?
                       </div>
-                      <span className="text-white italic">Waiting for player...</span>
+                      <span className="text-gray-500 italic">Waiting for player...</span>
                     </div>
                   ))}
                 </div>
@@ -328,7 +328,7 @@ export default function GameBoard() {
                       Start Game ({currentGameInfo.players.length} players ready)
                     </button>
                   )}
-                  <p className="text-xs text-center text-white">
+                  <p className="text-xs text-center text-gray-500">
                     You are the host. Click Start Game when everyone is ready.
                   </p>
                 </div>
@@ -821,19 +821,19 @@ export default function GameBoard() {
                                 {player.turn_order + 1}
                               </div>
                               <div>
-                                <h4 className="text-sm font-semibold capitalize">{player.role.replace('_', ' ') || 'Player'}</h4>
-                                <p className="text-xs">
+                                <h4 className="text-sm font-semibold capitalize text-gray-800">{player.role.replace('_', ' ') || 'Player'}</h4>
+                                <p className="text-xs text-gray-600">
                                   {player.current_planet_id || 'Unknown location'}
                                 </p>
                               </div>
                             </div>
                             {isActive && (
-                              <span className="bg-green-500 text-xs px-2 py-0.5 rounded-full font-semibold">
+                              <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
                                 Active
                               </span>
                             )}
                           </div>
-                          <div className="flex gap-3 text-xs">
+                          <div className="flex gap-3 text-xs text-gray-600">
                             <div>
                               <span className="font-medium">Actions:</span> {player.actions_remaining}/4
                             </div>
@@ -845,7 +845,7 @@ export default function GameBoard() {
                           {/* Player's hand - only show for the current user */}
                           {String(player.user_id) === String(user?.id) && player.cards && player.cards.length > 0 && (
                             <div className="mt-2 pt-2 border-t border-gray-200">
-                              <p className="text-xs font-semibold mb-1">Your Hand:</p>
+                              <p className="text-xs font-semibold mb-1 text-gray-700">Your Hand:</p>
                               <div className="flex flex-wrap gap-1">
                                 {player.cards.map((card) => (
                                   <div
@@ -858,10 +858,10 @@ export default function GameBoard() {
                                         : card.planet_color === 'yellow'
                                         ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
                                         : card.planet_color === 'black'
-                                        ? 'bg-gray-100 border-gray-300'
+                                        ? 'bg-gray-100 border-gray-300 text-gray-800'
                                         : card.planet_color === 'red'
                                         ? 'bg-red-100 border-red-300 text-red-800'
-                                        : 'bg-gray-100 border-gray-300 text-white'
+                                        : 'bg-gray-100 border-gray-300 text-gray-700'
                                     }`}
                                   >
                                     {card.card_type === 'epidemic' ? '⚠️ SPREAD' : card.planet_name || 'Unknown'}
@@ -885,10 +885,10 @@ export default function GameBoard() {
       {showDiscardModal && myPlayer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
-            <h2 className="text-2xl font-bold text-white mb-4">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
               Hand Limit Exceeded
             </h2>
-            <p className="text-white mb-6">
+            <p className="text-gray-600 mb-6">
               You have {myPlayer.cards?.length || 0} cards. Please select{' '}
               <span className="font-bold text-red-600">{requiredDiscardCount}</span> card(s) to discard.
               (Maximum hand size is 7 cards)
@@ -918,15 +918,15 @@ export default function GameBoard() {
                           : card.planet_color === 'yellow'
                           ? 'text-yellow-700'
                           : card.planet_color === 'black'
-                          ? 'text-white'
+                          ? 'text-gray-700'
                           : card.planet_color === 'red'
                           ? 'text-red-700'
-                          : 'text-white'
+                          : 'text-gray-700'
                       }`}>
                         {card.card_type === 'epidemic' ? '⚠️ INFESTATION SPREAD' : card.planet_name}
                       </div>
                       {card.planet_color && card.card_type !== 'epidemic' && (
-                        <div className="text-xs text-white capitalize mt-1">
+                        <div className="text-xs text-gray-500 capitalize mt-1">
                           {card.planet_color}
                         </div>
                       )}
@@ -946,14 +946,14 @@ export default function GameBoard() {
                 className={`flex-1 py-3 rounded-lg font-semibold ${
                   selectedCardsToDiscard.length === requiredDiscardCount
                     ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-gray-300 text-white cursor-not-allowed'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
               >
                 Discard {selectedCardsToDiscard.length}/{requiredDiscardCount} Selected
               </button>
             </div>
 
-            <p className="text-xs text-white mt-4 text-center">
+            <p className="text-xs text-gray-500 mt-4 text-center">
               Selected: {selectedCardsToDiscard.length} | Required: {requiredDiscardCount}
             </p>
           </div>
