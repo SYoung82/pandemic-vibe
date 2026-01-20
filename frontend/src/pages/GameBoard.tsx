@@ -6,6 +6,7 @@ import type { Card } from '../lib/useGameChannel';
 import { gameAPI } from '../lib/api';
 import GalaxyMap from '../components/GalaxyMap';
 import GameOverModal from '../components/GameOverModal';
+import PlayerCard, { CardBack } from '../components/PlayerCard';
 
 interface Player {
   id: string;
@@ -211,25 +212,25 @@ export default function GameBoard() {
 
   if (!currentGameInfo) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-xl text-gray-600">Loading game...</div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+        <div className="text-xl text-slate-400">Loading game...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <nav className="bg-white shadow-sm">
+    <div className="min-h-screen bg-slate-900">
+      <nav className="bg-slate-800 shadow-lg border-b border-slate-700">
         <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex justify-between h-14 sm:h-16 items-center">
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">{currentGameInfo.name}</h1>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-cyan-400">{currentGameInfo.name}</h1>
             <div className="flex items-center gap-2 sm:gap-4">
-              <span className={`text-xs sm:text-sm ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
+              <span className={`text-xs sm:text-sm ${isConnected ? 'text-emerald-400' : 'text-rose-400'}`}>
                 {isConnected ? '● Connected' : '○ Disconnected'}
               </span>
               <button
                 onClick={() => navigate('/games')}
-                className="px-2 py-1 sm:px-4 sm:py-2 text-sm sm:text-base text-gray-600 hover:text-gray-800"
+                className="px-2 py-1 sm:px-4 sm:py-2 text-sm sm:text-base text-slate-400 hover:text-slate-200"
               >
                 Back to Lobby
               </button>
@@ -240,7 +241,7 @@ export default function GameBoard() {
 
       {error && (
         <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6 py-4">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          <div className="bg-rose-900/50 border border-rose-700 text-rose-200 px-4 py-3 rounded">
             {error}
           </div>
         </div>
@@ -249,50 +250,50 @@ export default function GameBoard() {
       <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         {currentGameInfo.status === 'lobby' ? (
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="bg-slate-800 rounded-lg shadow-lg border border-slate-700 p-8">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">Game Lobby</h2>
-                <p className="text-gray-600">Waiting for players to join...</p>
+                <h2 className="text-3xl font-bold text-white mb-2">Game Lobby</h2>
+                <p className="text-slate-400">Waiting for players to join...</p>
               </div>
 
               {/* Game Settings */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Game Settings</h3>
+              <div className="bg-slate-700/50 rounded-lg p-4 mb-6 border border-slate-600">
+                <h3 className="text-sm font-semibold text-slate-300 mb-3">Game Settings</h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-600">Difficulty:</span>
-                    <span className="ml-2 font-medium text-gray-800 capitalize">{currentGameInfo.difficulty}</span>
+                    <span className="text-slate-400">Difficulty:</span>
+                    <span className="ml-2 font-medium text-white capitalize">{currentGameInfo.difficulty}</span>
                   </div>
                   <div>
-                    <span className="text-gray-600">Players:</span>
-                    <span className="ml-2 font-medium text-gray-800">{currentGameInfo.players.length}/4</span>
+                    <span className="text-slate-400">Players:</span>
+                    <span className="ml-2 font-medium text-white">{currentGameInfo.players.length}/4</span>
                   </div>
                 </div>
               </div>
 
               {/* Player List */}
               <div className="mb-8">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Players ({currentGameInfo.players.length})</h3>
+                <h3 className="text-sm font-semibold text-slate-300 mb-3">Players ({currentGameInfo.players.length})</h3>
                 <div className="space-y-2">
                   {currentGameInfo.players.map((player: Player, index: number) => (
                     <div
                       key={player.id}
-                      className="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-3"
+                      className="flex items-center justify-between bg-slate-700/50 border border-slate-600 rounded-lg p-3"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                        <div className="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center text-white font-bold">
                           {String(player.username || player.user_id).charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <div className="font-medium text-gray-800">
+                          <div className="font-medium text-white">
                             {String(player.username || player.user_id)}
                           </div>
                           {index === 0 && (
-                            <span className="text-xs text-blue-600 font-medium">Host</span>
+                            <span className="text-xs text-cyan-400 font-medium">Host</span>
                           )}
                         </div>
                       </div>
-                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
                     </div>
                   ))}
 
@@ -300,12 +301,12 @@ export default function GameBoard() {
                   {Array.from({ length: 4 - currentGameInfo.players.length }).map((_, i) => (
                     <div
                       key={`empty-${i}`}
-                      className="flex items-center gap-3 bg-gray-50 border border-gray-200 border-dashed rounded-lg p-3"
+                      className="flex items-center gap-3 bg-slate-800/50 border border-slate-600 border-dashed rounded-lg p-3"
                     >
-                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
+                      <div className="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center text-slate-400">
                         ?
                       </div>
-                      <span className="text-gray-500 italic">Waiting for player...</span>
+                      <span className="text-slate-500 italic">Waiting for player...</span>
                     </div>
                   ))}
                 </div>
@@ -315,26 +316,26 @@ export default function GameBoard() {
               {String(currentGameInfo.created_by_id) === String(user?.id) ? (
                 <div className="space-y-3">
                   {currentGameInfo.players.length < 2 ? (
-                    <div className="text-center py-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <p className="text-sm text-yellow-800">
+                    <div className="text-center py-3 bg-amber-900/30 border border-amber-700 rounded-lg">
+                      <p className="text-sm text-amber-200">
                         Need at least 2 players to start the game
                       </p>
                     </div>
                   ) : (
                     <button
                       onClick={handleStartGame}
-                      className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md"
+                      className="w-full bg-emerald-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-md"
                     >
                       Start Game ({currentGameInfo.players.length} players ready)
                     </button>
                   )}
-                  <p className="text-xs text-center text-gray-500">
+                  <p className="text-xs text-center text-slate-400">
                     You are the host. Click Start Game when everyone is ready.
                   </p>
                 </div>
               ) : (
-                <div className="text-center py-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-800">
+                <div className="text-center py-3 bg-cyan-900/30 border border-cyan-700 rounded-lg">
+                  <p className="text-sm text-cyan-200">
                     Waiting for host to start the game...
                   </p>
                 </div>
@@ -563,6 +564,12 @@ export default function GameBoard() {
                       >
                         Achieve Containment
                       </button>
+                      <button
+                        onClick={() => handleSelectAction('share_knowledge')}
+                        className="bg-pink-800 hover:bg-pink-700 text-pink-100 py-2 rounded border border-pink-600/50 transition-colors"
+                      >
+                        Share Knowledge
+                      </button>
                     </div>
 
                     {selectedAction && (
@@ -643,6 +650,74 @@ export default function GameBoard() {
                             {actionParams.color && myPlayer?.cards?.filter((card) => card.planet_color === actionParams.color).length === 0 ? (
                               <p className="text-xs text-red-400">You don&apos;t have any {String(actionParams.color)} cards in your hand.</p>
                             ) : null}
+                          </div>
+                        ) : selectedAction === 'share_knowledge' && gameState ? (
+                          <div className="space-y-3 mb-2">
+                            {/* Find other players on the same planet */}
+                            {(() => {
+                              const playersOnSamePlanet = gameState.players.filter(
+                                (p) => p.id !== myPlayer?.id && p.current_planet_id === myPlayer?.current_planet_id
+                              );
+                              const cardsMatchingPlanet = myPlayer?.cards?.filter(
+                                (card) => card.planet_name === myPlayer?.current_planet_id && card.card_type !== 'epidemic'
+                              ) || [];
+
+                              if (playersOnSamePlanet.length === 0) {
+                                return (
+                                  <p className="text-sm text-rose-400">
+                                    No other players at your current location ({myPlayer?.current_planet_id}).
+                                    You must be on the same planet as another player to share knowledge.
+                                  </p>
+                                );
+                              }
+
+                              if (cardsMatchingPlanet.length === 0) {
+                                return (
+                                  <p className="text-sm text-rose-400">
+                                    You don&apos;t have a card for {myPlayer?.current_planet_id}.
+                                    You can only share the card that matches your current planet.
+                                  </p>
+                                );
+                              }
+
+                              return (
+                                <>
+                                  <div>
+                                    <label className="block text-sm text-slate-300 mb-1">Select player to share with:</label>
+                                    <select
+                                      className="w-full px-3 py-2 bg-slate-700 border border-slate-500 rounded text-slate-100"
+                                      onChange={(e) => setActionParams({ ...actionParams, receiver_id: e.target.value })}
+                                      value={actionParams.receiver_id as string || ''}
+                                    >
+                                      <option value="" disabled>Select a player</option>
+                                      {playersOnSamePlanet.map((player) => (
+                                        <option key={player.id} value={player.id}>
+                                          {player.role?.replace('_', ' ') || 'Player'} (at {player.current_planet_id})
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm text-slate-300 mb-1">Card to share:</label>
+                                    <select
+                                      className="w-full px-3 py-2 bg-slate-700 border border-slate-500 rounded text-slate-100"
+                                      onChange={(e) => setActionParams({ ...actionParams, card_id: e.target.value })}
+                                      value={actionParams.card_id as string || ''}
+                                    >
+                                      <option value="" disabled>Select a card</option>
+                                      {cardsMatchingPlanet.map((card) => (
+                                        <option key={card.id} value={card.id}>
+                                          {card.planet_name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                  <p className="text-xs text-slate-400">
+                                    Give the {myPlayer?.current_planet_id} card to another player at your location.
+                                  </p>
+                                </>
+                              );
+                            })()}
                           </div>
                         ) : selectedAction === 'build_station' ? (
                           <p className="text-sm text-slate-300 mb-2">
@@ -799,7 +874,7 @@ export default function GameBoard() {
 
               {/* Players */}
               {gameState && (
-                <div className="bg-slate-900 rounded-lg shadow p-3 sm:p-4">
+                <div className="bg-slate-900 rounded-lg shadow p-3 sm:p-4 border border-slate-700">
                   <h3 className="text-sm font-bold text-white mb-3">Players</h3>
                   <div className="space-y-2">
                     {gameState.players.map((player) => {
@@ -807,69 +882,59 @@ export default function GameBoard() {
                       return (
                         <div
                           key={player.id}
-                          className={`rounded-lg p-3 border-2 ${
+                          className={`rounded-lg p-3 border ${
                             isActive
-                              ? 'border-green-500 bg-green-50'
-                              : 'border-gray-200 bg-white'
+                              ? 'border-emerald-500 bg-emerald-900/30'
+                              : 'border-slate-600 bg-slate-800'
                           }`}
                         >
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                                isActive ? 'bg-green-500' : 'bg-blue-500'
+                                isActive ? 'bg-emerald-500' : 'bg-cyan-600'
                               }`}>
                                 {player.turn_order + 1}
                               </div>
                               <div>
-                                <h4 className="text-sm font-semibold capitalize text-gray-800">{player.role.replace('_', ' ') || 'Player'}</h4>
-                                <p className="text-xs text-gray-600">
+                                <h4 className="text-sm font-semibold capitalize text-slate-100">{player.role.replace('_', ' ') || 'Player'}</h4>
+                                <p className="text-xs text-slate-400">
                                   {player.current_planet_id || 'Unknown location'}
                                 </p>
                               </div>
                             </div>
                             {isActive && (
-                              <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                              <span className="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
                                 Active
                               </span>
                             )}
                           </div>
-                          <div className="flex gap-3 text-xs text-gray-600">
+                          <div className="flex gap-3 text-xs text-slate-400">
                             <div>
-                              <span className="font-medium">Actions:</span> {player.actions_remaining}/4
+                              <span className="font-medium text-slate-300">Actions:</span> {player.actions_remaining}/4
                             </div>
                             <div>
-                              <span className="font-medium">Cards:</span> {player.cards?.length || 0}
+                              <span className="font-medium text-slate-300">Cards:</span> {player.cards?.length || 0}
                             </div>
                           </div>
 
-                          {/* Player's hand - only show for the current user */}
-                          {String(player.user_id) === String(user?.id) && player.cards && player.cards.length > 0 && (
-                            <div className="mt-2 pt-2 border-t border-gray-200">
-                              <p className="text-xs font-semibold mb-1 text-gray-700">Your Hand:</p>
+                          {/* Player's hand - show cards for current user, card backs for others */}
+                          {String(player.user_id) === String(user?.id) && player.cards && player.cards.length > 0 ? (
+                            <div className="mt-2 pt-2 border-t border-slate-600">
+                              <p className="text-xs font-semibold mb-1 text-slate-300">Your Hand:</p>
                               <div className="flex flex-wrap gap-1">
                                 {player.cards.map((card) => (
-                                  <div
-                                    key={card.id}
-                                    className={`px-2 py-1 rounded text-xs font-medium shadow-sm border ${
-                                      card.card_type === 'epidemic'
-                                        ? 'bg-red-100 border-red-300 text-red-800'
-                                        : card.planet_color === 'blue'
-                                        ? 'bg-blue-100 border-blue-300 text-blue-800'
-                                        : card.planet_color === 'yellow'
-                                        ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
-                                        : card.planet_color === 'black'
-                                        ? 'bg-gray-100 border-gray-300 text-gray-800'
-                                        : card.planet_color === 'red'
-                                        ? 'bg-red-100 border-red-300 text-red-800'
-                                        : 'bg-gray-100 border-gray-300 text-gray-700'
-                                    }`}
-                                  >
-                                    {card.card_type === 'epidemic' ? '⚠️ SPREAD' : card.planet_name || 'Unknown'}
-                                  </div>
+                                  <PlayerCard key={card.id} card={card} size="small" />
                                 ))}
                               </div>
                             </div>
-                          )}
+                          ) : player.cards && player.cards.length > 0 ? (
+                            <div className="mt-2 pt-2 border-t border-slate-600">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-slate-400">Hand:</span>
+                                <CardBack count={player.cards.length} />
+                              </div>
+                            </div>
+                          ) : null}
                         </div>
                       );
                     })}
@@ -883,59 +948,28 @@ export default function GameBoard() {
 
       {/* Discard Modal */}
       {showDiscardModal && myPlayer && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 rounded-lg shadow-xl border border-slate-700 max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
+            <h2 className="text-2xl font-bold text-white mb-4">
               Hand Limit Exceeded
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-slate-300 mb-6">
               You have {myPlayer.cards?.length || 0} cards. Please select{' '}
-              <span className="font-bold text-red-600">{requiredDiscardCount}</span> card(s) to discard.
+              <span className="font-bold text-rose-400">{requiredDiscardCount}</span> card(s) to discard.
               (Maximum hand size is 7 cards)
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               {myPlayer.cards?.map((card) => (
-                <button
+                <PlayerCard
                   key={card.id}
-                  onClick={() => toggleCardSelection(card.id)}
-                  className={`p-4 rounded-lg border-2 text-left transition-all ${
-                    selectedCardsToDiscard.includes(card.id)
-                      ? 'border-red-500 bg-red-50'
-                      : 'border-gray-300 bg-white hover:border-gray-400'
-                  } ${
-                    card.card_type === 'epidemic'
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'cursor-pointer'
-                  }`}
+                  card={card}
+                  size="large"
+                  selected={selectedCardsToDiscard.includes(card.id)}
                   disabled={card.card_type === 'epidemic'}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className={`font-semibold ${
-                        card.planet_color === 'blue'
-                          ? 'text-blue-700'
-                          : card.planet_color === 'yellow'
-                          ? 'text-yellow-700'
-                          : card.planet_color === 'black'
-                          ? 'text-gray-700'
-                          : card.planet_color === 'red'
-                          ? 'text-red-700'
-                          : 'text-gray-700'
-                      }`}>
-                        {card.card_type === 'epidemic' ? '⚠️ INFESTATION SPREAD' : card.planet_name}
-                      </div>
-                      {card.planet_color && card.card_type !== 'epidemic' && (
-                        <div className="text-xs text-gray-500 capitalize mt-1">
-                          {card.planet_color}
-                        </div>
-                      )}
-                    </div>
-                    {selectedCardsToDiscard.includes(card.id) && (
-                      <div className="text-red-600 text-xl">✓</div>
-                    )}
-                  </div>
-                </button>
+                  onClick={() => card.card_type !== 'epidemic' && toggleCardSelection(card.id)}
+                  showDetails
+                />
               ))}
             </div>
 
@@ -945,15 +979,15 @@ export default function GameBoard() {
                 disabled={selectedCardsToDiscard.length !== requiredDiscardCount}
                 className={`flex-1 py-3 rounded-lg font-semibold ${
                   selectedCardsToDiscard.length === requiredDiscardCount
-                    ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    ? 'bg-rose-700 hover:bg-rose-600 text-rose-100 border border-rose-500/50'
+                    : 'bg-slate-600 text-slate-400 cursor-not-allowed'
                 }`}
               >
                 Discard {selectedCardsToDiscard.length}/{requiredDiscardCount} Selected
               </button>
             </div>
 
-            <p className="text-xs text-gray-500 mt-4 text-center">
+            <p className="text-xs text-slate-400 mt-4 text-center">
               Selected: {selectedCardsToDiscard.length} | Required: {requiredDiscardCount}
             </p>
           </div>
