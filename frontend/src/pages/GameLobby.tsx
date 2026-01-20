@@ -108,12 +108,12 @@ export default function GameLobby() {
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className="text-2xl font-bold text-gray-800">Infestation</h1>
+            <h1 className="text-2xl font-bold text-white">Infestation</h1>
             <div className="flex items-center gap-4">
-              <span className="text-gray-600">Welcome, {user?.name}</span>
+              <span className="text-white">Welcome, {user?.name}</span>
               <button
                 onClick={logout}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                className="px-4 py-2 text-white hover:text-white"
               >
                 Logout
               </button>
@@ -124,7 +124,7 @@ export default function GameLobby() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-800">Game Lobby</h2>
+          <h2 className="text-3xl font-bold text-white">Game Lobby</h2>
           <button
             onClick={() => setShowCreateModal(true)}
             className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
@@ -147,10 +147,10 @@ export default function GameLobby() {
 
             return (
               <div key={game.id} className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                <h3 className="text-xl font-bold text-white mb-2">
                   {game.name || `Game #${game.id}`}
                 </h3>
-                <div className="space-y-2 text-sm text-gray-600 mb-4">
+                <div className="space-y-2 text-sm text-white mb-4">
                   <p>Players: {game.players?.length || 0}/4</p>
                   <p>Difficulty: <span className="capitalize">{game.difficulty}</span></p>
                   <p>Status: <span className="capitalize">{game.status}</span></p>
@@ -171,7 +171,7 @@ export default function GameLobby() {
           })}
 
           {games.length === 0 && (
-            <div className="col-span-full text-center py-12 text-gray-500">
+            <div className="col-span-full text-center py-12 text-white">
               No games available. Create one to get started!
             </div>
           )}
@@ -181,7 +181,7 @@ export default function GameLobby() {
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">Create New Game</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">Create New Game</h3>
 
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
@@ -191,7 +191,7 @@ export default function GameLobby() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-white mb-1">
                   Game Name
                 </label>
                 <input
@@ -204,7 +204,7 @@ export default function GameLobby() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-white mb-1">
                   Max Players
                 </label>
                 <select
@@ -219,7 +219,7 @@ export default function GameLobby() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-white mb-1">
                   Difficulty
                 </label>
                 <select
@@ -237,7 +237,7 @@ export default function GameLobby() {
                 <button
                   onClick={() => setShowCreateModal(false)}
                   disabled={isLoading}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-white hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>

@@ -119,27 +119,27 @@ export default function GameOverModal({ status, loseReason, gameStats, onClose }
 
           {/* Game Stats */}
           <div className="p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Game Summary</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">Game Summary</h2>
 
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-gray-800">{gameStats.turnNumber}</div>
-                <div className="text-sm text-gray-600 mt-1">Turns Played</div>
+                <div className="text-3xl font-bold text-white">{gameStats.turnNumber}</div>
+                <div className="text-sm text-white mt-1">Turns Played</div>
               </div>
 
               <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-gray-800">{gameStats.outbreakCount}</div>
-                <div className="text-sm text-gray-600 mt-1">Outbreaks</div>
+                <div className="text-3xl font-bold text-white">{gameStats.outbreakCount}</div>
+                <div className="text-sm text-white mt-1">Outbreaks</div>
               </div>
 
               <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-gray-800">{gameStats.containmentsAchieved}</div>
-                <div className="text-sm text-gray-600 mt-1">Containments Achieved</div>
+                <div className="text-3xl font-bold text-white">{gameStats.containmentsAchieved}</div>
+                <div className="text-sm text-white mt-1">Containments Achieved</div>
               </div>
 
               <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-gray-800 capitalize">{gameStats.difficulty}</div>
-                <div className="text-sm text-gray-600 mt-1">Difficulty</div>
+                <div className="text-3xl font-bold text-white capitalize">{gameStats.difficulty}</div>
+                <div className="text-sm text-white mt-1">Difficulty</div>
               </div>
             </div>
 
@@ -162,7 +162,7 @@ export default function GameOverModal({ status, loseReason, gameStats, onClose }
             </button>
             <button
               onClick={onClose}
-              className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors"
+              className="flex-1 bg-gray-300 hover:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
             >
               View Board
             </button>
