@@ -136,17 +136,13 @@ export default function PlayerCard({
 // Card back component for showing hidden cards (other players' hands)
 export function CardBack({ count }: { count: number }) {
   return (
-    <div className="flex items-center gap-1">
-      {Array.from({ length: Math.min(count, 3) }).map((_, i) => (
+    <div className="flex items-center flex-wrap gap-0.5">
+      {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
           className="w-4 h-6 bg-gradient-to-br from-slate-600 to-slate-700 rounded border border-slate-500 shadow-sm"
-          style={{ marginLeft: i > 0 ? '-8px' : '0' }}
         />
       ))}
-      {count > 3 && (
-        <span className="text-xs text-slate-400 ml-1">+{count - 3}</span>
-      )}
     </div>
   );
 }
