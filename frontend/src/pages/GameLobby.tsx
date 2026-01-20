@@ -104,16 +104,16 @@ export default function GameLobby() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <nav className="bg-white shadow-sm">
+    <div className="min-h-screen bg-slate-900">
+      <nav className="bg-slate-800 shadow-lg border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className="text-2xl font-bold text-white">Infestation</h1>
+            <h1 className="text-2xl font-bold text-cyan-400">Infestation</h1>
             <div className="flex items-center gap-4">
-              <span className="text-white">Welcome, {user?.name}</span>
+              <span className="text-slate-300">Welcome, {user?.name}</span>
               <button
                 onClick={logout}
-                className="px-4 py-2 text-white hover:text-white"
+                className="px-4 py-2 text-slate-400 hover:text-slate-200 transition-colors"
               >
                 Logout
               </button>
@@ -127,14 +127,14 @@ export default function GameLobby() {
           <h2 className="text-3xl font-bold text-white">Game Lobby</h2>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            className="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700 transition-colors"
           >
             Create New Game
           </button>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+          <div className="bg-rose-900/50 border border-rose-700 text-rose-200 px-4 py-3 rounded mb-6">
             {error}
           </div>
         )}
@@ -146,11 +146,11 @@ export default function GameLobby() {
             const isStarted = game.status !== 'lobby';
 
             return (
-              <div key={game.id} className="bg-white rounded-lg shadow p-6">
+              <div key={game.id} className="bg-slate-800 rounded-lg shadow-lg border border-slate-700 p-6">
                 <h3 className="text-xl font-bold text-white mb-2">
                   {game.name || `Game #${game.id}`}
                 </h3>
-                <div className="space-y-2 text-sm text-white mb-4">
+                <div className="space-y-2 text-sm text-slate-300 mb-4">
                   <p>Players: {game.players?.length || 0}/4</p>
                   <p>Difficulty: <span className="capitalize">{game.difficulty}</span></p>
                   <p>Status: <span className="capitalize">{game.status}</span></p>
@@ -158,7 +158,7 @@ export default function GameLobby() {
                 <button
                   onClick={() => handleJoinGame(game.id, isPlayerInGame)}
                   disabled={isLoading || (isFull && !isPlayerInGame) || (isStarted && !isPlayerInGame)}
-                  className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                  className="w-full bg-emerald-600 text-white py-2 rounded-md hover:bg-emerald-700 disabled:bg-slate-600 disabled:text-slate-400 disabled:cursor-not-allowed transition-colors"
                 >
                   {isLoading ? 'Joining...' :
                    isPlayerInGame ? 'View Game' :
@@ -171,7 +171,7 @@ export default function GameLobby() {
           })}
 
           {games.length === 0 && (
-            <div className="col-span-full text-center py-12 text-white">
+            <div className="col-span-full text-center py-12 text-slate-400">
               No games available. Create one to get started!
             </div>
           )}
@@ -179,38 +179,38 @@ export default function GameLobby() {
       </div>
 
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-800 rounded-lg shadow-xl border border-slate-700 p-6 w-full max-w-md">
             <h3 className="text-2xl font-bold text-white mb-4">Create New Game</h3>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+              <div className="bg-rose-900/50 border border-rose-700 text-rose-200 px-4 py-3 rounded mb-4">
                 {error}
               </div>
             )}
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-white mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Game Name
                 </label>
                 <input
                   type="text"
                   value={gameName}
                   onChange={(e) => setGameName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                   placeholder="Enter game name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Max Players
                 </label>
                 <select
                   value={maxPlayers}
                   onChange={(e) => setMaxPlayers(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                 >
                   <option value={2}>2 Players</option>
                   <option value={3}>3 Players</option>
@@ -219,13 +219,13 @@ export default function GameLobby() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Difficulty
                 </label>
                 <select
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                 >
                   <option value="easy">Easy</option>
                   <option value="normal">Normal</option>
@@ -237,14 +237,14 @@ export default function GameLobby() {
                 <button
                   onClick={() => setShowCreateModal(false)}
                   disabled={isLoading}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-white hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-slate-600 rounded-md text-slate-300 hover:bg-slate-700 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateGame}
                   disabled={isLoading}
-                  className="flex-1 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                  className="flex-1 bg-cyan-600 text-white py-2 rounded-md hover:bg-cyan-700 disabled:bg-slate-600 disabled:text-slate-400 disabled:cursor-not-allowed transition-colors"
                 >
                   {isLoading ? 'Creating...' : 'Create Game'}
                 </button>
